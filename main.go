@@ -17,7 +17,7 @@ func main() {
 	log.Infoln("broker username:", config.Get().Username)
 	log.Infoln("api url:", config.Get().API.URL)
 	log.Infoln("api default datacenter:", config.Get().API.DefaultDatacenter)
-	if len() > 0 {
+	if len(config.Get().API.DefaultWhitelist) > 0 {
 		log.Infoln("api default whitelist:", config.Get().API.DefaultWhitelist)
 	}
 

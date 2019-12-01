@@ -29,12 +29,14 @@ func TestConfig(apiURL string) *config.Config {
 }
 
 type HttpTestCase struct {
+	HttpMethod     string
+	RequestPath    string
 	HttpStatusCode int
 	ResponseBody   string
 	TestFunc       func(string)
 }
 
-func TestServer(username, password string, testCases map[string]HttpTestCase) *httptest.Server {
+func TestServer(username, password string, testCases []HttpTestCase) *httptest.Server {
 	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if len(username) > 0 || len(password) > 0 {
 			user, pw, ok := r.BasicAuth()
@@ -46,15 +48,11 @@ func TestServer(username, password string, testCases map[string]HttpTestCase) *h
 			}
 		}
 
-		for path, test := range testCases {
-			var method string
-			if strings.Contains(path, "::") {
-				values := strings.SplitN(path, "::", 2)
-				path = values[1]
-				method = values[0]
+		for _, test := range testCases {
+			if len(test.HttpMethod) == 0 {
+				test.HttpMethod = "GET"
 			}
-			if strings.HasSuffix(r.RequestURI, path) &&
-				(len(method) == 0 || method == r.Method) {
+			if strings.HasSuffix(r.RequestURI, test.RequestPath) && r.Method == test.HttpMethod {
 				if test.TestFunc != nil {
 					b, _ := ioutil.ReadAll(r.Body)
 					test.TestFunc(string(b))
