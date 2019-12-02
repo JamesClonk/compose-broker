@@ -12,7 +12,7 @@ import (
 type Broker struct {
 	Username       string
 	Password       string
-	API            config.API
+	APIConfig      config.API
 	Client         *api.Client
 	ServiceCatalog *ServiceCatalog
 }
@@ -21,7 +21,7 @@ func NewBroker(c *config.Config) *Broker {
 	b := &Broker{
 		Username:       c.Username,
 		Password:       c.Password,
-		API:            c.API,
+		APIConfig:      c.API,
 		Client:         api.NewClient(c),
 		ServiceCatalog: LoadServiceCatalog(c.CatalogFilename),
 	}

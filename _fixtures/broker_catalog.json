@@ -1,0 +1,378 @@
+{
+  "services": [
+    {
+      "id": "e27ea95a-3883-44f2-8ca4-01101f39d50c",
+      "name": "redis",
+      "description": "Redis",
+      "bindable": true,
+      "instances_retrievable": true,
+      "bindings_retrievable": true,
+      "plan_updateable": true,
+      "tags": [
+        "redis"
+      ],
+      "metadata": {
+        "displayName": "Redis",
+        "imageUrl": "https://compose.com/assets/icd-icons/redis-0db857f1c0f8cb148d60407f9952c8c12e3a88f16f798a352117e5522ea234b6.svg",
+        "longDescription": "Deploy Redis on AWS, GCP, or IBM Cloud in minutes. Fully managed, highly-available and production ready.",
+        "providerDisplayName": "Redis",
+        "documentationUrl": "https://compose.com/databases/redis",
+        "supportUrl": "https://help.compose.com/docs/redis-on-compose"
+      },
+      "plans": [
+        {
+          "id": "355ef4a4-08f5-4764-b4ed-8353812b6963",
+          "name": "default",
+          "description": "Redis",
+          "free": false,
+          "bindable": true,
+          "metadata": {
+            "displayName": "Redis",
+            "imageUrl": "https://compose.com/assets/icd-icons/redis-0db857f1c0f8cb148d60407f9952c8c12e3a88f16f798a352117e5522ea234b6.svg",
+            "costs": [
+              {
+                "amount": {
+                  "usd": 18.5
+                },
+                "unit": "Monthly"
+              }
+            ],
+            "bullets": [
+              "256 MB Storage",
+              "256 MB RAM"
+            ],
+            "highAvailability": true,
+            "units": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "9b4ee86b-3876-469f-a531-062e71bc5859",
+      "name": "postgresql",
+      "description": "PostgreSQL",
+      "bindable": true,
+      "instances_retrievable": true,
+      "bindings_retrievable": true,
+      "plan_updateable": true,
+      "tags": [
+        "postgres",
+        "postgresql"
+      ],
+      "metadata": {
+        "displayName": "PostgreSQL",
+        "imageUrl": "https://compose.com/assets/icd-icons/postgresql-1edd748060bba01bda5a973b03266d19f1945fb5fac5001a9ef522600c0be9bb.svg",
+        "longDescription": "Deploy PostgreSQL on AWS, GCP, or IBM Cloud in minutes. Fully managed, highly-available and production ready.",
+        "providerDisplayName": "PostgreSQL",
+        "documentationUrl": "https://compose.com/databases/postgresql",
+        "supportUrl": "https://help.compose.com/docs/postgresql-on-compose"
+      },
+      "plans": [
+        {
+          "id": "d6222855-17c6-448c-885a-e9d931cd221b",
+          "name": "default",
+          "description": "PostgreSQL",
+          "free": false,
+          "bindable": true,
+          "metadata": {
+            "displayName": "PostgreSQL",
+            "imageUrl": "https://compose.com/assets/icd-icons/postgresql-1edd748060bba01bda5a973b03266d19f1945fb5fac5001a9ef522600c0be9bb.svg",
+            "costs": [
+              {
+                "amount": {
+                  "usd": 17.5
+                },
+                "unit": "Monthly"
+              }
+            ],
+            "bullets": [
+              "1 GB Storage",
+              "102 MB RAM"
+            ],
+            "highAvailability": true,
+            "units": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "c23b7d0f-e96c-49e6-930a-0d9a139ad726",
+      "name": "mysql",
+      "description": "MySQL",
+      "bindable": true,
+      "instances_retrievable": true,
+      "bindings_retrievable": true,
+      "plan_updateable": true,
+      "tags": [
+        "mysql"
+      ],
+      "metadata": {
+        "displayName": "MySQL",
+        "longDescription": "Deploy MySQL on AWS, GCP, or IBM Cloud in minutes. Fully managed and highly-available.",
+        "providerDisplayName": "MySQL",
+        "documentationUrl": "https://compose.com/databases/mysql",
+        "supportUrl": "https://help.compose.com/docs/mysql-compose-for-mysql"
+      },
+      "plans": [
+        {
+          "id": "71c77ef6-b0e3-4a50-bbce-89247a605085",
+          "name": "default",
+          "description": "MySQL",
+          "free": false,
+          "bindable": true,
+          "metadata": {
+            "displayName": "MySQL",
+            "costs": [
+              {
+                "amount": {
+                  "usd": 27
+                },
+                "unit": "Monthly"
+              }
+            ],
+            "bullets": [
+              "1 GB Storage",
+              "102 MB RAM"
+            ],
+            "highAvailability": true,
+            "units": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "b0d27854-06e0-426e-9e8d-79f4c53078c7",
+      "name": "elastic_search",
+      "description": "Elasticsearch",
+      "bindable": true,
+      "instances_retrievable": true,
+      "bindings_retrievable": true,
+      "plan_updateable": true,
+      "tags": [
+        "elasticsearch",
+        "elastic_search"
+      ],
+      "metadata": {
+        "displayName": "Elasticsearch",
+        "imageUrl": "https://compose.com/assets/icd-icons/elasticsearch-f853c248d994b6e0f4548a80422c89391317fec77e4dabf93b6a8dad257e2a05.svg",
+        "longDescription": "Deploy Elasticsearch on AWS, GCP, or IBM Cloud in minutes. Fully managed, highly-available and production ready.",
+        "providerDisplayName": "Elasticsearch",
+        "documentationUrl": "https://compose.com/databases/elasticsearch",
+        "supportUrl": "https://help.compose.com/docs/elasticsearch-on-compose"
+      },
+      "plans": [
+        {
+          "id": "b937f316-ac62-4010-927a-59155778b086",
+          "name": "default",
+          "description": "Elasticsearch",
+          "free": false,
+          "bindable": true,
+          "metadata": {
+            "displayName": "Elasticsearch",
+            "imageUrl": "https://compose.com/assets/icd-icons/elasticsearch-f853c248d994b6e0f4548a80422c89391317fec77e4dabf93b6a8dad257e2a05.svg",
+            "costs": [
+              {
+                "amount": {
+                  "usd": 45
+                },
+                "unit": "Monthly"
+              }
+            ],
+            "bullets": [
+              "2 GB Storage",
+              "205 MB RAM"
+            ],
+            "highAvailability": true,
+            "units": 2
+          }
+        }
+      ]
+    },
+    {
+      "id": "408353b8-a172-43c4-bd09-5d281d71671b",
+      "name": "scylla",
+      "description": "ScyllaDB",
+      "bindable": true,
+      "instances_retrievable": true,
+      "bindings_retrievable": true,
+      "plan_updateable": true,
+      "tags": [
+        "scylla",
+        "scylladb"
+      ],
+      "metadata": {
+        "displayName": "ScyllaDB",
+        "longDescription": "Deploy Scylla on AWS, GCP, or IBM Cloud in minutes. Fully managed, highly-available and production ready.",
+        "providerDisplayName": "ScyllaDB",
+        "documentationUrl": "https://compose.com/databases/scylladb",
+        "supportUrl": "https://help.compose.com/docs/scylla-on-compose"
+      },
+      "plans": [
+        {
+          "id": "64461dee-f7fb-4ce8-b501-959918f8105f",
+          "name": "default",
+          "description": "ScyllaDB",
+          "free": false,
+          "bindable": true,
+          "metadata": {
+            "displayName": "ScyllaDB",
+            "costs": [
+              {
+                "amount": {
+                  "usd": 103.5
+                },
+                "unit": "Monthly"
+              }
+            ],
+            "bullets": [
+              "5 GB Storage",
+              "512 MB RAM"
+            ],
+            "highAvailability": true,
+            "units": 5
+          }
+        }
+      ]
+    },
+    {
+      "id": "0b53bf21-2ad9-49ff-b65f-330a779a43b4",
+      "name": "rabbitmq",
+      "description": "RabbitMQ",
+      "bindable": true,
+      "instances_retrievable": true,
+      "bindings_retrievable": true,
+      "plan_updateable": true,
+      "tags": [
+        "rabbitmq"
+      ],
+      "metadata": {
+        "displayName": "RabbitMQ",
+        "imageUrl": "https://compose.com/assets/icd-icons/rabbitmq-89baa71a67f878c28cd297bc00bb58319c9256794a055ccb865b10d20169a4a5.svg",
+        "longDescription": "Deploy RabbitMQ on AWS, GCP, or IBM Cloud in minutes. Fully managed, highly-available and production ready.",
+        "providerDisplayName": "RabbitMQ",
+        "documentationUrl": "https://compose.com/databases/rabbitmq",
+        "supportUrl": "https://help.compose.com/docs/rabbitmq-on-compose"
+      },
+      "plans": [
+        {
+          "id": "cbfa1c7e-729c-49b2-b4ea-af6d30ff764d",
+          "name": "default",
+          "description": "RabbitMQ",
+          "free": false,
+          "bindable": true,
+          "metadata": {
+            "displayName": "RabbitMQ",
+            "imageUrl": "https://compose.com/assets/icd-icons/rabbitmq-89baa71a67f878c28cd297bc00bb58319c9256794a055ccb865b10d20169a4a5.svg",
+            "costs": [
+              {
+                "amount": {
+                  "usd": 28.5
+                },
+                "unit": "Monthly"
+              }
+            ],
+            "bullets": [
+              "256 MB Storage",
+              "256 MB RAM"
+            ],
+            "highAvailability": true,
+            "units": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "663a6926-0f80-40cf-9406-cd979978ecf4",
+      "name": "etcd",
+      "description": "etcd",
+      "bindable": true,
+      "instances_retrievable": true,
+      "bindings_retrievable": true,
+      "plan_updateable": true,
+      "tags": [
+        "etcd"
+      ],
+      "metadata": {
+        "displayName": "etcd",
+        "imageUrl": "https://compose.com/assets/icd-icons/etcd-9bf4cedacb096e58868085dc0b91b8c3cc3c1f0b3f8be05d1bf7ea5b5e9b6697.svg",
+        "longDescription": "Deploy etcd on AWS, GCP, or IBM Cloud in minutes. Fully managed, highly-available and production ready.",
+        "providerDisplayName": "etcd",
+        "documentationUrl": "https://compose.com/databases/etcd",
+        "supportUrl": "https://help.compose.com/docs/etcd-on-compose-etcd3"
+      },
+      "plans": [
+        {
+          "id": "d0a8c416-8780-4c1f-89ca-fcc3a9ccf465",
+          "name": "default",
+          "description": "etcd",
+          "free": false,
+          "bindable": true,
+          "metadata": {
+            "displayName": "etcd",
+            "imageUrl": "https://compose.com/assets/icd-icons/etcd-9bf4cedacb096e58868085dc0b91b8c3cc3c1f0b3f8be05d1bf7ea5b5e9b6697.svg",
+            "costs": [
+              {
+                "amount": {
+                  "usd": 28.5
+                },
+                "unit": "Monthly"
+              }
+            ],
+            "bullets": [
+              "256 MB Storage",
+              "256 MB RAM"
+            ],
+            "highAvailability": true,
+            "units": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "bc759ad5-624b-40bf-b457-848203c6ab32",
+      "name": "rethink",
+      "description": "RethinkDB",
+      "bindable": true,
+      "instances_retrievable": true,
+      "bindings_retrievable": true,
+      "plan_updateable": true,
+      "tags": [
+        "rethink",
+        "rethinkdb"
+      ],
+      "metadata": {
+        "displayName": "RethinkDB",
+        "longDescription": "Deploy RethinkDB on AWS, GCP, or IBM Cloud in minutes. Fully managed, highly-available and production ready.",
+        "providerDisplayName": "RethinkDB",
+        "documentationUrl": "https://compose.com/databases/rethinkdb",
+        "supportUrl": "https://help.compose.com/docs/rethinkdb-on-compose"
+      },
+      "plans": [
+        {
+          "id": "8b357dcc-bad6-4c34-a641-e4c66cb25f79",
+          "name": "default",
+          "description": "RethinkDB",
+          "free": false,
+          "bindable": true,
+          "metadata": {
+            "displayName": "RethinkDB",
+            "costs": [
+              {
+                "amount": {
+                  "usd": 22.5
+                },
+                "unit": "Monthly"
+              }
+            ],
+            "bullets": [
+              "1 GB Storage",
+              "102 MB RAM"
+            ],
+            "highAvailability": true,
+            "units": 1
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,936 @@
+{
+  "_embedded": {
+    "applications": [
+      {
+        "type": "elastic_search",
+        "status": "stable",
+        "display_name": "Elasticsearch",
+        "_embedded": {
+          "versions": [
+            {
+              "application": "elastic_search",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "2.4.0"
+            },
+            {
+              "application": "elastic_search",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "2.4.2"
+            },
+            {
+              "application": "elastic_search",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "2.4.4"
+            },
+            {
+              "application": "elastic_search",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "2.4.6"
+            },
+            {
+              "application": "elastic_search",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "5.4.2"
+            },
+            {
+              "application": "elastic_search",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "5.6.3"
+            },
+            {
+              "application": "elastic_search",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "5.6.9"
+            },
+            {
+              "application": "elastic_search",
+              "status": "stable",
+              "preferred": false,
+              "version": "5.6.16"
+            },
+            {
+              "application": "elastic_search",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "6.2.2"
+            },
+            {
+              "application": "elastic_search",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "6.5.2"
+            },
+            {
+              "application": "elastic_search",
+              "status": "stable",
+              "preferred": true,
+              "version": "6.6.2"
+            }
+          ]
+        }
+      },
+      {
+        "type": "etcd",
+        "status": "beta",
+        "display_name": "etcd",
+        "_embedded": {
+          "versions": [
+            {
+              "application": "etcd",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "2.2.2"
+            },
+            {
+              "application": "etcd",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "2.2.3"
+            },
+            {
+              "application": "etcd",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "2.2.4"
+            },
+            {
+              "application": "etcd",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "2.2.5"
+            },
+            {
+              "application": "etcd",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "2.3.7"
+            },
+            {
+              "application": "etcd",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "3.1.0"
+            },
+            {
+              "application": "etcd",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "3.1.1"
+            },
+            {
+              "application": "etcd",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "3.1.2"
+            },
+            {
+              "application": "etcd",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "3.1.3"
+            },
+            {
+              "application": "etcd",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "3.1.4"
+            },
+            {
+              "application": "etcd",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "3.1.5"
+            },
+            {
+              "application": "etcd",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "3.1.6"
+            },
+            {
+              "application": "etcd",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "3.1.7"
+            },
+            {
+              "application": "etcd",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "3.2.0"
+            },
+            {
+              "application": "etcd",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "3.2.1"
+            },
+            {
+              "application": "etcd",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "3.2.2"
+            },
+            {
+              "application": "etcd",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "3.2.4"
+            },
+            {
+              "application": "etcd",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "3.2.5"
+            },
+            {
+              "application": "etcd",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "3.2.6"
+            },
+            {
+              "application": "etcd",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "3.2.7"
+            },
+            {
+              "application": "etcd",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "3.2.8"
+            },
+            {
+              "application": "etcd",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "3.2.9"
+            },
+            {
+              "application": "etcd",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "3.2.10"
+            },
+            {
+              "application": "etcd",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "3.2.11"
+            },
+            {
+              "application": "etcd",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "3.2.12"
+            },
+            {
+              "application": "etcd",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "3.2.13"
+            },
+            {
+              "application": "etcd",
+              "status": "stable",
+              "preferred": true,
+              "version": "3.2.18"
+            },
+            {
+              "application": "etcd",
+              "status": "stable",
+              "preferred": true,
+              "version": "3.3.3"
+            },
+            {
+              "application": "etcd",
+              "status": "stable",
+              "preferred": false,
+              "version": "3.3.17"
+            }
+          ]
+        }
+      },
+      {
+        "type": "janusgraph",
+        "status": "beta",
+        "display_name": "JanusGraph",
+        "_embedded": {
+          "versions": [
+            {
+              "application": "janusgraph",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "0.1.1"
+            },
+            {
+              "application": "janusgraph",
+              "status": "beta",
+              "preferred": true,
+              "version": "0.3.1"
+            }
+          ]
+        }
+      },
+      {
+        "type": "mongodb",
+        "status": "stable",
+        "display_name": "MongoDB",
+        "_embedded": {
+          "versions": [
+            {
+              "application": "mongodb",
+              "status": "stable",
+              "preferred": false,
+              "version": "3.2.10"
+            },
+            {
+              "application": "mongodb",
+              "status": "stable",
+              "preferred": false,
+              "version": "3.2.11"
+            },
+            {
+              "application": "mongodb",
+              "status": "stable",
+              "preferred": false,
+              "version": "3.2.18"
+            },
+            {
+              "application": "mongodb",
+              "status": "stable",
+              "preferred": false,
+              "version": "3.4.10"
+            },
+            {
+              "application": "mongodb",
+              "status": "stable",
+              "preferred": true,
+              "version": "3.6.8"
+            }
+          ]
+        }
+      },
+      {
+        "type": "mysql",
+        "status": "beta",
+        "display_name": "MySQL",
+        "_embedded": {
+          "versions": [
+            {
+              "application": "mysql",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "5.7.15"
+            },
+            {
+              "application": "mysql",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "5.7.17"
+            },
+            {
+              "application": "mysql",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "5.7.19"
+            },
+            {
+              "application": "mysql",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "5.7.20"
+            },
+            {
+              "application": "mysql",
+              "status": "beta",
+              "preferred": true,
+              "version": "5.7.22"
+            },
+            {
+              "application": "mysql",
+              "status": "beta",
+              "preferred": false,
+              "version": "5.7.26"
+            }
+          ]
+        }
+      },
+      {
+        "type": "postgresql",
+        "status": "stable",
+        "display_name": "PostgreSQL",
+        "_embedded": {
+          "versions": [
+            {
+              "application": "postgresql",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "9.4.18"
+            },
+            {
+              "application": "postgresql",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "9.4.19"
+            },
+            {
+              "application": "postgresql",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "9.4.20"
+            },
+            {
+              "application": "postgresql",
+              "status": "stable",
+              "preferred": true,
+              "version": "9.4.21"
+            },
+            {
+              "application": "postgresql",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "9.5.2"
+            },
+            {
+              "application": "postgresql",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "9.5.3"
+            },
+            {
+              "application": "postgresql",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "9.5.4"
+            },
+            {
+              "application": "postgresql",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "9.5.5"
+            },
+            {
+              "application": "postgresql",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "9.5.6"
+            },
+            {
+              "application": "postgresql",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "9.5.7"
+            },
+            {
+              "application": "postgresql",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "9.5.8"
+            },
+            {
+              "application": "postgresql",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "9.5.9"
+            },
+            {
+              "application": "postgresql",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "9.5.10"
+            },
+            {
+              "application": "postgresql",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "9.5.11"
+            },
+            {
+              "application": "postgresql",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "9.5.12"
+            },
+            {
+              "application": "postgresql",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "9.5.13"
+            },
+            {
+              "application": "postgresql",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "9.5.14"
+            },
+            {
+              "application": "postgresql",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "9.5.15"
+            },
+            {
+              "application": "postgresql",
+              "status": "stable",
+              "preferred": true,
+              "version": "9.5.16"
+            },
+            {
+              "application": "postgresql",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "9.6.3"
+            },
+            {
+              "application": "postgresql",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "9.6.4"
+            },
+            {
+              "application": "postgresql",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "9.6.5"
+            },
+            {
+              "application": "postgresql",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "9.6.6"
+            },
+            {
+              "application": "postgresql",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "9.6.7"
+            },
+            {
+              "application": "postgresql",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "9.6.8"
+            },
+            {
+              "application": "postgresql",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "9.6.9"
+            },
+            {
+              "application": "postgresql",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "9.6.10"
+            },
+            {
+              "application": "postgresql",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "9.6.11"
+            },
+            {
+              "application": "postgresql",
+              "status": "stable",
+              "preferred": true,
+              "version": "9.6.12"
+            }
+          ]
+        }
+      },
+      {
+        "type": "rabbitmq",
+        "status": "stable",
+        "display_name": "RabbitMQ",
+        "_embedded": {
+          "versions": [
+            {
+              "application": "rabbitmq",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "3.6.5"
+            },
+            {
+              "application": "rabbitmq",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "3.6.6"
+            },
+            {
+              "application": "rabbitmq",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "3.6.7"
+            },
+            {
+              "application": "rabbitmq",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "3.6.8"
+            },
+            {
+              "application": "rabbitmq",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "3.6.9"
+            },
+            {
+              "application": "rabbitmq",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "3.6.10"
+            },
+            {
+              "application": "rabbitmq",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "3.6.11"
+            },
+            {
+              "application": "rabbitmq",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "3.6.12"
+            },
+            {
+              "application": "rabbitmq",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "3.6.13"
+            },
+            {
+              "application": "rabbitmq",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "3.6.14"
+            },
+            {
+              "application": "rabbitmq",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "3.7.5"
+            },
+            {
+              "application": "rabbitmq",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "3.7.6"
+            },
+            {
+              "application": "rabbitmq",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "3.7.7"
+            },
+            {
+              "application": "rabbitmq",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "3.7.8"
+            },
+            {
+              "application": "rabbitmq",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "3.7.9"
+            },
+            {
+              "application": "rabbitmq",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "3.7.10"
+            },
+            {
+              "application": "rabbitmq",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "3.7.11"
+            },
+            {
+              "application": "rabbitmq",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "3.7.12"
+            },
+            {
+              "application": "rabbitmq",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "3.7.13"
+            },
+            {
+              "application": "rabbitmq",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "3.7.14"
+            },
+            {
+              "application": "rabbitmq",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "3.7.15"
+            },
+            {
+              "application": "rabbitmq",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "3.7.16"
+            },
+            {
+              "application": "rabbitmq",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "3.7.17"
+            },
+            {
+              "application": "rabbitmq",
+              "status": "stable",
+              "preferred": true,
+              "version": "3.7.18"
+            }
+          ]
+        }
+      },
+      {
+        "type": "redis",
+        "status": "stable",
+        "display_name": "Redis",
+        "_embedded": {
+          "versions": [
+            {
+              "application": "redis",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "2.8.21"
+            },
+            {
+              "application": "redis",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "3.0.0"
+            },
+            {
+              "application": "redis",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "3.0.7"
+            },
+            {
+              "application": "redis",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "3.2.0"
+            },
+            {
+              "application": "redis",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "3.2.1"
+            },
+            {
+              "application": "redis",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "3.2.2"
+            },
+            {
+              "application": "redis",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "3.2.3"
+            },
+            {
+              "application": "redis",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "3.2.4"
+            },
+            {
+              "application": "redis",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "3.2.5"
+            },
+            {
+              "application": "redis",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "3.2.6"
+            },
+            {
+              "application": "redis",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "3.2.9"
+            },
+            {
+              "application": "redis",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "3.2.11"
+            },
+            {
+              "application": "redis",
+              "status": "stable",
+              "preferred": false,
+              "version": "3.2.12"
+            },
+            {
+              "application": "redis",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "4.0.2"
+            },
+            {
+              "application": "redis",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "4.0.3"
+            },
+            {
+              "application": "redis",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "4.0.4"
+            },
+            {
+              "application": "redis",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "4.0.5"
+            },
+            {
+              "application": "redis",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "4.0.6"
+            },
+            {
+              "application": "redis",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "4.0.10"
+            },
+            {
+              "application": "redis",
+              "status": "stable",
+              "preferred": true,
+              "version": "4.0.14"
+            }
+          ]
+        }
+      },
+      {
+        "type": "rethink",
+        "status": "stable",
+        "display_name": "RethinkDB",
+        "_embedded": {
+          "versions": [
+            {
+              "application": "rethink",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "2.3.2"
+            },
+            {
+              "application": "rethink",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "2.3.3"
+            },
+            {
+              "application": "rethink",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "2.3.4"
+            },
+            {
+              "application": "rethink",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "2.3.5"
+            },
+            {
+              "application": "rethink",
+              "status": "stable",
+              "preferred": true,
+              "version": "2.3.6"
+            }
+          ]
+        }
+      },
+      {
+        "type": "scylla",
+        "status": "beta",
+        "display_name": "ScyllaDB",
+        "_embedded": {
+          "versions": [
+            {
+              "application": "scylla",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "1.4.2"
+            },
+            {
+              "application": "scylla",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "1.6.0"
+            },
+            {
+              "application": "scylla",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "1.7.1"
+            },
+            {
+              "application": "scylla",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "1.7.2"
+            },
+            {
+              "application": "scylla",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "1.7.3"
+            },
+            {
+              "application": "scylla",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "1.7.4"
+            },
+            {
+              "application": "scylla",
+              "status": "deprecated",
+              "preferred": false,
+              "version": "1.7.5"
+            },
+            {
+              "application": "scylla",
+              "status": "stable",
+              "preferred": true,
+              "version": "2.0.3"
+            },
+            {
+              "application": "scylla",
+              "status": "stable",
+              "preferred": false,
+              "version": "2.3.6"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

@@ -1,7 +1,6 @@
 package util
 
 import (
-	"crypto/subtle"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -36,14 +35,12 @@ type HttpTestCase struct {
 	TestFunc       func(string)
 }
 
-func TestServer(username, password string, testCases []HttpTestCase) *httptest.Server {
+func TestServer(token string, testCases []HttpTestCase) *httptest.Server {
 	return httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if len(username) > 0 || len(password) > 0 {
-			user, pw, ok := r.BasicAuth()
-			if !ok || subtle.ConstantTimeCompare([]byte(user), []byte(username)) != 1 || subtle.ConstantTimeCompare([]byte(pw), []byte(password)) != 1 {
-				w.Header().Set("WWW-Authenticate", `Basic realm="test"`)
+		if len(token) > 0 {
+			if r.Header.Get("Authorization") != "Bearer "+token {
 				w.WriteHeader(401)
-				w.Write([]byte("Not authorized"))
+				w.Write([]byte(`{"errors":"invalid_token"}`))
 				return
 			}
 		}

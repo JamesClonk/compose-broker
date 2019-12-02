@@ -11,7 +11,7 @@ services:
   metadata:
     displayName: Redis
     imageUrl: https://compose.com/assets/icd-icons/redis-0db857f1c0f8cb148d60407f9952c8c12e3a88f16f798a352117e5522ea234b6.svg
-    longDescription: Deploy Redis on AWS, GCP, or IBM Cloud in minutes. Fully managed, highly-available, & production ready.
+    longDescription: Deploy Redis on AWS, GCP, or IBM Cloud in minutes. Fully managed, highly-available and production ready.
     providerDisplayName: Redis
     documentationUrl: https://compose.com/databases/redis
     supportUrl: https://help.compose.com/docs/redis-on-compose
@@ -47,7 +47,7 @@ services:
   metadata:
     displayName: PostgreSQL
     imageUrl: https://compose.com/assets/icd-icons/postgresql-1edd748060bba01bda5a973b03266d19f1945fb5fac5001a9ef522600c0be9bb.svg
-    longDescription: Deploy PostgreSQL on AWS, GCP, or IBM Cloud in minutes. Fully managed, highly-available, & production ready.
+    longDescription: Deploy PostgreSQL on AWS, GCP, or IBM Cloud in minutes. Fully managed, highly-available and production ready.
     providerDisplayName: PostgreSQL
     documentationUrl: https://compose.com/databases/postgresql
     supportUrl: https://help.compose.com/docs/postgresql-on-compose
@@ -81,7 +81,7 @@ services:
   - mysql
   metadata:
     displayName: MySQL
-    longDescription: Deploy MySQL on AWS, GCP, or IBM Cloud in minutes. Fully managed & highly-available.
+    longDescription: Deploy MySQL on AWS, GCP, or IBM Cloud in minutes. Fully managed and highly-available.
     providerDisplayName: MySQL
     documentationUrl: https://compose.com/databases/mysql
     supportUrl: https://help.compose.com/docs/mysql-compose-for-mysql
@@ -116,7 +116,7 @@ services:
   metadata:
     displayName: Elasticsearch
     imageUrl: https://compose.com/assets/icd-icons/elasticsearch-f853c248d994b6e0f4548a80422c89391317fec77e4dabf93b6a8dad257e2a05.svg
-    longDescription: Deploy Elasticsearch on AWS, GCP, or IBM Cloud in minutes. Fully managed, highly-available, & production ready.
+    longDescription: Deploy Elasticsearch on AWS, GCP, or IBM Cloud in minutes. Fully managed, highly-available and production ready.
     providerDisplayName: Elasticsearch
     documentationUrl: https://compose.com/databases/elasticsearch
     supportUrl: https://help.compose.com/docs/elasticsearch-on-compose
@@ -151,7 +151,7 @@ services:
   - scylladb
   metadata:
     displayName: ScyllaDB
-    longDescription: Deploy Scylla on AWS, GCP, or IBM Cloud in minutes. Fully managed, highly-available, & production ready.
+    longDescription: Deploy Scylla on AWS, GCP, or IBM Cloud in minutes. Fully managed, highly-available and production ready.
     providerDisplayName: ScyllaDB
     documentationUrl: https://compose.com/databases/scylladb
     supportUrl: https://help.compose.com/docs/scylla-on-compose
@@ -185,7 +185,7 @@ services:
   metadata:
     displayName: RabbitMQ
     imageUrl: https://compose.com/assets/icd-icons/rabbitmq-89baa71a67f878c28cd297bc00bb58319c9256794a055ccb865b10d20169a4a5.svg
-    longDescription: Deploy RabbitMQ on AWS, GCP, or IBM Cloud in minutes. Fully managed, highly-available, & production ready.
+    longDescription: Deploy RabbitMQ on AWS, GCP, or IBM Cloud in minutes. Fully managed, highly-available and production ready.
     providerDisplayName: RabbitMQ
     documentationUrl: https://compose.com/databases/rabbitmq
     supportUrl: https://help.compose.com/docs/rabbitmq-on-compose
@@ -220,7 +220,7 @@ services:
   metadata:
     displayName: etcd
     imageUrl: https://compose.com/assets/icd-icons/etcd-9bf4cedacb096e58868085dc0b91b8c3cc3c1f0b3f8be05d1bf7ea5b5e9b6697.svg
-    longDescription: Deploy etcd on AWS, GCP, or IBM Cloud in minutes. Fully managed, highly-available, & production ready.
+    longDescription: Deploy etcd on AWS, GCP, or IBM Cloud in minutes. Fully managed, highly-available and production ready.
     providerDisplayName: etcd
     documentationUrl: https://compose.com/databases/etcd
     supportUrl: https://help.compose.com/docs/etcd-on-compose-etcd3
@@ -255,7 +255,7 @@ services:
   - rethinkdb
   metadata:
     displayName: RethinkDB
-    longDescription: Deploy RethinkDB on AWS, GCP, or IBM Cloud in minutes. Fully managed, highly-available, & production ready.
+    longDescription: Deploy RethinkDB on AWS, GCP, or IBM Cloud in minutes. Fully managed, highly-available and production ready.
     providerDisplayName: RethinkDB
     documentationUrl: https://compose.com/databases/rethinkdb
     supportUrl: https://help.compose.com/docs/rethinkdb-on-compose

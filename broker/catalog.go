@@ -17,13 +17,13 @@ type Service struct {
 	Name                 string   `json:"name" yaml:"name"`
 	Description          string   `json:"description" yaml:"description"`
 	Bindable             bool     `json:"bindable" yaml:"bindable"`
-	InstancesRetrievable bool     `json:"instances_retrievable"`
-	BindingsRetrievable  bool     `json:"bindings_retrievable"`
-	PlanUpdateable       bool     `json:"plan_updateable"`
+	InstancesRetrievable bool     `json:"instances_retrievable" yaml:"instances_retrievable"`
+	BindingsRetrievable  bool     `json:"bindings_retrievable" yaml:"bindings_retrievable"`
+	PlanUpdateable       bool     `json:"plan_updateable" yaml:"plan_updateable"`
 	Tags                 []string `json:"tags" yaml:"tags"`
 	Metadata             struct {
 		DisplayName         string `json:"displayName" yaml:"displayName"`
-		ImageURL            string `json:"imageUrl" yaml:"imageUrl"`
+		ImageURL            string `json:"imageUrl,omitempty" yaml:"imageUrl,omitempty"`
 		LongDescription     string `json:"longDescription" yaml:"longDescription"`
 		ProviderDisplayName string `json:"providerDisplayName" yaml:"providerDisplayName"`
 		DocumentationURL    string `json:"documentationUrl" yaml:"documentationUrl"`
@@ -39,7 +39,7 @@ type ServicePlan struct {
 	Bindable    bool   `json:"bindable" yaml:"bindable"`
 	Metadata    struct {
 		DisplayName string `json:"displayName" yaml:"displayName"`
-		ImageURL    string `json:"imageUrl" yaml:"imageUrl"`
+		ImageURL    string `json:"imageUrl,omitempty" yaml:"imageUrl,omitempty"`
 		Costs       []struct {
 			Amount struct {
 				USDollar float64 `json:"usd" yaml:"usd"`
@@ -114,29 +114,24 @@ func LoadServiceCatalog(filename string) *ServiceCatalog {
 }
 
 func (b *Broker) Catalog(rw http.ResponseWriter, req *http.Request) {
-	// if b.API.DefaultRegionPlansOnly {
-	// 	region, err := b.Client.GetRegion(b.API.DefaultRegion)
-	// 	if err != nil {
-	// 		log.Errorf("could not filter plans for default region [%s]: %v", b.API.DefaultRegion, err)
-	// 	} else {
-	// 		// create new catalog without shared plans if necessary
-	// 		if !region.SharedPlans {
-	// 			newServices := make([]Service, 0)
-	// 			for _, service := range b.ServiceCatalog.Services {
-	// 				newPlans := make([]ServicePlan, 0)
-	// 				for _, plan := range service.Plans {
-	// 					if plan.Metadata.DedicatedService {
-	// 						newPlans = append(newPlans, plan)
-	// 					}
-	// 				}
-	// 				service.Plans = newPlans
-	// 				newServices = append(newServices, service)
-	// 			}
-	// 			b.ServiceCatalog.Services = newServices
-	// 		}
-	// 	}
-	// }
+	// filter catalog by /databases api response, trim everything that is not at least "stable" or "beta"
+	databases, err := b.Client.GetDatabases()
+	if err != nil {
+		log.Errorf("could not filter services for catalog: %v", err)
+	}
 
-	// TODO: filter catalog by /databases api response, trim everything that is not at least "stable" or "beta"
+	filteredServices := make([]Service, 0)
+	for _, service := range b.ServiceCatalog.Services {
+		for _, database := range databases {
+			if service.Name == database.DatabaseType {
+				// only allow stable or beta service offerings
+				if database.Status == "stable" || database.Status == "beta" {
+					filteredServices = append(filteredServices, service)
+				}
+			}
+		}
+	}
+	b.ServiceCatalog.Services = filteredServices
+
 	b.write(rw, req, 200, b.ServiceCatalog)
 }

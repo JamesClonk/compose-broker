@@ -2,6 +2,7 @@ package config
 
 import (
 	"strconv"
+	"strings"
 	"sync"
 
 	"github.com/JamesClonk/compose-broker/env"
@@ -39,7 +40,7 @@ func loadConfig() {
 		Password:        env.MustGet("BROKER_AUTH_PASSWORD"),
 		CatalogFilename: env.Get("BROKER_CATALOG_FILENAME", "catalog.yml"),
 		API: API{
-			URL:               env.Get("COMPOSE_API_URL", "https://api.compose.io/2016-07"),
+			URL:               strings.TrimSuffix(env.Get("COMPOSE_API_URL", "https://api.compose.io/2016-07"), "/"),
 			Token:             env.MustGet("COMPOSE_API_TOKEN"),
 			DefaultDatacenter: env.Get("COMPOSE_API_DEFAULT_DATACENTER", "aws:eu-central-1"),
 			DefaultWhitelist:  env.Get("COMPOSE_API_DEFAULT_WHITELIST", ""),
