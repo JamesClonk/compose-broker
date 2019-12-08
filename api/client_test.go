@@ -2,10 +2,10 @@ package api
 
 import (
 	"io/ioutil"
-	"log"
 	"testing"
 	"time"
 
+	"github.com/JamesClonk/compose-broker/log"
 	"github.com/JamesClonk/compose-broker/util"
 	"github.com/stretchr/testify/assert"
 )

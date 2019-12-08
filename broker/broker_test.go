@@ -2,11 +2,11 @@ package broker
 
 import (
 	"io/ioutil"
-	"log"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
+	"github.com/JamesClonk/compose-broker/log"
 	"github.com/JamesClonk/compose-broker/util"
 	"github.com/stretchr/testify/assert"
 )
