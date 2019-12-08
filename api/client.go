@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"strings"
 	"sync"
 	"time"
 
@@ -36,6 +37,7 @@ func NewClient(c *config.Config) *Client {
 			http.StatusBadGateway,
 			http.StatusServiceUnavailable,
 			http.StatusGatewayTimeout,
+			http.StatusInternalServerError,
 		},
 	}
 	return client
@@ -58,7 +60,7 @@ func (c *Client) GetJSON(endpoint string) (string, error) {
 
 	response, body, errs := c.newRequest("GET", endpoint).End()
 	if response.StatusCode != 200 {
-		errs = composeErrors(response.StatusCode, body)
+		errs = append(errs, composeErrors(body)...)
 	}
 
 	var err error
@@ -66,7 +68,7 @@ func (c *Client) GetJSON(endpoint string) (string, error) {
 		var errorMessage string
 		for _, err := range errs {
 			if len(errorMessage) > 0 {
-				errorMessage = fmt.Sprintf("%s: %s", errorMessage, err.Error())
+				errorMessage = fmt.Sprintf("%s, %s", errorMessage, err.Error())
 			} else {
 				errorMessage = err.Error()
 			}
@@ -76,29 +78,29 @@ func (c *Client) GetJSON(endpoint string) (string, error) {
 	return body, err
 }
 
-func composeErrors(statuscode int, body string) []error {
+func composeErrors(body string) []error {
+	errs := make([]error, 0)
+
 	// Compose.io error types
-	type errors struct {
+	type multiErrors struct {
 		Error map[string][]string `json:"errors,omitempty"`
 	}
-	type simpleError struct {
+	type singleError struct {
 		Error string `json:"errors"`
 	}
 
-	errs := []error{}
-	myerrors := errors{}
-
-	err := json.Unmarshal([]byte(body), &myerrors)
-	if err != nil {
-		simpleerror := simpleError{}
-		err := json.Unmarshal([]byte(body), &simpleerror)
-		if err != nil {
-			errs = append(errs, fmt.Errorf("status code %d: %s", statuscode, body))
+	multi := multiErrors{}
+	if err := json.Unmarshal([]byte(body), &multi); err != nil {
+		single := singleError{}
+		if err := json.Unmarshal([]byte(body), &single); err != nil {
+			errs = append(errs, fmt.Errorf("could not parse API response: %s", body))
 		} else {
-			errs = append(errs, fmt.Errorf("%s", simpleerror.Error))
+			errs = append(errs, fmt.Errorf("%s", single.Error))
 		}
 	} else {
-		errs = append(errs, fmt.Errorf("%v", myerrors.Error))
+		for key, value := range multi.Error {
+			errs = append(errs, fmt.Errorf("%s: %s", key, strings.Join(value, ", ")))
+		}
 	}
 	return errs
 }

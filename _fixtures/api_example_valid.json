@@ -1,0 +1,9 @@
+{
+  "_embedded": {
+      "application": "elastic_search",
+      "status": "deprecated",
+      "preferred": false,
+      "version": "2.4.0"
+    }
+  }
+}
