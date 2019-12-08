@@ -1,0 +1,31 @@
+{
+  "_embedded": {
+    "deployments": [{
+      "id": "5854017e89d50f424e000192",
+      "name": "fizz-production",
+      "type": "elastic_search",
+      "created_at": "2016-07-22T19:23:07.767Z",
+      "notes": "the first test deployment",
+      "customer_billing_code": "bill-to-test-team",
+      "_links": {
+        "compose_web_ui": {
+          "href": "https://app.compose.io/northwind/deployments/test-deployment-1{?embed}",
+          "templated": true
+        }
+      }
+    },
+    {
+      "id": "22de8c5fbdc3d1f777750492",
+      "name": "test-deployment-2",
+      "type": "redis",
+      "created_at": "2018-12-11T17:13:42.198Z",
+      "notes": "the second test deployment",
+      "_links": {
+        "compose_web_ui": {
+          "href": "https://app.compose.io/northwind/deployments/test-deployment-2{?embed}",
+          "templated": true
+        }
+      }
+    }]
+  }
+}

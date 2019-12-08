@@ -28,16 +28,15 @@ func (c *Client) GetDatabases() (Databases, error) {
 		return nil, err
 	}
 
-	type databasesResponse struct {
+	type embeddedResponse struct {
 		Embedded struct {
 			Databases Databases `json:"applications"`
 		} `json:"_embedded"`
 	}
-
-	databaseResponse := databasesResponse{}
-	if err := json.Unmarshal([]byte(body), &databaseResponse); err != nil {
+	response := embeddedResponse{}
+	if err := json.Unmarshal([]byte(body), &response); err != nil {
 		log.Errorf("could not unmarshal databases response: %#v", body)
 		return nil, err
 	}
-	return databaseResponse.Embedded.Databases, nil
+	return response.Embedded.Databases, nil
 }
