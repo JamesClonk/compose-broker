@@ -1,6 +1,6 @@
 .DEFAULT_GOAL := run
 SHELL := /bin/bash
-APP ?= compose-broker
+APP ?= $(shell basename $$(pwd))
 COMMIT_SHA = $(shell git rev-parse --short HEAD)
 
 .PHONY: help
