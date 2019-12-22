@@ -3,6 +3,7 @@ package api
 import (
 	"encoding/json"
 	"fmt"
+	"sort"
 	"time"
 
 	"github.com/JamesClonk/compose-broker/log"
@@ -25,6 +26,18 @@ type Recipe struct {
 	Embedded           struct {
 		Recipes []Recipe `json:"recipes"`
 	} `json:"_embedded"`
+}
+
+func (r Recipes) SortByCreatedAt() {
+	sort.Slice(r, func(i, j int) bool {
+		return r[j].CreatedAt.Before(r[i].CreatedAt)
+	})
+}
+
+func (r Recipes) SortByUpdatedAt() {
+	sort.Slice(r, func(i, j int) bool {
+		return r[j].UpdatedAt.Before(r[i].UpdatedAt)
+	})
 }
 
 func (c *Client) GetRecipe(id string) (*Recipe, error) {
@@ -59,5 +72,8 @@ func (c *Client) GetRecipesByDeploymentID(id string) (Recipes, error) {
 		log.Errorf("could not unmarshal recipes response: %#v", body)
 		return nil, err
 	}
-	return response.Embedded.Recipes, nil
+
+	recipes := response.Embedded.Recipes
+	recipes.SortByUpdatedAt()
+	return recipes, nil
 }

@@ -57,11 +57,23 @@ func TestAPI_GetRecipesByDeploymentID(t *testing.T) {
 	if err := json.Unmarshal([]byte(util.Body("../_fixtures/api_get_recipes.json")), &rs); err != nil {
 		t.Fatal(err)
 	}
+	assert.NotEqual(t, rs.Embedded.Recipes, recipes) // returned by being sorted by "updated_at desc"
+
+	assert.Equal(t, "Recipes::Deployment::Run", recipes[1].Template)
+	assert.Equal(t, "Recipes::Deployment::Deprovision", recipes[0].Template)
+	assert.Equal(t, "Provision", recipes[1].Name)
+	assert.Equal(t, "Deprovision", recipes[0].Name)
+	assert.Equal(t, "complete", recipes[1].Status)
+	assert.Equal(t, "waiting", recipes[0].Status)
+	assert.Equal(t, 14, recipes[1].OperationsComplete)
+	assert.Equal(t, 0, recipes[0].OperationsTotal)
+
+	recipes.SortByCreatedAt()
 	assert.Equal(t, rs.Embedded.Recipes, recipes)
-	assert.Equal(t, "Recipes::Deployment::Run", recipes[0].Template)
-	assert.Equal(t, "Recipes::Deployment::Deprovision", recipes[1].Template)
 	assert.Equal(t, "Provision", recipes[0].Name)
-	assert.Equal(t, "waiting", recipes[1].Status)
-	assert.Equal(t, 14, recipes[0].OperationsComplete)
-	assert.Equal(t, 0, recipes[1].OperationsTotal)
+	assert.Equal(t, "Deprovision", recipes[1].Name)
+
+	recipes.SortByUpdatedAt()
+	assert.Equal(t, "Provision", recipes[1].Name)
+	assert.Equal(t, "Deprovision", recipes[0].Name)
 }
