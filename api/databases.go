@@ -22,7 +22,7 @@ type Version struct {
 }
 
 func (c *Client) GetDatabases() (Databases, error) {
-	body, err := c.GetJSON("databases")
+	body, err := c.Get("databases")
 	if err != nil {
 		log.Errorf("could not get Compose.io databases: %s", err)
 		return nil, err

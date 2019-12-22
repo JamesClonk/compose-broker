@@ -113,3 +113,25 @@ func TestAPI_GetDeploymentByName_Unknown(t *testing.T) {
 	assert.Empty(t, deployment)
 	assert.Equal(t, false, getDeploymentByIDCalled) // should not be called, since deployment name could not be found
 }
+
+func TestAPI_DeleteDeploymentByID(t *testing.T) {
+	test := []util.HttpTestCase{
+		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192", 200, util.Body("../_fixtures/api_get_deployment.json"), nil},
+		util.HttpTestCase{"DELETE", "/deployments/5854017e89d50f424e000192", 202, util.Body("../_fixtures/api_delete_deployment.json"), nil},
+	}
+	apiServer := util.TestServer("deadbeef", test)
+	defer apiServer.Close()
+	c := NewClient(util.TestConfig(apiServer.URL))
+
+	recipe, err := c.DeleteDeploymentByID("5854017e89d50f424e000192")
+	if err != nil {
+		t.Fatal(err)
+	}
+	assert.Equal(t, "570bf60a70ea13000d000000", recipe.ID)
+	assert.Equal(t, "Deprovision", recipe.Name)
+	assert.Equal(t, "Recipes::Deployment::Deprovision", recipe.Template)
+	assert.Equal(t, "waiting", recipe.Status)
+	assert.Equal(t, "Running destroy_capsule on cpu.deccd8317431c28552f493a6d4aecf5d.", recipe.StatusDetail)
+	assert.Equal(t, "5854017d89d50f424e000002", recipe.AccountID)
+	assert.Equal(t, "5854017e89d50f424e000192", recipe.DeploymentID)
+}

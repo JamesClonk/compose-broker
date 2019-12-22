@@ -54,12 +54,21 @@ func (c *Client) newRequest(method, endpoint string) *gorequest.SuperAgent {
 		Retry(c.Retries, c.RetryInterval, c.RetryStatusCodes...)
 }
 
-func (c *Client) GetJSON(endpoint string) (string, error) {
+func (c *Client) Get(endpoint string) (string, error) {
+	return c.Do("GET", endpoint, 200)
+}
+
+func (c *Client) Delete(endpoint string) (string, error) {
+	return c.Do("DELETE", endpoint, 202)
+}
+
+func (c *Client) Do(method, endpoint string, code int) (string, error) {
 	c.Mutex.Lock()
 	defer c.Mutex.Unlock()
 
-	response, body, errs := c.newRequest("GET", endpoint).End()
-	if response.StatusCode != 200 {
+	response, body, errs := c.newRequest(method, endpoint).End()
+	if response.StatusCode != code {
+		errs = append(errs, fmt.Errorf("unexpected status code: %d", response.StatusCode))
 		errs = append(errs, composeErrors(body)...)
 	}
 

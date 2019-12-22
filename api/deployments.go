@@ -38,7 +38,7 @@ type Deployment struct {
 }
 
 func (c *Client) GetDeployments() (Deployments, error) {
-	body, err := c.GetJSON("deployments")
+	body, err := c.Get("deployments")
 	if err != nil {
 		log.Errorf("could not get Compose.io deployments: %s", err)
 		return nil, err
@@ -58,7 +58,7 @@ func (c *Client) GetDeployments() (Deployments, error) {
 }
 
 func (c *Client) GetDeploymentByID(id string) (*Deployment, error) {
-	body, err := c.GetJSON(fmt.Sprintf("deployments/%s", id))
+	body, err := c.Get(fmt.Sprintf("deployments/%s", id))
 	if err != nil {
 		log.Errorf("could not find Compose.io deployment %s: %s", id, err)
 		return nil, err
@@ -84,4 +84,19 @@ func (c *Client) GetDeploymentByName(name string) (*Deployment, error) {
 		}
 	}
 	return nil, fmt.Errorf("could not find Compose.io deployment %s", name)
+}
+
+func (c *Client) DeleteDeploymentByID(id string) (*Recipe, error) {
+	body, err := c.Delete(fmt.Sprintf("deployments/%s", id))
+	if err != nil {
+		log.Errorf("could not delete Compose.io deployment %s: %s", id, err)
+		return nil, err
+	}
+
+	recipe := &Recipe{}
+	if err := json.Unmarshal([]byte(body), recipe); err != nil {
+		log.Errorf("could not unmarshal recipe response: %#v", body)
+		return nil, err
+	}
+	return recipe, nil
 }
