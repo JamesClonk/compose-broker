@@ -1,7 +1,11 @@
 package api
 
 import (
+	"encoding/json"
+	"fmt"
 	"time"
+
+	"github.com/JamesClonk/compose-broker/log"
 )
 
 type Recipes []Recipe
@@ -9,7 +13,7 @@ type Recipe struct {
 	ID                 string    `json:"id"`
 	Name               string    `json:"name"`
 	Template           string    `json:"template"`
-	Status             string    `json:"status"`
+	Status             string    `json:"status"` // can be running, waiting, complete or failed
 	StatusDetail       string    `json:"status_detail"`
 	AccountID          string    `json:"account_id"`
 	DeploymentID       string    `json:"deployment_id"`
@@ -21,4 +25,39 @@ type Recipe struct {
 	Embedded           struct {
 		Recipes []Recipe `json:"recipes"`
 	} `json:"_embedded"`
+}
+
+func (c *Client) GetRecipe(id string) (*Recipe, error) {
+	body, err := c.Get(fmt.Sprintf("recipes/%s", id))
+	if err != nil {
+		log.Errorf("could not get Compose.io recipe %s: %s", id, err)
+		return nil, err
+	}
+
+	recipe := &Recipe{}
+	if err := json.Unmarshal([]byte(body), recipe); err != nil {
+		log.Errorf("could not unmarshal recipe response: %#v", body)
+		return nil, err
+	}
+	return recipe, nil
+}
+
+func (c *Client) GetRecipesByDeploymentID(id string) (Recipes, error) {
+	body, err := c.Get(fmt.Sprintf("deployments/%s/recipes", id))
+	if err != nil {
+		log.Errorf("could not get Compose.io recipes for deployment %s: %s", id, err)
+		return nil, err
+	}
+
+	type embeddedResponse struct {
+		Embedded struct {
+			Recipes Recipes `json:"recipes"`
+		} `json:"_embedded"`
+	}
+	response := embeddedResponse{}
+	if err := json.Unmarshal([]byte(body), &response); err != nil {
+		log.Errorf("could not unmarshal recipes response: %#v", body)
+		return nil, err
+	}
+	return response.Embedded.Recipes, nil
 }

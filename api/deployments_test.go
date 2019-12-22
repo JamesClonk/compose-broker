@@ -37,6 +37,10 @@ func TestAPI_GetDeployments(t *testing.T) {
 		t.Fatal(err)
 	}
 	assert.Equal(t, ds.Embedded.Deployments, dbs)
+	assert.Equal(t, "fizz-production", dbs[0].Name)
+	assert.Equal(t, "bill-to-test-team", dbs[0].CustomerBillingCode)
+	assert.Equal(t, "https://app.compose.io/northwind/deployments/test-deployment-2{?embed}", dbs[1].Links.ComposeWebUI.HREF)
+	assert.Equal(t, "redis", dbs[1].Type)
 }
 
 func TestAPI_GetDeploymentByID(t *testing.T) {
