@@ -55,18 +55,26 @@ func (c *Client) newRequest(method, endpoint string) *gorequest.SuperAgent {
 }
 
 func (c *Client) Get(endpoint string) (string, error) {
-	return c.Do("GET", endpoint, 200)
+	return c.Do("GET", endpoint, "", 200)
+}
+
+func (c *Client) Post(endpoint, payload string) (string, error) {
+	return c.Do("POST", endpoint, payload, 200)
 }
 
 func (c *Client) Delete(endpoint string) (string, error) {
-	return c.Do("DELETE", endpoint, 202)
+	return c.Do("DELETE", endpoint, "", 202)
 }
 
-func (c *Client) Do(method, endpoint string, code int) (string, error) {
+func (c *Client) Do(method, endpoint, payload string, code int) (string, error) {
 	c.Mutex.Lock()
 	defer c.Mutex.Unlock()
 
-	response, body, errs := c.newRequest(method, endpoint).End()
+	request := c.newRequest(method, endpoint)
+	if method == "POST" {
+		request = request.Send(payload)
+	}
+	response, body, errs := request.End()
 	if response.StatusCode != code {
 		errs = append(errs, fmt.Errorf("unexpected status code: %d", response.StatusCode))
 		errs = append(errs, composeErrors(body)...)

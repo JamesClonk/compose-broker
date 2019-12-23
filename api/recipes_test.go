@@ -35,7 +35,7 @@ func TestAPI_GetRecipe(t *testing.T) {
 	assert.Equal(t, "5854017e89d50f424e000192", recipe.DeploymentID)
 }
 
-func TestAPI_GetRecipesByDeploymentID(t *testing.T) {
+func TestAPI_GetRecipes(t *testing.T) {
 	test := []util.HttpTestCase{
 		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192/recipes", 200, util.Body("../_fixtures/api_get_recipes.json"), nil},
 	}
@@ -43,7 +43,7 @@ func TestAPI_GetRecipesByDeploymentID(t *testing.T) {
 	defer apiServer.Close()
 	c := NewClient(util.TestConfig(apiServer.URL))
 
-	recipes, err := c.GetRecipesByDeploymentID("5854017e89d50f424e000192")
+	recipes, err := c.GetRecipes("5854017e89d50f424e000192")
 	if err != nil {
 		t.Fatal(err)
 	}

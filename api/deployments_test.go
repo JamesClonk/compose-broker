@@ -43,7 +43,7 @@ func TestAPI_GetDeployments(t *testing.T) {
 	assert.Equal(t, "redis", dbs[1].Type)
 }
 
-func TestAPI_GetDeploymentByID(t *testing.T) {
+func TestAPI_GetDeployment(t *testing.T) {
 	test := []util.HttpTestCase{
 		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192", 200, util.Body("../_fixtures/api_get_deployment.json"), nil},
 	}
@@ -51,7 +51,7 @@ func TestAPI_GetDeploymentByID(t *testing.T) {
 	defer apiServer.Close()
 	c := NewClient(util.TestConfig(apiServer.URL))
 
-	deployment, err := c.GetDeploymentByID("5854017e89d50f424e000192")
+	deployment, err := c.GetDeployment("5854017e89d50f424e000192")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -118,7 +118,7 @@ func TestAPI_GetDeploymentByName_Unknown(t *testing.T) {
 	assert.Equal(t, false, getDeploymentByIDCalled) // should not be called, since deployment name could not be found
 }
 
-func TestAPI_DeleteDeploymentByID(t *testing.T) {
+func TestAPI_DeleteDeployment(t *testing.T) {
 	test := []util.HttpTestCase{
 		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192", 200, util.Body("../_fixtures/api_get_deployment.json"), nil},
 		util.HttpTestCase{"DELETE", "/deployments/5854017e89d50f424e000192", 202, util.Body("../_fixtures/api_delete_deployment.json"), nil},
@@ -127,7 +127,7 @@ func TestAPI_DeleteDeploymentByID(t *testing.T) {
 	defer apiServer.Close()
 	c := NewClient(util.TestConfig(apiServer.URL))
 
-	recipe, err := c.DeleteDeploymentByID("5854017e89d50f424e000192")
+	recipe, err := c.DeleteDeployment("5854017e89d50f424e000192")
 	if err != nil {
 		t.Fatal(err)
 	}

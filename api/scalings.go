@@ -18,10 +18,10 @@ type Scaling struct {
 	UnitType           string `json:"unit_type"`
 }
 
-func (c *Client) GetScalingByDeploymentID(id string) (*Scaling, error) {
-	body, err := c.Get(fmt.Sprintf("deployments/%s/scalings", id))
+func (c *Client) GetScaling(deploymentID string) (*Scaling, error) {
+	body, err := c.Get(fmt.Sprintf("deployments/%s/scalings", deploymentID))
 	if err != nil {
-		log.Errorf("could not get Compose.io scaling for deployment %s: %s", id, err)
+		log.Errorf("could not get Compose.io scaling for deployment %s: %s", deploymentID, err)
 		return nil, err
 	}
 
@@ -31,4 +31,19 @@ func (c *Client) GetScalingByDeploymentID(id string) (*Scaling, error) {
 		return nil, err
 	}
 	return scaling, nil
+}
+
+func (c *Client) UpdateScaling(deploymentID string, units int) (*Recipe, error) {
+	body, err := c.Post(fmt.Sprintf("deployments/%s/scalings", deploymentID), fmt.Sprintf(`{"deployment":{"units":%d}}`, units))
+	if err != nil {
+		log.Errorf("could not update Compose.io scaling for deployment %s to %d units: %s", deploymentID, units, err)
+		return nil, err
+	}
+
+	recipe := &Recipe{}
+	if err := json.Unmarshal([]byte(body), recipe); err != nil {
+		log.Errorf("could not unmarshal recipe response: %#v", body)
+		return nil, err
+	}
+	return recipe, nil
 }

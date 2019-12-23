@@ -57,10 +57,10 @@ func (c *Client) GetDeployments() (Deployments, error) {
 	return response.Embedded.Deployments, nil
 }
 
-func (c *Client) GetDeploymentByID(id string) (*Deployment, error) {
-	body, err := c.Get(fmt.Sprintf("deployments/%s", id))
+func (c *Client) GetDeployment(deploymentID string) (*Deployment, error) {
+	body, err := c.Get(fmt.Sprintf("deployments/%s", deploymentID))
 	if err != nil {
-		log.Errorf("could not find Compose.io deployment %s: %s", id, err)
+		log.Errorf("could not find Compose.io deployment %s: %s", deploymentID, err)
 		return nil, err
 	}
 
@@ -80,16 +80,16 @@ func (c *Client) GetDeploymentByName(name string) (*Deployment, error) {
 
 	for _, deployment := range deployments {
 		if deployment.Name == name {
-			return c.GetDeploymentByID(deployment.ID)
+			return c.GetDeployment(deployment.ID)
 		}
 	}
 	return nil, fmt.Errorf("could not find Compose.io deployment %s", name)
 }
 
-func (c *Client) DeleteDeploymentByID(id string) (*Recipe, error) {
-	body, err := c.Delete(fmt.Sprintf("deployments/%s", id))
+func (c *Client) DeleteDeployment(deploymentID string) (*Recipe, error) {
+	body, err := c.Delete(fmt.Sprintf("deployments/%s", deploymentID))
 	if err != nil {
-		log.Errorf("could not delete Compose.io deployment %s: %s", id, err)
+		log.Errorf("could not delete Compose.io deployment %s: %s", deploymentID, err)
 		return nil, err
 	}
 

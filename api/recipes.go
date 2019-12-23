@@ -40,10 +40,10 @@ func (r Recipes) SortByUpdatedAt() {
 	})
 }
 
-func (c *Client) GetRecipe(id string) (*Recipe, error) {
-	body, err := c.Get(fmt.Sprintf("recipes/%s", id))
+func (c *Client) GetRecipe(recipeID string) (*Recipe, error) {
+	body, err := c.Get(fmt.Sprintf("recipes/%s", recipeID))
 	if err != nil {
-		log.Errorf("could not get Compose.io recipe %s: %s", id, err)
+		log.Errorf("could not get Compose.io recipe %s: %s", recipeID, err)
 		return nil, err
 	}
 
@@ -55,10 +55,10 @@ func (c *Client) GetRecipe(id string) (*Recipe, error) {
 	return recipe, nil
 }
 
-func (c *Client) GetRecipesByDeploymentID(id string) (Recipes, error) {
-	body, err := c.Get(fmt.Sprintf("deployments/%s/recipes", id))
+func (c *Client) GetRecipes(deploymentID string) (Recipes, error) {
+	body, err := c.Get(fmt.Sprintf("deployments/%s/recipes", deploymentID))
 	if err != nil {
-		log.Errorf("could not get Compose.io recipes for deployment %s: %s", id, err)
+		log.Errorf("could not get Compose.io recipes for deployment %s: %s", deploymentID, err)
 		return nil, err
 	}
 
