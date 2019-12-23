@@ -2,7 +2,7 @@
   "_embedded": {
     "deployments": [{
       "id": "5854017e89d50f424e000192",
-      "name": "fizz-production",
+      "name": "8dcdf609-36c9-4b22-bb16-d97e48c50f26",
       "type": "elastic_search",
       "created_at": "2016-07-22T19:23:07.767Z",
       "notes": "the first test deployment",

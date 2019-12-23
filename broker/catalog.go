@@ -123,6 +123,8 @@ func (b *Broker) Catalog(rw http.ResponseWriter, req *http.Request) {
 	databases, err := b.Client.GetDatabases()
 	if err != nil {
 		log.Errorf("could not filter services for catalog: %v", err)
+		b.Error(rw, req, 500, "UnknownError", "Could not filter services for catalog")
+		return
 	}
 
 	filteredServices := make([]Service, 0)

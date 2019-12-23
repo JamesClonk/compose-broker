@@ -78,7 +78,7 @@ func TestAPI_GetDeployments(t *testing.T) {
 		t.Fatal(err)
 	}
 	assert.Equal(t, ds.Embedded.Deployments, dbs)
-	assert.Equal(t, "fizz-production", dbs[0].Name)
+	assert.Equal(t, "8dcdf609-36c9-4b22-bb16-d97e48c50f26", dbs[0].Name)
 	assert.Equal(t, "bill-to-test-team", dbs[0].CustomerBillingCode)
 	assert.Equal(t, "https://app.compose.io/northwind/deployments/test-deployment-2{?embed}", dbs[1].Links.ComposeWebUI.HREF)
 	assert.Equal(t, "redis", dbs[1].Type)
@@ -98,7 +98,7 @@ func TestAPI_GetDeployment(t *testing.T) {
 	}
 	assert.Equal(t, "5854017e89d50f424e000192", deployment.ID)
 	assert.Equal(t, "5854017d89d50f424e000002", deployment.AccountID)
-	assert.Equal(t, "fizz-production", deployment.Name)
+	assert.Equal(t, "8dcdf609-36c9-4b22-bb16-d97e48c50f26", deployment.Name)
 	assert.Equal(t, "postgresql", deployment.Type)
 	assert.Equal(t, "the production fizz db", deployment.Notes)
 	assert.Equal(t, "bill-to-fizz", deployment.CustomerBillingCode)
@@ -122,14 +122,14 @@ func TestAPI_GetDeploymentByName(t *testing.T) {
 	defer apiServer.Close()
 	c := NewClient(util.TestConfig(apiServer.URL))
 
-	deployment, err := c.GetDeploymentByName("fizz-production")
+	deployment, err := c.GetDeploymentByName("8dcdf609-36c9-4b22-bb16-d97e48c50f26")
 	if err != nil {
 		t.Fatal(err)
 	}
 	assert.Equal(t, true, getDeploymentByIDCalled) // should be called to get deployment details
 	assert.Equal(t, "5854017e89d50f424e000192", deployment.ID)
 	assert.Equal(t, "5854017d89d50f424e000002", deployment.AccountID)
-	assert.Equal(t, "fizz-production", deployment.Name)
+	assert.Equal(t, "8dcdf609-36c9-4b22-bb16-d97e48c50f26", deployment.Name)
 	assert.Equal(t, "postgresql", deployment.Type)
 	assert.Equal(t, "the production fizz db", deployment.Notes)
 	assert.Equal(t, "bill-to-fizz", deployment.CustomerBillingCode)
