@@ -48,12 +48,11 @@ func TestAPI_GetRecipes(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	type deployments struct {
+	rs := struct {
 		Embedded struct {
 			Recipes Recipes `json:"recipes"`
 		} `json:"_embedded"`
-	}
-	rs := deployments{}
+	}{}
 	if err := json.Unmarshal([]byte(util.Body("../_fixtures/api_get_recipes.json")), &rs); err != nil {
 		t.Fatal(err)
 	}

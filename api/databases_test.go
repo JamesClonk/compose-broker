@@ -27,12 +27,11 @@ func TestAPI_GetDatabases(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	type databases struct {
+	ds := struct {
 		Embedded struct {
 			Databases Databases `json:"applications"`
 		} `json:"_embedded"`
-	}
-	ds := databases{}
+	}{}
 	if err := json.Unmarshal([]byte(util.Body("../_fixtures/api_get_databases.json")), &ds); err != nil {
 		t.Fatal(err)
 	}

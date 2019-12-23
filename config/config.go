@@ -26,7 +26,6 @@ type API struct {
 	URL               string
 	Token             string
 	DefaultDatacenter string
-	DefaultWhitelist  string
 }
 
 func loadConfig() {
@@ -43,7 +42,6 @@ func loadConfig() {
 			URL:               strings.TrimSuffix(env.Get("COMPOSE_API_URL", "https://api.compose.io/2016-07"), "/"),
 			Token:             env.MustGet("COMPOSE_API_TOKEN"),
 			DefaultDatacenter: env.Get("COMPOSE_API_DEFAULT_DATACENTER", "aws:eu-central-1"),
-			DefaultWhitelist:  env.Get("COMPOSE_API_DEFAULT_WHITELIST", ""),
 		},
 	}
 }

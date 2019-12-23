@@ -19,6 +19,7 @@ type Deployment struct {
 	ClusterID           string    `json:"cluster_id"`
 	Version             string    `json:"version"`
 	CACertificateBase64 string    `json:"ca_certificate_base64"`
+	ProvisionRecipeID   string    `json:"provision_recipe_id"`
 	CreatedAt           time.Time `json:"created_at"`
 	ConnectionStrings   struct {
 		Direct []string `json:"direct"`
@@ -27,7 +28,6 @@ type Deployment struct {
 		SSH    []string `json:"ssh"`
 		Health []string `json:"health"`
 		Admin  []string `json:"admin"`
-		Misc   []string `json:"misc"`
 	} `json:"connection_strings"`
 	Links struct {
 		ComposeWebUI struct {
@@ -35,6 +35,50 @@ type Deployment struct {
 			Templated bool   `json:"templated"`
 		} `json:"compose_web_ui"`
 	} `json:"_links"`
+}
+type NewDeployment struct {
+	Name       string `json:"name"`
+	AccountID  string `json:"account_id"`
+	Datacenter string `json:"datacenter"`
+	Type       string `json:"type"`
+	Version    string `json:"version,omitempty"`
+	Units      int    `json:"units,omitempty"`
+	CacheMode  bool   `json:"cache_mode,omitempty"`
+	Notes      string `json:"notes,omitempty"`
+}
+
+func (c *Client) CreateDeployment(newDeployment NewDeployment) (*Deployment, error) {
+	// set defaults
+	if len(newDeployment.Datacenter) == 0 {
+		newDeployment.Datacenter = c.Config.DefaultDatacenter
+	}
+	if newDeployment.Units < 1 {
+		newDeployment.Units = 1
+	}
+
+	data := struct {
+		Deployment NewDeployment `json:"deployment"`
+	}{
+		Deployment: newDeployment,
+	}
+	payload, err := json.Marshal(data)
+	if err != nil {
+		log.Errorf("could not marshal deployment payload: %#v", newDeployment)
+		return nil, err
+	}
+
+	body, err := c.PostAsync("deployments", string(payload))
+	if err != nil {
+		log.Errorf("could not create Compose.io deployment: %s", err)
+		return nil, err
+	}
+
+	deployment := &Deployment{}
+	if err := json.Unmarshal([]byte(body), deployment); err != nil {
+		log.Errorf("could not unmarshal deployment response: %#v", body)
+		return nil, err
+	}
+	return deployment, nil
 }
 
 func (c *Client) GetDeployments() (Deployments, error) {
@@ -44,12 +88,11 @@ func (c *Client) GetDeployments() (Deployments, error) {
 		return nil, err
 	}
 
-	type embeddedResponse struct {
+	response := struct {
 		Embedded struct {
 			Deployments Deployments `json:"deployments"`
 		} `json:"_embedded"`
-	}
-	response := embeddedResponse{}
+	}{}
 	if err := json.Unmarshal([]byte(body), &response); err != nil {
 		log.Errorf("could not unmarshal deployments response: %#v", body)
 		return nil, err

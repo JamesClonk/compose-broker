@@ -14,6 +14,48 @@ func init() {
 	log.SetOutput(ioutil.Discard)
 }
 
+func TestAPI_CreateDeployment(t *testing.T) {
+	test := []util.HttpTestCase{
+		util.HttpTestCase{"POST", "/deployments", 202, util.Body("../_fixtures/api_create_deployment.json"), func(body string) {
+			assert.Contains(t, body, `"name":"fizz-production"`)
+			assert.Contains(t, body, `"account_id":"52a50cb96230650018000000"`)
+			assert.Contains(t, body, `"type":"postgresql"`)
+			assert.Contains(t, body, `"datacenter":"gce:europe-west1"`)
+			assert.Contains(t, body, `"units":1`)
+			assert.NotContains(t, body, `version`)
+			assert.NotContains(t, body, `cache_mode`)
+			assert.Contains(t, body, `"notes":"blubb"`)
+		}},
+	}
+	apiServer := util.TestServer("deadbeef", test)
+	defer apiServer.Close()
+	c := NewClient(util.TestConfig(apiServer.URL))
+
+	newDeployment := NewDeployment{
+		Name:      "fizz-production",
+		AccountID: "52a50cb96230650018000000",
+		Type:      "postgresql",
+		Units:     0,
+		Notes:     "blubb",
+	}
+	deployment, err := c.CreateDeployment(newDeployment)
+	if err != nil {
+		t.Fatal(err)
+	}
+	assert.Equal(t, "59a6b3a5f32fb6001001ae6c", deployment.ID)
+	assert.Equal(t, "52a50cb96230650018000000", deployment.AccountID)
+	assert.Equal(t, "fizz-production", deployment.Name)
+	assert.Equal(t, "postgresql", deployment.Type)
+	assert.Equal(t, "", deployment.Notes)
+	assert.Equal(t, "", deployment.ClusterID)
+	assert.Equal(t, "9.6.3", deployment.Version)
+	assert.Equal(t, "59a6b3a5f32fb6001001ae6b", deployment.ProvisionRecipeID)
+	assert.Equal(t, "postgres://admin:XXXXX@aws-eu-west-1-portal.8.dblayer.com:17000/compose", deployment.ConnectionStrings.Direct[0])
+	assert.Equal(t, "postgres://admin:XXXXX@aws-eu-west-1-portal.9.dblayer.com:17000/compose", deployment.ConnectionStrings.Direct[1])
+	assert.Equal(t, "psql \"sslmode=require host=aws-eu-west-1-portal.8.dblayer.com port=17000 dbname=compose user=admin\"", deployment.ConnectionStrings.CLI[0])
+	assert.Equal(t, "https://app.compose.io/compose-3/deployments/fizz-production{?embed}", deployment.Links.ComposeWebUI.HREF)
+}
+
 func TestAPI_GetDeployments(t *testing.T) {
 	test := []util.HttpTestCase{
 		util.HttpTestCase{"GET", "/deployments", 200, util.Body("../_fixtures/api_get_deployments.json"), nil},
@@ -27,12 +69,11 @@ func TestAPI_GetDeployments(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	type deployments struct {
+	ds := struct {
 		Embedded struct {
 			Deployments Deployments `json:"deployments"`
 		} `json:"_embedded"`
-	}
-	ds := deployments{}
+	}{}
 	if err := json.Unmarshal([]byte(util.Body("../_fixtures/api_get_deployments.json")), &ds); err != nil {
 		t.Fatal(err)
 	}

@@ -62,6 +62,10 @@ func (c *Client) Post(endpoint, payload string) (string, error) {
 	return c.Do("POST", endpoint, payload, 200)
 }
 
+func (c *Client) PostAsync(endpoint, payload string) (string, error) {
+	return c.Do("POST", endpoint, payload, 202)
+}
+
 func (c *Client) Delete(endpoint string) (string, error) {
 	return c.Do("DELETE", endpoint, "", 202)
 }

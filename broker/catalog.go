@@ -49,6 +49,8 @@ type ServicePlan struct {
 		Bullets          []string `json:"bullets" yaml:"bullets"`
 		HighAvailability bool     `json:"highAvailability" yaml:"highAvailability"`
 		Units            int      `json:"units" yaml:"units"`
+		CacheMode        bool     `json:"cache_mode,omitempty" yaml:"cache_mode,omitempty"`
+		Version          string   `json:"version,omitempty" yaml:"version,omitempty"`
 	} `json:"metadata" yaml:"metadata"`
 }
 
@@ -102,6 +104,9 @@ func LoadServiceCatalog(filename string) *ServiceCatalog {
 				if len(plan.Name) == 0 {
 					log.Errorf("service #%d, plan #%d: name is missing in catalog %s", sx, px, filename)
 					log.Fatalln(catalog)
+				}
+				if plan.Metadata.Units == 0 {
+					catalog.Services[sx].Plans[px].Metadata.Units = 1
 				}
 			}
 		}

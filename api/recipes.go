@@ -62,12 +62,11 @@ func (c *Client) GetRecipes(deploymentID string) (Recipes, error) {
 		return nil, err
 	}
 
-	type embeddedResponse struct {
+	response := struct {
 		Embedded struct {
 			Recipes Recipes `json:"recipes"`
 		} `json:"_embedded"`
-	}
-	response := embeddedResponse{}
+	}{}
 	if err := json.Unmarshal([]byte(body), &response); err != nil {
 		log.Errorf("could not unmarshal recipes response: %#v", body)
 		return nil, err

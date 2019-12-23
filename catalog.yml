@@ -33,6 +33,25 @@ services:
       - 256 MB RAM
       highAvailability: true
       units: 1
+  - id: ae2bda53-fe15-4335-9422-774aae3e7e32
+    name: cache
+    description: Redis
+    free: false
+    bindable: true
+    metadata:
+      displayName: Redis
+      imageUrl: https://compose.com/assets/icd-icons/redis-0db857f1c0f8cb148d60407f9952c8c12e3a88f16f798a352117e5522ea234b6.svg
+      costs:
+      - amount:
+          usd: 31.50
+        unit: Monthly
+      bullets:
+      - 512 MB Storage
+      - 512 MB RAM
+      highAvailability: true
+      units: 2
+      cache_mode: true
+      version: "4.0.14"
 
 - id: 9b4ee86b-3876-469f-a531-062e71bc5859
   name: postgresql

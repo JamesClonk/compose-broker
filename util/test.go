@@ -22,7 +22,6 @@ func TestConfig(apiURL string) *config.Config {
 			URL:               apiURL,
 			Token:             "deadbeef",
 			DefaultDatacenter: "gce:europe-west1",
-			DefaultWhitelist:  "0.0.0.0/0",
 		},
 	}
 }
