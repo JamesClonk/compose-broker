@@ -1,0 +1,11 @@
+{
+  "_embedded":{
+    "accounts":[
+      {
+        "id": "52a50cb96230650018000000",
+        "name": "Northwind",
+        "slug": "northwind"
+      }
+    ]
+  }
+}
