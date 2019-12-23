@@ -91,3 +91,58 @@ func (b *Broker) FetchInstance(rw http.ResponseWriter, req *http.Request) {
 	}
 	b.write(rw, req, 200, fetchResponse)
 }
+
+func (b *Broker) DeprovisionInstance(rw http.ResponseWriter, req *http.Request) {
+	// verify request is async, must have query param "?accepts_incomplete=true"
+	incomplete := req.URL.Query().Get("accepts_incomplete")
+	if incomplete != "true" {
+		b.Error(rw, req, 422, "AsyncRequired", "Service instance deprovisioning requires an asynchronous operation")
+		return
+	}
+
+	vars := mux.Vars(req)
+	instanceID := vars["instanceID"]
+
+	instance, err := b.Client.GetDeploymentByName(instanceID)
+	if err != nil || instance.Name != instanceID {
+		log.Errorf("could not find service instance: %v", err)
+		b.Error(rw, req, 410, "MissingServiceInstance", "The service instance does not exist")
+		return
+	}
+
+	// return concurrency error if there is still/already another recipe ongoing for this deployment
+	recipes, err := b.Client.GetRecipes(instance.ID)
+	if err != nil {
+		log.Warnf("could not fetch any service instance recipes: %v", err)
+	}
+	if len(recipes) > 0 {
+		recipes.SortByUpdatedAt()
+		if recipes[0].Status == "running" ||
+			recipes[0].Status == "waiting" {
+			b.Error(rw, req, 422, "ConcurrencyError", "The service instance is being updated")
+			return
+		}
+	}
+
+	// deprovision service instance
+	recipe, err := b.Client.DeleteDeployment(instance.ID)
+	if err != nil {
+		log.Errorf("could not delete service instance: %v", err)
+		b.Error(rw, req, 500, "UnknownError", "Could not delete service instance")
+		return
+	}
+
+	if len(recipe.ID) > 0 {
+		if state, err := b.Client.GetRecipe(recipe.ID); err == nil {
+			if state.Status == "complete" {
+				b.write(rw, req, 200, map[string]string{}) // deletion already done
+				return
+			} else if state.Status == "failed" {
+				b.Error(rw, req, 500, "DeprovisionFailure", "Could not delete service instance") // deletion immediately failed
+				return
+			}
+		}
+	}
+
+	b.write(rw, req, 202, map[string]string{}) // default async response
+}

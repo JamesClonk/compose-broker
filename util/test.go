@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"strings"
+	"time"
 
 	"github.com/JamesClonk/compose-broker/config"
 )
@@ -22,6 +23,8 @@ func TestConfig(apiURL string) *config.Config {
 			URL:               apiURL,
 			Token:             "deadbeef",
 			DefaultDatacenter: "gce:europe-west1",
+			Retries:           1,
+			RetryInterval:     10 * time.Millisecond,
 		},
 	}
 }

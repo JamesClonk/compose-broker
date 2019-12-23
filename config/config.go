@@ -4,6 +4,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/JamesClonk/compose-broker/env"
 )
@@ -26,6 +27,8 @@ type API struct {
 	URL               string
 	Token             string
 	DefaultDatacenter string
+	Retries           int
+	RetryInterval     time.Duration
 }
 
 func loadConfig() {
@@ -42,6 +45,8 @@ func loadConfig() {
 			URL:               strings.TrimSuffix(env.Get("COMPOSE_API_URL", "https://api.compose.io/2016-07"), "/"),
 			Token:             env.MustGet("COMPOSE_API_TOKEN"),
 			DefaultDatacenter: env.Get("COMPOSE_API_DEFAULT_DATACENTER", "aws:eu-central-1"),
+			Retries:           3,
+			RetryInterval:     3 * time.Second,
 		},
 	}
 }

@@ -29,8 +29,8 @@ func NewClient(c *config.Config) *Client {
 		Config:        c.API,
 		Mutex:         &sync.Mutex{},
 		HTTPClient:    util.NewHttpClient(c),
-		Retries:       3,
-		RetryInterval: 3 * time.Second,
+		Retries:       c.API.Retries,
+		RetryInterval: c.API.RetryInterval,
 		RetryStatusCodes: []int{
 			http.StatusRequestTimeout,
 			http.StatusTooManyRequests,

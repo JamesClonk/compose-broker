@@ -3,7 +3,6 @@ package api
 import (
 	"io/ioutil"
 	"testing"
-	"time"
 
 	"github.com/JamesClonk/compose-broker/log"
 	"github.com/JamesClonk/compose-broker/util"
@@ -81,8 +80,6 @@ func TestAPI_Get_InvalidResponse(t *testing.T) {
 	apiServer := util.TestServer("deadbeef", test)
 	defer apiServer.Close()
 	c := NewClient(util.TestConfig(apiServer.URL))
-	c.Retries = 1
-	c.RetryInterval = 10 * time.Millisecond
 
 	_, err := c.Get("api")
 	assert.Error(t, err)
@@ -96,8 +93,6 @@ func TestAPI_Get_ErrorResponse(t *testing.T) {
 	apiServer := util.TestServer("deadbeef", test)
 	defer apiServer.Close()
 	c := NewClient(util.TestConfig(apiServer.URL))
-	c.Retries = 1
-	c.RetryInterval = 10 * time.Millisecond
 
 	_, err := c.Get("api")
 	assert.Error(t, err)
@@ -111,8 +106,6 @@ func TestAPI_Get_MultipleErrorsResponse(t *testing.T) {
 	apiServer := util.TestServer("deadbeef", test)
 	defer apiServer.Close()
 	c := NewClient(util.TestConfig(apiServer.URL))
-	c.Retries = 1
-	c.RetryInterval = 10 * time.Millisecond
 
 	_, err := c.Get("api")
 	assert.Error(t, err)
