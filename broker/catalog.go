@@ -82,6 +82,19 @@ func LoadServiceCatalog(filename string) *ServiceCatalog {
 				log.Errorf("service #%d: name is missing in catalog %s", sx, filename)
 				log.Fatalln(catalog)
 			}
+
+			// check for duplicates
+			for s := range catalog.Services {
+				if s != sx && catalog.Services[s].ID == service.ID {
+					log.Errorf("service duplicate found: %s", service.ID)
+					log.Fatalln(catalog)
+				}
+				if s != sx && catalog.Services[s].Name == service.Name {
+					log.Errorf("service duplicate found: %s", service.Name)
+					log.Fatalln(catalog)
+				}
+			}
+
 			// displayName
 			if len(service.Metadata.DisplayName) == 0 {
 				catalog.Services[sx].Metadata.DisplayName = service.Name
@@ -105,7 +118,7 @@ func LoadServiceCatalog(filename string) *ServiceCatalog {
 					log.Errorf("service #%d, plan #%d: name is missing in catalog %s", sx, px, filename)
 					log.Fatalln(catalog)
 				}
-				if plan.Metadata.Units == 0 {
+				if plan.Metadata.Units < 1 {
 					catalog.Services[sx].Plans[px].Metadata.Units = 1
 				}
 			}

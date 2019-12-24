@@ -1,6 +1,8 @@
 package broker
 
 import (
+	"bytes"
+	"encoding/json"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
@@ -55,7 +57,7 @@ func TestBroker_FetchServiceInstance_NotFound(t *testing.T) {
 	r.ServeHTTP(rec, req)
 
 	assert.Equal(t, 404, rec.Code)
-	assert.Contains(t, rec.Body.String(), `"error": "ServiceInstanceNotFound"`)
+	assert.Contains(t, rec.Body.String(), `"error": "MissingServiceInstance"`)
 	assert.Contains(t, rec.Body.String(), `"description": "The service instance does not exist"`)
 }
 
@@ -77,7 +79,7 @@ func TestBroker_FetchServiceInstance_RecipesNotFound(t *testing.T) {
 	r.ServeHTTP(rec, req)
 
 	assert.Equal(t, 404, rec.Code)
-	assert.Contains(t, rec.Body.String(), `"error": "RecipesNotFound"`)
+	assert.Contains(t, rec.Body.String(), `"error": "MissingRecipes"`)
 	assert.Contains(t, rec.Body.String(), `"description": "The service instance recipes could not be found"`)
 }
 
@@ -100,7 +102,7 @@ func TestBroker_FetchServiceInstance_ScalingsNotFound(t *testing.T) {
 	r.ServeHTTP(rec, req)
 
 	assert.Equal(t, 404, rec.Code)
-	assert.Contains(t, rec.Body.String(), `"error": "ScalingParametersNotFound"`)
+	assert.Contains(t, rec.Body.String(), `"error": "MissingScalingParameters"`)
 	assert.Contains(t, rec.Body.String(), `"description": "The service instance scaling parameters do not exist"`)
 }
 
@@ -148,6 +150,360 @@ func TestBroker_FetchServiceInstance_ConcurrencyError404(t *testing.T) {
 	assert.Equal(t, 404, rec.Code)
 	assert.Contains(t, rec.Body.String(), `"error": "ConcurrencyError"`)
 	assert.Contains(t, rec.Body.String(), `"description": "The service instance provisioning is still in progress"`)
+}
+
+func TestBroker_UpdateServiceInstance(t *testing.T) {
+	test := []util.HttpTestCase{
+		util.HttpTestCase{"GET", "/deployments", 200, util.Body("../_fixtures/api_get_deployments.json"), nil},
+		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192", 200, util.Body("../_fixtures/api_get_deployment.json"), nil},
+		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192/scalings", 200, util.Body("../_fixtures/api_get_scaling.json"), nil},
+		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192/recipes", 200, util.Body("../_fixtures/api_get_recipes_for_service_update.json"), nil},
+		util.HttpTestCase{"POST", "/deployments/5854017e89d50f424e000192/scalings", 200, util.Body("../_fixtures/api_update_scaling.json"), func(body string) {
+			assert.Contains(t, body, `{"deployment":{"units":1}}`)
+		}},
+	}
+	apiServer := util.TestServer("deadbeef", test)
+	defer apiServer.Close()
+	r := NewRouter(util.TestConfig(apiServer.URL))
+
+	update := ServiceInstanceUpdate{
+		ServiceID: "9b4ee86b-3876-469f-a531-062e71bc5859",
+		PlanID:    "d6222855-17c6-448c-885a-e9d931cd221b",
+	}
+	data, _ := json.MarshalIndent(update, "", "  ")
+
+	rec := httptest.NewRecorder()
+	req, err := http.NewRequest("PATCH", "/v2/service_instances/8dcdf609-36c9-4b22-bb16-d97e48c50f26?accepts_incomplete=true", bytes.NewBuffer(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.SetBasicAuth("broker", "pw")
+	r.ServeHTTP(rec, req)
+
+	assert.Equal(t, 202, rec.Code)
+	assert.Equal(t, util.Body("../_fixtures/broker_update_service_instance.json"), rec.Body.String())
+}
+
+func TestBroker_UpdateServiceInstance_NoUpdate(t *testing.T) {
+	test := []util.HttpTestCase{
+		util.HttpTestCase{"GET", "/deployments", 200, util.Body("../_fixtures/api_get_deployments.json"), nil},
+		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192", 200, util.Body("../_fixtures/api_get_deployment.json"), nil},
+		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192/scalings", 200, util.Body("../_fixtures/api_get_scaling.json"), nil},
+	}
+	apiServer := util.TestServer("deadbeef", test)
+	defer apiServer.Close()
+	r := NewRouter(util.TestConfig(apiServer.URL))
+
+	update := ServiceInstanceUpdate{
+		ServiceID: "9b4ee86b-3876-469f-a531-062e71bc5859",
+	}
+	update.Parameters.Units = 4
+	data, _ := json.MarshalIndent(update, "", "  ")
+
+	rec := httptest.NewRecorder()
+	req, err := http.NewRequest("PATCH", "/v2/service_instances/8dcdf609-36c9-4b22-bb16-d97e48c50f26?accepts_incomplete=true", bytes.NewBuffer(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.SetBasicAuth("broker", "pw")
+	r.ServeHTTP(rec, req)
+
+	assert.Equal(t, 200, rec.Code)
+	assert.Equal(t, "{}", rec.Body.String())
+}
+
+func TestBroker_UpdateServiceInstance_ImmediateUpdate(t *testing.T) {
+	test := []util.HttpTestCase{
+		util.HttpTestCase{"GET", "/deployments", 200, util.Body("../_fixtures/api_get_deployments.json"), nil},
+		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192", 200, util.Body("../_fixtures/api_get_deployment.json"), nil},
+		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192/scalings", 200, util.Body("../_fixtures/api_get_scaling.json"), nil},
+		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192/recipes", 200, util.Body("../_fixtures/api_get_recipes_for_service_update.json"), nil},
+		util.HttpTestCase{"POST", "/deployments/5854017e89d50f424e000192/scalings", 200, util.Body("../_fixtures/api_update_scaling_for_service_update.json"), func(body string) {
+			assert.Contains(t, body, `{"deployment":{"units":1}}`)
+		}},
+		util.HttpTestCase{"GET", "/recipes/5821fd28a4b549d06e39886d", 200, util.Body("../_fixtures/api_get_recipe_for_immediate_service_update.json"), nil},
+	}
+	apiServer := util.TestServer("deadbeef", test)
+	defer apiServer.Close()
+	r := NewRouter(util.TestConfig(apiServer.URL))
+
+	update := ServiceInstanceUpdate{
+		ServiceID: "9b4ee86b-3876-469f-a531-062e71bc5859",
+		PlanID:    "d6222855-17c6-448c-885a-e9d931cd221b",
+	}
+	data, _ := json.MarshalIndent(update, "", "  ")
+
+	rec := httptest.NewRecorder()
+	req, err := http.NewRequest("PATCH", "/v2/service_instances/8dcdf609-36c9-4b22-bb16-d97e48c50f26?accepts_incomplete=true", bytes.NewBuffer(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.SetBasicAuth("broker", "pw")
+	r.ServeHTTP(rec, req)
+
+	assert.Equal(t, 200, rec.Code)
+	assert.Equal(t, "{}", rec.Body.String())
+}
+
+func TestBroker_UpdateServiceInstance_ImmediateFailure(t *testing.T) {
+	test := []util.HttpTestCase{
+		util.HttpTestCase{"GET", "/deployments", 200, util.Body("../_fixtures/api_get_deployments.json"), nil},
+		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192", 200, util.Body("../_fixtures/api_get_deployment.json"), nil},
+		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192/scalings", 200, util.Body("../_fixtures/api_get_scaling.json"), nil},
+		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192/recipes", 200, util.Body("../_fixtures/api_get_recipes_for_service_update.json"), nil},
+		util.HttpTestCase{"POST", "/deployments/5854017e89d50f424e000192/scalings", 200, util.Body("../_fixtures/api_update_scaling_for_service_update.json"), func(body string) {
+			assert.Contains(t, body, `{"deployment":{"units":1}}`)
+		}},
+		util.HttpTestCase{"GET", "/recipes/5821fd28a4b549d06e39886d", 200, util.Body("../_fixtures/api_get_recipe_for_immediate_service_update_failure.json"), nil},
+	}
+	apiServer := util.TestServer("deadbeef", test)
+	defer apiServer.Close()
+	r := NewRouter(util.TestConfig(apiServer.URL))
+
+	update := ServiceInstanceUpdate{
+		ServiceID: "9b4ee86b-3876-469f-a531-062e71bc5859",
+		PlanID:    "d6222855-17c6-448c-885a-e9d931cd221b",
+	}
+	data, _ := json.MarshalIndent(update, "", "  ")
+
+	rec := httptest.NewRecorder()
+	req, err := http.NewRequest("PATCH", "/v2/service_instances/8dcdf609-36c9-4b22-bb16-d97e48c50f26?accepts_incomplete=true", bytes.NewBuffer(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.SetBasicAuth("broker", "pw")
+	r.ServeHTTP(rec, req)
+
+	assert.Equal(t, 409, rec.Code)
+	assert.Contains(t, rec.Body.String(), `"error": "UpdateFailure"`)
+	assert.Contains(t, rec.Body.String(), `"description": "Could not update service instance"`)
+}
+
+func TestBroker_UpdateServiceInstance_WithUnitsParameter(t *testing.T) {
+	test := []util.HttpTestCase{
+		util.HttpTestCase{"GET", "/deployments", 200, util.Body("../_fixtures/api_get_deployments.json"), nil},
+		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192", 200, util.Body("../_fixtures/api_get_deployment.json"), nil},
+		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192/scalings", 200, util.Body("../_fixtures/api_get_scaling.json"), nil},
+		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192/recipes", 200, util.Body("../_fixtures/api_get_recipes_for_service_update.json"), nil},
+		util.HttpTestCase{"POST", "/deployments/5854017e89d50f424e000192/scalings", 200, util.Body("../_fixtures/api_update_scaling.json"), func(body string) {
+			assert.Contains(t, body, `{"deployment":{"units":5}}`)
+		}},
+	}
+	apiServer := util.TestServer("deadbeef", test)
+	defer apiServer.Close()
+	r := NewRouter(util.TestConfig(apiServer.URL))
+
+	update := ServiceInstanceUpdate{
+		ServiceID: "9b4ee86b-3876-469f-a531-062e71bc5859",
+		PlanID:    "",
+	}
+	update.Parameters.Units = 5
+	data, _ := json.MarshalIndent(update, "", "  ")
+
+	rec := httptest.NewRecorder()
+	req, err := http.NewRequest("PATCH", "/v2/service_instances/8dcdf609-36c9-4b22-bb16-d97e48c50f26?accepts_incomplete=true", bytes.NewBuffer(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.SetBasicAuth("broker", "pw")
+	r.ServeHTTP(rec, req)
+
+	assert.Equal(t, 202, rec.Code)
+	assert.Equal(t, util.Body("../_fixtures/broker_update_service_instance.json"), rec.Body.String())
+}
+
+func TestBroker_UpdateServiceInstance_AsyncRequired(t *testing.T) {
+	r := NewRouter(util.TestConfig(""))
+
+	rec := httptest.NewRecorder()
+	req, err := http.NewRequest("PATCH", "/v2/service_instances/8dcdf609-36c9-4b22-bb16-d97e48c50f26", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.SetBasicAuth("broker", "pw")
+	r.ServeHTTP(rec, req)
+
+	assert.Equal(t, 422, rec.Code) // an update request must be async
+	assert.Contains(t, rec.Body.String(), `"error": "AsyncRequired"`)
+	assert.Contains(t, rec.Body.String(), `"description": "Service instance updating requires an asynchronous operation"`)
+}
+
+func TestBroker_UpdateServiceInstance_EmptyBody(t *testing.T) {
+	r := NewRouter(util.TestConfig(""))
+
+	rec := httptest.NewRecorder()
+	req, err := http.NewRequest("PATCH", "/v2/service_instances/8dcdf609-36c9-4b22-bb16-d97e48c50f26?accepts_incomplete=true", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.SetBasicAuth("broker", "pw")
+	r.ServeHTTP(rec, req)
+
+	assert.Equal(t, 400, rec.Code)
+	assert.Contains(t, rec.Body.String(), `"error": "MalformedRequest"`)
+	assert.Contains(t, rec.Body.String(), `"description": "Could not read update request"`)
+}
+
+func TestBroker_UpdateServiceInstance_UnknownPlan(t *testing.T) {
+	r := NewRouter(util.TestConfig(""))
+
+	update := ServiceInstanceUpdate{
+		ServiceID: "9b4ee86b-3876-469f-a531-062e71bc5859",
+		PlanID:    "deadbeef",
+	}
+	data, _ := json.MarshalIndent(update, "", "  ")
+
+	rec := httptest.NewRecorder()
+	req, err := http.NewRequest("PATCH", "/v2/service_instances/8dcdf609-36c9-4b22-bb16-d97e48c50f26?accepts_incomplete=true", bytes.NewBuffer(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.SetBasicAuth("broker", "pw")
+	r.ServeHTTP(rec, req)
+
+	assert.Equal(t, 400, rec.Code)
+	assert.Contains(t, rec.Body.String(), `"error": "MalformedRequest"`)
+	assert.Contains(t, rec.Body.String(), `"description": "Unknown plan_id"`)
+}
+
+func TestBroker_UpdateServiceInstance_UnitsMissing(t *testing.T) {
+	r := NewRouter(util.TestConfig(""))
+
+	update := ServiceInstanceUpdate{
+		ServiceID: "9b4ee86b-3876-469f-a531-062e71bc5859",
+	}
+	data, _ := json.MarshalIndent(update, "", "  ")
+
+	rec := httptest.NewRecorder()
+	req, err := http.NewRequest("PATCH", "/v2/service_instances/8dcdf609-36c9-4b22-bb16-d97e48c50f26?accepts_incomplete=true", bytes.NewBuffer(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.SetBasicAuth("broker", "pw")
+	r.ServeHTTP(rec, req)
+
+	assert.Equal(t, 400, rec.Code)
+	assert.Contains(t, rec.Body.String(), `"error": "MissingParameters"`)
+	assert.Contains(t, rec.Body.String(), `"description": "Units parameter is missing for service instance update"`)
+}
+
+func TestBroker_UpdateServiceInstance_NotFound(t *testing.T) {
+	test := []util.HttpTestCase{
+		util.HttpTestCase{"GET", "/deployments", 404, util.Body("../_fixtures/api_get_deployments.json"), nil},
+	}
+	apiServer := util.TestServer("deadbeef", test)
+	defer apiServer.Close()
+	r := NewRouter(util.TestConfig(apiServer.URL))
+
+	update := ServiceInstanceUpdate{
+		ServiceID: "9b4ee86b-3876-469f-a531-062e71bc5859",
+		PlanID:    "d6222855-17c6-448c-885a-e9d931cd221b",
+	}
+	data, _ := json.MarshalIndent(update, "", "  ")
+
+	rec := httptest.NewRecorder()
+	req, err := http.NewRequest("PATCH", "/v2/service_instances/8dcdf609-36c9-4b22-bb16-d97e48c50f26?accepts_incomplete=true", bytes.NewBuffer(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.SetBasicAuth("broker", "pw")
+	r.ServeHTTP(rec, req)
+
+	assert.Equal(t, 404, rec.Code)
+	assert.Contains(t, rec.Body.String(), `"error": "ServiceInstanceNotFound"`)
+	assert.Contains(t, rec.Body.String(), `"description": "The service instance does not exist"`)
+}
+
+func TestBroker_UpdateServiceInstance_ScalingNotFound(t *testing.T) {
+	test := []util.HttpTestCase{
+		util.HttpTestCase{"GET", "/deployments", 200, util.Body("../_fixtures/api_get_deployments.json"), nil},
+		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192", 200, util.Body("../_fixtures/api_get_deployment.json"), nil},
+		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192/scalings", 404, util.Body("../_fixtures/api_get_scaling.json"), nil},
+	}
+	apiServer := util.TestServer("deadbeef", test)
+	defer apiServer.Close()
+	r := NewRouter(util.TestConfig(apiServer.URL))
+
+	update := ServiceInstanceUpdate{
+		ServiceID: "9b4ee86b-3876-469f-a531-062e71bc5859",
+		PlanID:    "d6222855-17c6-448c-885a-e9d931cd221b",
+	}
+	data, _ := json.MarshalIndent(update, "", "  ")
+
+	rec := httptest.NewRecorder()
+	req, err := http.NewRequest("PATCH", "/v2/service_instances/8dcdf609-36c9-4b22-bb16-d97e48c50f26?accepts_incomplete=true", bytes.NewBuffer(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.SetBasicAuth("broker", "pw")
+	r.ServeHTTP(rec, req)
+
+	assert.Equal(t, 409, rec.Code)
+	assert.Contains(t, rec.Body.String(), `"error": "UnknownError"`)
+	assert.Contains(t, rec.Body.String(), `"description": "Could not read service instance scaling"`)
+}
+
+func TestBroker_UpdateServiceInstance_ConcurrencyError(t *testing.T) {
+	test := []util.HttpTestCase{
+		util.HttpTestCase{"GET", "/deployments", 200, util.Body("../_fixtures/api_get_deployments.json"), nil},
+		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192", 200, util.Body("../_fixtures/api_get_deployment.json"), nil},
+		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192/scalings", 200, util.Body("../_fixtures/api_get_scaling.json"), nil},
+		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192/recipes", 200, util.Body("../_fixtures/api_get_recipes_for_concurrency_error_422.json"), nil},
+	}
+	apiServer := util.TestServer("deadbeef", test)
+	defer apiServer.Close()
+	r := NewRouter(util.TestConfig(apiServer.URL))
+
+	update := ServiceInstanceUpdate{
+		ServiceID: "9b4ee86b-3876-469f-a531-062e71bc5859",
+		PlanID:    "d6222855-17c6-448c-885a-e9d931cd221b",
+	}
+	data, _ := json.MarshalIndent(update, "", "  ")
+
+	rec := httptest.NewRecorder()
+	req, err := http.NewRequest("PATCH", "/v2/service_instances/8dcdf609-36c9-4b22-bb16-d97e48c50f26?accepts_incomplete=true", bytes.NewBuffer(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.SetBasicAuth("broker", "pw")
+	r.ServeHTTP(rec, req)
+
+	assert.Equal(t, 422, rec.Code)
+	assert.Contains(t, rec.Body.String(), `"error": "ConcurrencyError"`)
+	assert.Contains(t, rec.Body.String(), `"description": "The service instance is currently being updated"`)
+}
+
+func TestBroker_UpdateServiceInstance_Error(t *testing.T) {
+	test := []util.HttpTestCase{
+		util.HttpTestCase{"GET", "/deployments", 200, util.Body("../_fixtures/api_get_deployments.json"), nil},
+		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192", 200, util.Body("../_fixtures/api_get_deployment.json"), nil},
+		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192/scalings", 200, util.Body("../_fixtures/api_get_scaling.json"), nil},
+		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192/recipes", 200, util.Body("../_fixtures/api_get_recipes_for_service_update.json"), nil},
+		util.HttpTestCase{"POST", "/deployments/5854017e89d50f424e000192/scalings", 500, util.Body("../_fixtures/api_update_scaling.json"), func(body string) {
+			assert.Contains(t, body, `{"deployment":{"units":1}}`)
+		}},
+	}
+	apiServer := util.TestServer("deadbeef", test)
+	defer apiServer.Close()
+	r := NewRouter(util.TestConfig(apiServer.URL))
+
+	update := ServiceInstanceUpdate{
+		ServiceID: "9b4ee86b-3876-469f-a531-062e71bc5859",
+		PlanID:    "d6222855-17c6-448c-885a-e9d931cd221b",
+	}
+	data, _ := json.MarshalIndent(update, "", "  ")
+
+	rec := httptest.NewRecorder()
+	req, err := http.NewRequest("PATCH", "/v2/service_instances/8dcdf609-36c9-4b22-bb16-d97e48c50f26?accepts_incomplete=true", bytes.NewBuffer(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.SetBasicAuth("broker", "pw")
+	r.ServeHTTP(rec, req)
+
+	assert.Equal(t, 409, rec.Code)
+	assert.Contains(t, rec.Body.String(), `"error": "UnknownError"`)
+	assert.Contains(t, rec.Body.String(), `"description": "Could not update service instance"`)
 }
 
 func TestBroker_DeprovisionServiceInstance(t *testing.T) {
@@ -280,7 +636,7 @@ func TestBroker_DeprovisionServiceInstance_ConcurrencyError(t *testing.T) {
 
 	assert.Equal(t, 422, rec.Code)
 	assert.Contains(t, rec.Body.String(), `"error": "ConcurrencyError"`)
-	assert.Contains(t, rec.Body.String(), `"description": "The service instance is being updated"`)
+	assert.Contains(t, rec.Body.String(), `"description": "The service instance is currently being updated"`)
 }
 
 func TestBroker_DeprovisionServiceInstance_Error(t *testing.T) {
