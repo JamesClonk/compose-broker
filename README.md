@@ -8,3 +8,13 @@
 > Performance and reliable data layers for developers who'd rather spend their time building apps than managing databases.
 
 **compose-broker** is a [Compose](https://www.compose.com/) [service broker](https://www.openservicebrokerapi.org/) for [Cloud Foundry](https://www.cloudfoundry.org/) and [Kubernetes](https://kubernetes.io/)
+
+It supports databases and services such as:
+- [PostgreSQL](https://www.compose.com/databases/postgresql)
+- [MySQL](https://www.compose.com/databases/mysql)
+- [RethinkDB](https://www.compose.com/databases/rethinkdb)
+- [ScyllaDB (Cassandra)](https://www.compose.com/databases/scylladb)
+- [Elasticsearch](https://www.compose.com/databases/elasticsearch)
+- [Redis](https://www.compose.com/databases/redis)
+- [etcd](https://www.compose.com/databases/etcd)
+- [RabbitMQ](https://www.compose.com/databases/rabbitmq)
