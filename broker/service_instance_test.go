@@ -17,6 +17,106 @@ func init() {
 	log.SetOutput(ioutil.Discard)
 }
 
+func TestBroker_ProvisionServiceInstance_WithUnitsParameter(t *testing.T) {
+	test := []util.HttpTestCase{}
+	apiServer := util.TestServer("deadbeef", test)
+	defer apiServer.Close()
+	r := NewRouter(util.TestConfig(apiServer.URL))
+
+	provisioning := ServiceInstanceProvisioning{
+		ServiceID: "9b4ee86b-3876-469f-a531-062e71bc5859",
+		PlanID:    "",
+	}
+	provisioning.Parameters.Units = 5
+	data, _ := json.MarshalIndent(provisioning, "", "  ")
+
+	rec := httptest.NewRecorder()
+	req, err := http.NewRequest("PUT", "/v2/service_instances/8dcdf609-36c9-4b22-bb16-d97e48c50f26?accepts_incomplete=true", bytes.NewBuffer(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.SetBasicAuth("broker", "pw")
+	r.ServeHTTP(rec, req)
+
+	assert.Equal(t, 202, rec.Code)
+	assert.Equal(t, util.Body("../_fixtures/broker_provision_service_instance.json"), rec.Body.String())
+}
+
+func TestBroker_ProvisionServiceInstance_AsyncRequired(t *testing.T) {
+	r := NewRouter(util.TestConfig(""))
+
+	rec := httptest.NewRecorder()
+	req, err := http.NewRequest("PUT", "/v2/service_instances/8dcdf609-36c9-4b22-bb16-d97e48c50f26", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.SetBasicAuth("broker", "pw")
+	r.ServeHTTP(rec, req)
+
+	assert.Equal(t, 422, rec.Code) // a provisioning request must be async
+	assert.Contains(t, rec.Body.String(), `"error": "AsyncRequired"`)
+	assert.Contains(t, rec.Body.String(), `"description": "Service instance provisioning requires an asynchronous operation"`)
+}
+
+func TestBroker_ProvisionServiceInstance_EmptyBody(t *testing.T) {
+	r := NewRouter(util.TestConfig(""))
+
+	rec := httptest.NewRecorder()
+	req, err := http.NewRequest("PUT", "/v2/service_instances/8dcdf609-36c9-4b22-bb16-d97e48c50f26?accepts_incomplete=true", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.SetBasicAuth("broker", "pw")
+	r.ServeHTTP(rec, req)
+
+	assert.Equal(t, 400, rec.Code)
+	assert.Contains(t, rec.Body.String(), `"error": "MalformedRequest"`)
+	assert.Contains(t, rec.Body.String(), `"description": "Could not read provisioning request"`)
+}
+
+func TestBroker_ProvisionServiceInstance_UnknownPlan(t *testing.T) {
+	r := NewRouter(util.TestConfig(""))
+
+	provisioning := ServiceInstanceProvisioning{
+		ServiceID: "9b4ee86b-3876-469f-a531-062e71bc5859",
+		PlanID:    "deadbeef",
+	}
+	data, _ := json.MarshalIndent(provisioning, "", "  ")
+
+	rec := httptest.NewRecorder()
+	req, err := http.NewRequest("PUT", "/v2/service_instances/8dcdf609-36c9-4b22-bb16-d97e48c50f26?accepts_incomplete=true", bytes.NewBuffer(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.SetBasicAuth("broker", "pw")
+	r.ServeHTTP(rec, req)
+
+	assert.Equal(t, 400, rec.Code)
+	assert.Contains(t, rec.Body.String(), `"error": "MalformedRequest"`)
+	assert.Contains(t, rec.Body.String(), `"description": "Unknown plan_id"`)
+}
+
+func TestBroker_ProvisionServiceInstance_UnitsMissing(t *testing.T) {
+	r := NewRouter(util.TestConfig(""))
+
+	provisioning := ServiceInstanceProvisioning{
+		ServiceID: "9b4ee86b-3876-469f-a531-062e71bc5859",
+	}
+	data, _ := json.MarshalIndent(provisioning, "", "  ")
+
+	rec := httptest.NewRecorder()
+	req, err := http.NewRequest("PUT", "/v2/service_instances/8dcdf609-36c9-4b22-bb16-d97e48c50f26?accepts_incomplete=true", bytes.NewBuffer(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.SetBasicAuth("broker", "pw")
+	r.ServeHTTP(rec, req)
+
+	assert.Equal(t, 400, rec.Code)
+	assert.Contains(t, rec.Body.String(), `"error": "MissingParameters"`)
+	assert.Contains(t, rec.Body.String(), `"description": "Units parameter is missing for service instance provisioning"`)
+}
+
 func TestBroker_FetchServiceInstance(t *testing.T) {
 	test := []util.HttpTestCase{
 		util.HttpTestCase{"GET", "/deployments", 200, util.Body("../_fixtures/api_get_deployments.json"), nil},

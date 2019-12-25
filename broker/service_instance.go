@@ -49,6 +49,121 @@ type ServiceInstanceUpdateResponse struct {
 	DashboardURL string `json:"dashboard_url"`
 }
 
+func (b *Broker) ProvisionInstance(rw http.ResponseWriter, req *http.Request) {
+	// verify request is async, must have query param "?accepts_incomplete=true"
+	incomplete := req.URL.Query().Get("accepts_incomplete")
+	if incomplete != "true" {
+		b.Error(rw, req, 422, "AsyncRequired", "Service instance provisioning requires an asynchronous operation")
+		return
+	}
+
+	if req.Body == nil {
+		log.Errorf("error reading provisioning request: %v", req)
+		b.Error(rw, req, 400, "MalformedRequest", "Could not read provisioning request")
+		return
+	}
+	body, err := ioutil.ReadAll(req.Body)
+	if err != nil {
+		log.Errorln(err)
+		log.Errorf("error reading provisioning request: %v", req)
+		b.Error(rw, req, 400, "MalformedRequest", "Could not read provisioning request")
+		return
+	}
+	if len(body) == 0 {
+		body = []byte("{}")
+	}
+
+	var provisioning ServiceInstanceProvisioning
+	if err := json.Unmarshal([]byte(body), &provisioning); err != nil {
+		log.Errorln(err)
+		log.Errorf("could not unmarshal provisioning request body: %v", string(body))
+		b.Error(rw, req, 400, "MalformedRequest", "Could not unmarshal provisioning request")
+		return
+	}
+
+	// verify scaling target value (units), by either taking value of plan or by provided parameter
+	var units int
+	if len(provisioning.PlanID) > 0 {
+		// get units if plan was specified
+		for _, service := range b.ServiceCatalog.Services {
+			if provisioning.ServiceID == service.ID {
+				for _, plan := range service.Plans {
+					if provisioning.PlanID == plan.ID {
+						units = plan.Metadata.Units
+					}
+				}
+			}
+		}
+		if units == 0 {
+			log.Errorf("could not find plan_id [%s] for service instance provisioning", provisioning.PlanID)
+			b.Error(rw, req, 400, "MalformedRequest", "Unknown plan_id")
+			return
+		}
+	}
+	if provisioning.Parameters.Units > 0 {
+		units = provisioning.Parameters.Units
+	}
+	if units < 1 {
+		log.Errorf("units value %d must be greater than 0 for service instance provisioning", units)
+		b.Error(rw, req, 400, "MissingParameters", "Units parameter is missing for service instance provisioning")
+		return
+	}
+
+	vars := mux.Vars(req)
+	instanceID := vars["instanceID"]
+
+	// check if it already exists
+	instance, err := b.Client.GetDeploymentByName(instanceID)
+	if err == nil && instance.Name == instanceID {
+		recipes, err := b.Client.GetRecipes(instance.ID)
+		if err != nil {
+			log.Warnf("could not fetch any service instance recipes: %v", err)
+		}
+		if len(recipes) > 0 {
+			recipes.SortByUpdatedAt()
+
+			// response JSON
+			provisionResponse := ServiceInstanceProvisioningResponse{
+				DashboardURL: strings.TrimSuffix(instance.Links.ComposeWebUI.HREF, "{?embed}"),
+			}
+
+			if recipes[0].Name == "Provision" &&
+				(recipes[0].Status == "running" ||
+					recipes[0].Status == "waiting") {
+				b.write(rw, req, 202, provisionResponse)
+				return
+			}
+			if recipes[0].Status == "complete" {
+				// TODO: get scaling and compare
+				b.write(rw, req, 200, provisionResponse)
+				return
+			}
+		}
+		log.Errorf("could not create service instance: %v", err)
+		b.Error(rw, req, 409, "UnknownError", "Could not create service instance")
+		return
+		// TODO: return 202 if deployment found + last recipe status is not yet complete or failed + recipe name = Provision
+		// TODO: return 200 if deployment found + last recipe status is complete + scaling units, plan & type are equal
+		// TODO: else return 409 if deployment found
+	}
+
+	// provision service instance
+	recipe, err := b.Client.CreateDeployment(deployment)
+	if err != nil {
+		log.Errorf("could not provision service instance: %v", err)
+		b.Error(rw, req, 500, "UnknownError", "Could not provision service instance") // TODO: write test case
+		return
+	}
+	// TODO: return 201 if immediately provisioned
+	// TODO: return 500 if immediately failed
+
+	// // response JSON
+	// provisionResponse := ServiceInstanceProvisioningResponse{
+	// 	DashboardURL: strings.TrimSuffix(deployment.Links.ComposeWebUI.HREF, "{?embed}"),
+	// }
+	// b.write(rw, req, 202, provisionResponse) // default async response
+}
+
 func (b *Broker) FetchInstance(rw http.ResponseWriter, req *http.Request) {
 	vars := mux.Vars(req)
 	instanceID := vars["instanceID"]
