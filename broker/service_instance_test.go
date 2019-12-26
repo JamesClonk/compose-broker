@@ -17,17 +17,27 @@ func init() {
 	log.SetOutput(ioutil.Discard)
 }
 
-func TestBroker_ProvisionServiceInstance_WithUnitsParameter(t *testing.T) {
-	test := []util.HttpTestCase{}
+func TestBroker_ProvisionServiceInstance(t *testing.T) {
+	test := []util.HttpTestCase{
+		util.HttpTestCase{Method: "POST", Path: "/deployments", Code: 202, Body: util.Body("../_fixtures/api_create_deployment.json"), Test: func(body string) {
+			assert.Contains(t, body, `"name":"fizz-production"`)
+			assert.Contains(t, body, `"account_id":"52a50cb96230650018000000"`)
+			assert.Contains(t, body, `"type":"postgresql"`)
+			assert.Contains(t, body, `"datacenter":"gce:europe-west1"`)
+			assert.Contains(t, body, `"units":1`)
+			assert.NotContains(t, body, `version`)
+			assert.NotContains(t, body, `cache_mode`)
+			assert.Contains(t, body, `"notes":"blubb"`)
+		}},
+	}
 	apiServer := util.TestServer("deadbeef", test)
 	defer apiServer.Close()
 	r := NewRouter(util.TestConfig(apiServer.URL))
 
 	provisioning := ServiceInstanceProvisioning{
 		ServiceID: "9b4ee86b-3876-469f-a531-062e71bc5859",
-		PlanID:    "",
+		PlanID:    "d6222855-17c6-448c-885a-e9d931cd221b",
 	}
-	provisioning.Parameters.Units = 5
 	data, _ := json.MarshalIndent(provisioning, "", "  ")
 
 	rec := httptest.NewRecorder()
@@ -119,10 +129,10 @@ func TestBroker_ProvisionServiceInstance_UnitsMissing(t *testing.T) {
 
 func TestBroker_FetchServiceInstance(t *testing.T) {
 	test := []util.HttpTestCase{
-		util.HttpTestCase{"GET", "/deployments", 200, util.Body("../_fixtures/api_get_deployments.json"), nil},
-		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192", 200, util.Body("../_fixtures/api_get_deployment.json"), nil},
-		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192/recipes", 200, util.Body("../_fixtures/api_get_recipes_for_service_fetch.json"), nil},
-		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192/scalings", 200, util.Body("../_fixtures/api_get_scaling.json"), nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments", Code: 200, Body: util.Body("../_fixtures/api_get_deployments.json"), Test: nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments/5854017e89d50f424e000192", Code: 200, Body: util.Body("../_fixtures/api_get_deployment.json"), Test: nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments/5854017e89d50f424e000192/recipes", Code: 200, Body: util.Body("../_fixtures/api_get_recipes_for_service_fetch.json"), Test: nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments/5854017e89d50f424e000192/scalings", Code: 200, Body: util.Body("../_fixtures/api_get_scaling.json"), Test: nil},
 	}
 	apiServer := util.TestServer("deadbeef", test)
 	defer apiServer.Close()
@@ -142,7 +152,7 @@ func TestBroker_FetchServiceInstance(t *testing.T) {
 
 func TestBroker_FetchServiceInstance_NotFound(t *testing.T) {
 	test := []util.HttpTestCase{
-		util.HttpTestCase{"GET", "/deployments", 404, util.Body("../_fixtures/api_get_deployments.json"), nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments", Code: 404, Body: util.Body("../_fixtures/api_get_deployments.json"), Test: nil},
 	}
 	apiServer := util.TestServer("deadbeef", test)
 	defer apiServer.Close()
@@ -163,8 +173,8 @@ func TestBroker_FetchServiceInstance_NotFound(t *testing.T) {
 
 func TestBroker_FetchServiceInstance_RecipesNotFound(t *testing.T) {
 	test := []util.HttpTestCase{
-		util.HttpTestCase{"GET", "/deployments", 200, util.Body("../_fixtures/api_get_deployments.json"), nil},
-		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192", 200, util.Body("../_fixtures/api_get_deployment.json"), nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments", Code: 200, Body: util.Body("../_fixtures/api_get_deployments.json"), Test: nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments/5854017e89d50f424e000192", Code: 200, Body: util.Body("../_fixtures/api_get_deployment.json"), Test: nil},
 	}
 	apiServer := util.TestServer("deadbeef", test)
 	defer apiServer.Close()
@@ -185,9 +195,9 @@ func TestBroker_FetchServiceInstance_RecipesNotFound(t *testing.T) {
 
 func TestBroker_FetchServiceInstance_ScalingsNotFound(t *testing.T) {
 	test := []util.HttpTestCase{
-		util.HttpTestCase{"GET", "/deployments", 200, util.Body("../_fixtures/api_get_deployments.json"), nil},
-		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192", 200, util.Body("../_fixtures/api_get_deployment.json"), nil},
-		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192/recipes", 200, util.Body("../_fixtures/api_get_recipes_for_service_fetch.json"), nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments", Code: 200, Body: util.Body("../_fixtures/api_get_deployments.json"), Test: nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments/5854017e89d50f424e000192", Code: 200, Body: util.Body("../_fixtures/api_get_deployment.json"), Test: nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments/5854017e89d50f424e000192/recipes", Code: 200, Body: util.Body("../_fixtures/api_get_recipes_for_service_fetch.json"), Test: nil},
 	}
 	apiServer := util.TestServer("deadbeef", test)
 	defer apiServer.Close()
@@ -208,9 +218,9 @@ func TestBroker_FetchServiceInstance_ScalingsNotFound(t *testing.T) {
 
 func TestBroker_FetchServiceInstance_ConcurrencyError422(t *testing.T) {
 	test := []util.HttpTestCase{
-		util.HttpTestCase{"GET", "/deployments", 200, util.Body("../_fixtures/api_get_deployments.json"), nil},
-		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192", 200, util.Body("../_fixtures/api_get_deployment.json"), nil},
-		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192/recipes", 200, util.Body("../_fixtures/api_get_recipes_for_concurrency_error_422.json"), nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments", Code: 200, Body: util.Body("../_fixtures/api_get_deployments.json"), Test: nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments/5854017e89d50f424e000192", Code: 200, Body: util.Body("../_fixtures/api_get_deployment.json"), Test: nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments/5854017e89d50f424e000192/recipes", Code: 200, Body: util.Body("../_fixtures/api_get_recipes_for_concurrency_error_422.json"), Test: nil},
 	}
 	apiServer := util.TestServer("deadbeef", test)
 	defer apiServer.Close()
@@ -231,9 +241,9 @@ func TestBroker_FetchServiceInstance_ConcurrencyError422(t *testing.T) {
 
 func TestBroker_FetchServiceInstance_ConcurrencyError404(t *testing.T) {
 	test := []util.HttpTestCase{
-		util.HttpTestCase{"GET", "/deployments", 200, util.Body("../_fixtures/api_get_deployments.json"), nil},
-		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192", 200, util.Body("../_fixtures/api_get_deployment.json"), nil},
-		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192/recipes", 200, util.Body("../_fixtures/api_get_recipes_for_concurrency_error_404.json"), nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments", Code: 200, Body: util.Body("../_fixtures/api_get_deployments.json"), Test: nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments/5854017e89d50f424e000192", Code: 200, Body: util.Body("../_fixtures/api_get_deployment.json"), Test: nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments/5854017e89d50f424e000192/recipes", Code: 200, Body: util.Body("../_fixtures/api_get_recipes_for_concurrency_error_404.json"), Test: nil},
 	}
 	apiServer := util.TestServer("deadbeef", test)
 	defer apiServer.Close()
@@ -254,11 +264,11 @@ func TestBroker_FetchServiceInstance_ConcurrencyError404(t *testing.T) {
 
 func TestBroker_UpdateServiceInstance(t *testing.T) {
 	test := []util.HttpTestCase{
-		util.HttpTestCase{"GET", "/deployments", 200, util.Body("../_fixtures/api_get_deployments.json"), nil},
-		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192", 200, util.Body("../_fixtures/api_get_deployment.json"), nil},
-		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192/scalings", 200, util.Body("../_fixtures/api_get_scaling.json"), nil},
-		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192/recipes", 200, util.Body("../_fixtures/api_get_recipes_for_service_update.json"), nil},
-		util.HttpTestCase{"POST", "/deployments/5854017e89d50f424e000192/scalings", 200, util.Body("../_fixtures/api_update_scaling.json"), func(body string) {
+		util.HttpTestCase{Method: "GET", Path: "/deployments", Code: 200, Body: util.Body("../_fixtures/api_get_deployments.json"), Test: nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments/5854017e89d50f424e000192", Code: 200, Body: util.Body("../_fixtures/api_get_deployment.json"), Test: nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments/5854017e89d50f424e000192/scalings", Code: 200, Body: util.Body("../_fixtures/api_get_scaling.json"), Test: nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments/5854017e89d50f424e000192/recipes", Code: 200, Body: util.Body("../_fixtures/api_get_recipes_for_service_update.json"), Test: nil},
+		util.HttpTestCase{Method: "POST", Path: "/deployments/5854017e89d50f424e000192/scalings", Code: 200, Body: util.Body("../_fixtures/api_update_scaling.json"), Test: func(body string) {
 			assert.Contains(t, body, `{"deployment":{"units":1}}`)
 		}},
 	}
@@ -286,9 +296,9 @@ func TestBroker_UpdateServiceInstance(t *testing.T) {
 
 func TestBroker_UpdateServiceInstance_NoUpdate(t *testing.T) {
 	test := []util.HttpTestCase{
-		util.HttpTestCase{"GET", "/deployments", 200, util.Body("../_fixtures/api_get_deployments.json"), nil},
-		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192", 200, util.Body("../_fixtures/api_get_deployment.json"), nil},
-		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192/scalings", 200, util.Body("../_fixtures/api_get_scaling.json"), nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments", Code: 200, Body: util.Body("../_fixtures/api_get_deployments.json"), Test: nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments/5854017e89d50f424e000192", Code: 200, Body: util.Body("../_fixtures/api_get_deployment.json"), Test: nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments/5854017e89d50f424e000192/scalings", Code: 200, Body: util.Body("../_fixtures/api_get_scaling.json"), Test: nil},
 	}
 	apiServer := util.TestServer("deadbeef", test)
 	defer apiServer.Close()
@@ -314,14 +324,14 @@ func TestBroker_UpdateServiceInstance_NoUpdate(t *testing.T) {
 
 func TestBroker_UpdateServiceInstance_ImmediateUpdate(t *testing.T) {
 	test := []util.HttpTestCase{
-		util.HttpTestCase{"GET", "/deployments", 200, util.Body("../_fixtures/api_get_deployments.json"), nil},
-		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192", 200, util.Body("../_fixtures/api_get_deployment.json"), nil},
-		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192/scalings", 200, util.Body("../_fixtures/api_get_scaling.json"), nil},
-		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192/recipes", 200, util.Body("../_fixtures/api_get_recipes_for_service_update.json"), nil},
-		util.HttpTestCase{"POST", "/deployments/5854017e89d50f424e000192/scalings", 200, util.Body("../_fixtures/api_update_scaling_for_service_update.json"), func(body string) {
+		util.HttpTestCase{Method: "GET", Path: "/deployments", Code: 200, Body: util.Body("../_fixtures/api_get_deployments.json"), Test: nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments/5854017e89d50f424e000192", Code: 200, Body: util.Body("../_fixtures/api_get_deployment.json"), Test: nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments/5854017e89d50f424e000192/scalings", Code: 200, Body: util.Body("../_fixtures/api_get_scaling.json"), Test: nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments/5854017e89d50f424e000192/recipes", Code: 200, Body: util.Body("../_fixtures/api_get_recipes_for_service_update.json"), Test: nil},
+		util.HttpTestCase{Method: "POST", Path: "/deployments/5854017e89d50f424e000192/scalings", Code: 200, Body: util.Body("../_fixtures/api_update_scaling_for_service_update.json"), Test: func(body string) {
 			assert.Contains(t, body, `{"deployment":{"units":1}}`)
 		}},
-		util.HttpTestCase{"GET", "/recipes/5821fd28a4b549d06e39886d", 200, util.Body("../_fixtures/api_get_recipe_for_immediate_service_update.json"), nil},
+		util.HttpTestCase{Method: "GET", Path: "/recipes/5821fd28a4b549d06e39886d", Code: 200, Body: util.Body("../_fixtures/api_get_recipe_for_immediate_service_update.json"), Test: nil},
 	}
 	apiServer := util.TestServer("deadbeef", test)
 	defer apiServer.Close()
@@ -347,14 +357,14 @@ func TestBroker_UpdateServiceInstance_ImmediateUpdate(t *testing.T) {
 
 func TestBroker_UpdateServiceInstance_ImmediateFailure(t *testing.T) {
 	test := []util.HttpTestCase{
-		util.HttpTestCase{"GET", "/deployments", 200, util.Body("../_fixtures/api_get_deployments.json"), nil},
-		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192", 200, util.Body("../_fixtures/api_get_deployment.json"), nil},
-		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192/scalings", 200, util.Body("../_fixtures/api_get_scaling.json"), nil},
-		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192/recipes", 200, util.Body("../_fixtures/api_get_recipes_for_service_update.json"), nil},
-		util.HttpTestCase{"POST", "/deployments/5854017e89d50f424e000192/scalings", 200, util.Body("../_fixtures/api_update_scaling_for_service_update.json"), func(body string) {
+		util.HttpTestCase{Method: "GET", Path: "/deployments", Code: 200, Body: util.Body("../_fixtures/api_get_deployments.json"), Test: nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments/5854017e89d50f424e000192", Code: 200, Body: util.Body("../_fixtures/api_get_deployment.json"), Test: nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments/5854017e89d50f424e000192/scalings", Code: 200, Body: util.Body("../_fixtures/api_get_scaling.json"), Test: nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments/5854017e89d50f424e000192/recipes", Code: 200, Body: util.Body("../_fixtures/api_get_recipes_for_service_update.json"), Test: nil},
+		util.HttpTestCase{Method: "POST", Path: "/deployments/5854017e89d50f424e000192/scalings", Code: 200, Body: util.Body("../_fixtures/api_update_scaling_for_service_update.json"), Test: func(body string) {
 			assert.Contains(t, body, `{"deployment":{"units":1}}`)
 		}},
-		util.HttpTestCase{"GET", "/recipes/5821fd28a4b549d06e39886d", 200, util.Body("../_fixtures/api_get_recipe_for_immediate_service_update_failure.json"), nil},
+		util.HttpTestCase{Method: "GET", Path: "/recipes/5821fd28a4b549d06e39886d", Code: 200, Body: util.Body("../_fixtures/api_get_recipe_for_immediate_service_update_failure.json"), Test: nil},
 	}
 	apiServer := util.TestServer("deadbeef", test)
 	defer apiServer.Close()
@@ -381,11 +391,11 @@ func TestBroker_UpdateServiceInstance_ImmediateFailure(t *testing.T) {
 
 func TestBroker_UpdateServiceInstance_WithUnitsParameter(t *testing.T) {
 	test := []util.HttpTestCase{
-		util.HttpTestCase{"GET", "/deployments", 200, util.Body("../_fixtures/api_get_deployments.json"), nil},
-		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192", 200, util.Body("../_fixtures/api_get_deployment.json"), nil},
-		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192/scalings", 200, util.Body("../_fixtures/api_get_scaling.json"), nil},
-		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192/recipes", 200, util.Body("../_fixtures/api_get_recipes_for_service_update.json"), nil},
-		util.HttpTestCase{"POST", "/deployments/5854017e89d50f424e000192/scalings", 200, util.Body("../_fixtures/api_update_scaling.json"), func(body string) {
+		util.HttpTestCase{Method: "GET", Path: "/deployments", Code: 200, Body: util.Body("../_fixtures/api_get_deployments.json"), Test: nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments/5854017e89d50f424e000192", Code: 200, Body: util.Body("../_fixtures/api_get_deployment.json"), Test: nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments/5854017e89d50f424e000192/scalings", Code: 200, Body: util.Body("../_fixtures/api_get_scaling.json"), Test: nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments/5854017e89d50f424e000192/recipes", Code: 200, Body: util.Body("../_fixtures/api_get_recipes_for_service_update.json"), Test: nil},
+		util.HttpTestCase{Method: "POST", Path: "/deployments/5854017e89d50f424e000192/scalings", Code: 200, Body: util.Body("../_fixtures/api_update_scaling.json"), Test: func(body string) {
 			assert.Contains(t, body, `{"deployment":{"units":5}}`)
 		}},
 	}
@@ -489,7 +499,7 @@ func TestBroker_UpdateServiceInstance_UnitsMissing(t *testing.T) {
 
 func TestBroker_UpdateServiceInstance_NotFound(t *testing.T) {
 	test := []util.HttpTestCase{
-		util.HttpTestCase{"GET", "/deployments", 404, util.Body("../_fixtures/api_get_deployments.json"), nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments", Code: 404, Body: util.Body("../_fixtures/api_get_deployments.json"), Test: nil},
 	}
 	apiServer := util.TestServer("deadbeef", test)
 	defer apiServer.Close()
@@ -516,9 +526,9 @@ func TestBroker_UpdateServiceInstance_NotFound(t *testing.T) {
 
 func TestBroker_UpdateServiceInstance_ScalingNotFound(t *testing.T) {
 	test := []util.HttpTestCase{
-		util.HttpTestCase{"GET", "/deployments", 200, util.Body("../_fixtures/api_get_deployments.json"), nil},
-		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192", 200, util.Body("../_fixtures/api_get_deployment.json"), nil},
-		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192/scalings", 404, util.Body("../_fixtures/api_get_scaling.json"), nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments", Code: 200, Body: util.Body("../_fixtures/api_get_deployments.json"), Test: nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments/5854017e89d50f424e000192", Code: 200, Body: util.Body("../_fixtures/api_get_deployment.json"), Test: nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments/5854017e89d50f424e000192/scalings", Code: 404, Body: util.Body("../_fixtures/api_get_scaling.json"), Test: nil},
 	}
 	apiServer := util.TestServer("deadbeef", test)
 	defer apiServer.Close()
@@ -545,10 +555,10 @@ func TestBroker_UpdateServiceInstance_ScalingNotFound(t *testing.T) {
 
 func TestBroker_UpdateServiceInstance_ConcurrencyError(t *testing.T) {
 	test := []util.HttpTestCase{
-		util.HttpTestCase{"GET", "/deployments", 200, util.Body("../_fixtures/api_get_deployments.json"), nil},
-		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192", 200, util.Body("../_fixtures/api_get_deployment.json"), nil},
-		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192/scalings", 200, util.Body("../_fixtures/api_get_scaling.json"), nil},
-		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192/recipes", 200, util.Body("../_fixtures/api_get_recipes_for_concurrency_error_422.json"), nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments", Code: 200, Body: util.Body("../_fixtures/api_get_deployments.json"), Test: nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments/5854017e89d50f424e000192", Code: 200, Body: util.Body("../_fixtures/api_get_deployment.json"), Test: nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments/5854017e89d50f424e000192/scalings", Code: 200, Body: util.Body("../_fixtures/api_get_scaling.json"), Test: nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments/5854017e89d50f424e000192/recipes", Code: 200, Body: util.Body("../_fixtures/api_get_recipes_for_concurrency_error_422.json"), Test: nil},
 	}
 	apiServer := util.TestServer("deadbeef", test)
 	defer apiServer.Close()
@@ -575,11 +585,11 @@ func TestBroker_UpdateServiceInstance_ConcurrencyError(t *testing.T) {
 
 func TestBroker_UpdateServiceInstance_Error(t *testing.T) {
 	test := []util.HttpTestCase{
-		util.HttpTestCase{"GET", "/deployments", 200, util.Body("../_fixtures/api_get_deployments.json"), nil},
-		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192", 200, util.Body("../_fixtures/api_get_deployment.json"), nil},
-		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192/scalings", 200, util.Body("../_fixtures/api_get_scaling.json"), nil},
-		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192/recipes", 200, util.Body("../_fixtures/api_get_recipes_for_service_update.json"), nil},
-		util.HttpTestCase{"POST", "/deployments/5854017e89d50f424e000192/scalings", 500, util.Body("../_fixtures/api_update_scaling.json"), func(body string) {
+		util.HttpTestCase{Method: "GET", Path: "/deployments", Code: 200, Body: util.Body("../_fixtures/api_get_deployments.json"), Test: nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments/5854017e89d50f424e000192", Code: 200, Body: util.Body("../_fixtures/api_get_deployment.json"), Test: nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments/5854017e89d50f424e000192/scalings", Code: 200, Body: util.Body("../_fixtures/api_get_scaling.json"), Test: nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments/5854017e89d50f424e000192/recipes", Code: 200, Body: util.Body("../_fixtures/api_get_recipes_for_service_update.json"), Test: nil},
+		util.HttpTestCase{Method: "POST", Path: "/deployments/5854017e89d50f424e000192/scalings", Code: 500, Body: util.Body("../_fixtures/api_update_scaling.json"), Test: func(body string) {
 			assert.Contains(t, body, `{"deployment":{"units":1}}`)
 		}},
 	}
@@ -608,11 +618,11 @@ func TestBroker_UpdateServiceInstance_Error(t *testing.T) {
 
 func TestBroker_DeprovisionServiceInstance(t *testing.T) {
 	test := []util.HttpTestCase{
-		util.HttpTestCase{"GET", "/deployments", 200, util.Body("../_fixtures/api_get_deployments.json"), nil},
-		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192", 200, util.Body("../_fixtures/api_get_deployment.json"), nil},
-		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192/recipes", 200, util.Body("../_fixtures/api_get_recipes_for_service_deprovision.json"), nil},
-		util.HttpTestCase{"DELETE", "/deployments/5854017e89d50f424e000192", 202, util.Body("../_fixtures/api_delete_deployment_for_service_deprovision.json"), nil},
-		util.HttpTestCase{"GET", "/recipes/5821fd28a4b549d06e39886d", 200, util.Body("../_fixtures/api_get_recipe_for_service_deprovision.json"), nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments", Code: 200, Body: util.Body("../_fixtures/api_get_deployments.json"), Test: nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments/5854017e89d50f424e000192", Code: 200, Body: util.Body("../_fixtures/api_get_deployment.json"), Test: nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments/5854017e89d50f424e000192/recipes", Code: 200, Body: util.Body("../_fixtures/api_get_recipes_for_service_deprovision.json"), Test: nil},
+		util.HttpTestCase{Method: "DELETE", Path: "/deployments/5854017e89d50f424e000192", Code: 202, Body: util.Body("../_fixtures/api_delete_deployment_for_service_deprovision.json"), Test: nil},
+		util.HttpTestCase{Method: "GET", Path: "/recipes/5821fd28a4b549d06e39886d", Code: 200, Body: util.Body("../_fixtures/api_get_recipe_for_service_deprovision.json"), Test: nil},
 	}
 	apiServer := util.TestServer("deadbeef", test)
 	defer apiServer.Close()
@@ -632,11 +642,11 @@ func TestBroker_DeprovisionServiceInstance(t *testing.T) {
 
 func TestBroker_DeprovisionServiceInstance_ImmediateDeletion(t *testing.T) {
 	test := []util.HttpTestCase{
-		util.HttpTestCase{"GET", "/deployments", 200, util.Body("../_fixtures/api_get_deployments.json"), nil},
-		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192", 200, util.Body("../_fixtures/api_get_deployment.json"), nil},
-		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192/recipes", 200, util.Body("../_fixtures/api_get_recipes_for_service_deprovision.json"), nil},
-		util.HttpTestCase{"DELETE", "/deployments/5854017e89d50f424e000192", 202, util.Body("../_fixtures/api_delete_deployment_for_service_deprovision.json"), nil},
-		util.HttpTestCase{"GET", "/recipes/5821fd28a4b549d06e39886d", 200, util.Body("../_fixtures/api_get_recipe_for_immediate_service_deprovision.json"), nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments", Code: 200, Body: util.Body("../_fixtures/api_get_deployments.json"), Test: nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments/5854017e89d50f424e000192", Code: 200, Body: util.Body("../_fixtures/api_get_deployment.json"), Test: nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments/5854017e89d50f424e000192/recipes", Code: 200, Body: util.Body("../_fixtures/api_get_recipes_for_service_deprovision.json"), Test: nil},
+		util.HttpTestCase{Method: "DELETE", Path: "/deployments/5854017e89d50f424e000192", Code: 202, Body: util.Body("../_fixtures/api_delete_deployment_for_service_deprovision.json"), Test: nil},
+		util.HttpTestCase{Method: "GET", Path: "/recipes/5821fd28a4b549d06e39886d", Code: 200, Body: util.Body("../_fixtures/api_get_recipe_for_immediate_service_deprovision.json"), Test: nil},
 	}
 	apiServer := util.TestServer("deadbeef", test)
 	defer apiServer.Close()
@@ -656,11 +666,11 @@ func TestBroker_DeprovisionServiceInstance_ImmediateDeletion(t *testing.T) {
 
 func TestBroker_DeprovisionServiceInstance_ImmediateFailure(t *testing.T) {
 	test := []util.HttpTestCase{
-		util.HttpTestCase{"GET", "/deployments", 200, util.Body("../_fixtures/api_get_deployments.json"), nil},
-		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192", 200, util.Body("../_fixtures/api_get_deployment.json"), nil},
-		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192/recipes", 200, util.Body("../_fixtures/api_get_recipes_for_service_deprovision.json"), nil},
-		util.HttpTestCase{"DELETE", "/deployments/5854017e89d50f424e000192", 202, util.Body("../_fixtures/api_delete_deployment_for_service_deprovision.json"), nil},
-		util.HttpTestCase{"GET", "/recipes/5821fd28a4b549d06e39886d", 200, util.Body("../_fixtures/api_get_recipe_for_immediate_service_deprovision_failure.json"), nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments", Code: 200, Body: util.Body("../_fixtures/api_get_deployments.json"), Test: nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments/5854017e89d50f424e000192", Code: 200, Body: util.Body("../_fixtures/api_get_deployment.json"), Test: nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments/5854017e89d50f424e000192/recipes", Code: 200, Body: util.Body("../_fixtures/api_get_recipes_for_service_deprovision.json"), Test: nil},
+		util.HttpTestCase{Method: "DELETE", Path: "/deployments/5854017e89d50f424e000192", Code: 202, Body: util.Body("../_fixtures/api_delete_deployment_for_service_deprovision.json"), Test: nil},
+		util.HttpTestCase{Method: "GET", Path: "/recipes/5821fd28a4b549d06e39886d", Code: 200, Body: util.Body("../_fixtures/api_get_recipe_for_immediate_service_deprovision_failure.json"), Test: nil},
 	}
 	apiServer := util.TestServer("deadbeef", test)
 	defer apiServer.Close()
@@ -697,7 +707,7 @@ func TestBroker_DeprovisionServiceInstance_AsyncRequired(t *testing.T) {
 
 func TestBroker_DeprovisionServiceInstance_NotFound(t *testing.T) {
 	test := []util.HttpTestCase{
-		util.HttpTestCase{"GET", "/deployments", 404, util.Body("../_fixtures/api_get_deployments.json"), nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments", Code: 404, Body: util.Body("../_fixtures/api_get_deployments.json"), Test: nil},
 	}
 	apiServer := util.TestServer("deadbeef", test)
 	defer apiServer.Close()
@@ -718,9 +728,9 @@ func TestBroker_DeprovisionServiceInstance_NotFound(t *testing.T) {
 
 func TestBroker_DeprovisionServiceInstance_ConcurrencyError(t *testing.T) {
 	test := []util.HttpTestCase{
-		util.HttpTestCase{"GET", "/deployments", 200, util.Body("../_fixtures/api_get_deployments.json"), nil},
-		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192", 200, util.Body("../_fixtures/api_get_deployment.json"), nil},
-		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192/recipes", 200, util.Body("../_fixtures/api_get_recipes_for_concurrency_error_422.json"), nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments", Code: 200, Body: util.Body("../_fixtures/api_get_deployments.json"), Test: nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments/5854017e89d50f424e000192", Code: 200, Body: util.Body("../_fixtures/api_get_deployment.json"), Test: nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments/5854017e89d50f424e000192/recipes", Code: 200, Body: util.Body("../_fixtures/api_get_recipes_for_concurrency_error_422.json"), Test: nil},
 	}
 	apiServer := util.TestServer("deadbeef", test)
 	defer apiServer.Close()
@@ -741,10 +751,10 @@ func TestBroker_DeprovisionServiceInstance_ConcurrencyError(t *testing.T) {
 
 func TestBroker_DeprovisionServiceInstance_Error(t *testing.T) {
 	test := []util.HttpTestCase{
-		util.HttpTestCase{"GET", "/deployments", 200, util.Body("../_fixtures/api_get_deployments.json"), nil},
-		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192", 200, util.Body("../_fixtures/api_get_deployment.json"), nil},
-		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192/recipes", 200, util.Body("../_fixtures/api_get_recipes_for_service_deprovision.json"), nil},
-		util.HttpTestCase{"DELETE", "/deployments/5854017e89d50f424e000192", 500, util.Body("../_fixtures/api_delete_deployment.json"), nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments", Code: 200, Body: util.Body("../_fixtures/api_get_deployments.json"), Test: nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments/5854017e89d50f424e000192", Code: 200, Body: util.Body("../_fixtures/api_get_deployment.json"), Test: nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments/5854017e89d50f424e000192/recipes", Code: 200, Body: util.Body("../_fixtures/api_get_recipes_for_service_deprovision.json"), Test: nil},
+		util.HttpTestCase{Method: "DELETE", Path: "/deployments/5854017e89d50f424e000192", Code: 500, Body: util.Body("../_fixtures/api_delete_deployment.json"), Test: nil},
 	}
 	apiServer := util.TestServer("deadbeef", test)
 	defer apiServer.Close()

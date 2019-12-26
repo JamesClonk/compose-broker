@@ -16,7 +16,7 @@ func init() {
 
 func TestAPI_GetDatabases(t *testing.T) {
 	test := []util.HttpTestCase{
-		util.HttpTestCase{"GET", "/databases", 200, util.Body("../_fixtures/api_get_databases.json"), nil},
+		util.HttpTestCase{Method: "GET", Path: "/databases", Code: 200, Body: util.Body("../_fixtures/api_get_databases.json"), Test: nil},
 	}
 	apiServer := util.TestServer("deadbeef", test)
 	defer apiServer.Close()

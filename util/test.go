@@ -30,11 +30,11 @@ func TestConfig(apiURL string) *config.Config {
 }
 
 type HttpTestCase struct {
-	HttpMethod     string
-	RequestPath    string
-	HttpStatusCode int
-	ResponseBody   string
-	TestFunc       func(string)
+	Method string
+	Path   string
+	Code   int
+	Body   string
+	Test   func(string)
 }
 
 func TestServer(token string, testCases []HttpTestCase) *httptest.Server {
@@ -42,24 +42,24 @@ func TestServer(token string, testCases []HttpTestCase) *httptest.Server {
 		if len(token) > 0 {
 			if r.Header.Get("Authorization") != "Bearer "+token {
 				w.WriteHeader(401)
-				w.Write([]byte(`{"errors":"invalid_token"}`))
+				_, _ = w.Write([]byte(`{"errors":"invalid_token"}`))
 				return
 			}
 		}
 
 		for _, test := range testCases {
-			if len(test.HttpMethod) == 0 {
-				test.HttpMethod = "GET"
+			if len(test.Method) == 0 {
+				test.Method = "GET"
 			}
-			if strings.HasSuffix(r.RequestURI, test.RequestPath) && r.Method == test.HttpMethod {
-				if test.TestFunc != nil {
+			if strings.HasSuffix(r.RequestURI, test.Path) && r.Method == test.Method {
+				if test.Test != nil {
 					b, _ := ioutil.ReadAll(r.Body)
-					test.TestFunc(string(b))
+					test.Test(string(b))
 				}
 
-				w.WriteHeader(test.HttpStatusCode)
+				w.WriteHeader(test.Code)
 				w.Header().Set("Content-Type", "application/json")
-				fmt.Fprint(w, test.ResponseBody)
+				fmt.Fprint(w, test.Body)
 				return
 			}
 		}

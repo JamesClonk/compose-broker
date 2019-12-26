@@ -17,7 +17,7 @@ func init() {
 
 func TestBroker_Catalog(t *testing.T) {
 	test := []util.HttpTestCase{
-		util.HttpTestCase{"GET", "/databases", 200, util.Body("../_fixtures/api_get_databases.json"), nil},
+		util.HttpTestCase{Method: "GET", Path: "/databases", Code: 200, Body: util.Body("../_fixtures/api_get_databases.json"), Test: nil},
 	}
 	apiServer := util.TestServer("deadbeef", test)
 	defer apiServer.Close()
@@ -47,7 +47,7 @@ func TestBroker_Catalog(t *testing.T) {
 
 func TestBroker_Catalog_Trimmed(t *testing.T) {
 	test := []util.HttpTestCase{
-		util.HttpTestCase{"GET", "/databases", 200, util.Body("../_fixtures/api_get_databases_trimmed.json"), nil},
+		util.HttpTestCase{Method: "GET", Path: "/databases", Code: 200, Body: util.Body("../_fixtures/api_get_databases_trimmed.json"), Test: nil},
 	}
 	apiServer := util.TestServer("deadbeef", test)
 	defer apiServer.Close()

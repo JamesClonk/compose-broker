@@ -124,7 +124,7 @@ func (b *Broker) ProvisionInstance(rw http.ResponseWriter, req *http.Request) {
 	// verify scaling target value (units)
 	if units < 1 {
 		log.Errorf("units value %d must be greater than 0 for provisioning service instance %s", units, instanceID)
-		b.Error(rw, req, 400, "MissingParameters", "Units parameter is missing for service instance provisioning")
+		b.Error(rw, req, 400, "MissingParameters", "Units parameter is missing for service instance provisioning") // TODO: write test case
 		return
 	}
 
@@ -229,8 +229,21 @@ func (b *Broker) ProvisionInstance(rw http.ResponseWriter, req *http.Request) {
 		b.Error(rw, req, 500, "UnknownError", "Could not provision service instance") // TODO: write test case
 		return
 	}
-	// TODO: return 201 if immediately provisioned
-	// TODO: return 500 if immediately failed
+
+	if len(deployment.ProvisionRecipeID) > 0 {
+		if state, err := b.Client.GetRecipe(deployment.ProvisionRecipeID); err == nil {
+			if state.Status == "complete" {
+				// TODO: write test case
+				b.write(rw, req, 201, map[string]string{}) // provisioning already done
+				return
+			} else if state.Status == "failed" {
+				// TODO: write test case
+				log.Errorf("could not create service instance %s, recipe %s failed", instanceID, deployment.ProvisionRecipeID)
+				b.Error(rw, req, 400, "ProvisionFailure", "Could not create service instance") // provisioning immediately failed
+				return
+			}
+		}
+	}
 
 	// response JSON
 	provisionResponse := ServiceInstanceProvisioningResponse{

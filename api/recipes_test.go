@@ -16,7 +16,7 @@ func init() {
 
 func TestAPI_GetRecipe(t *testing.T) {
 	test := []util.HttpTestCase{
-		util.HttpTestCase{"GET", "/recipes/5821fd28a4b549d06e39886d", 200, util.Body("../_fixtures/api_get_recipe.json"), nil},
+		util.HttpTestCase{Method: "GET", Path: "/recipes/5821fd28a4b549d06e39886d", Code: 200, Body: util.Body("../_fixtures/api_get_recipe.json"), Test: nil},
 	}
 	apiServer := util.TestServer("deadbeef", test)
 	defer apiServer.Close()
@@ -37,7 +37,7 @@ func TestAPI_GetRecipe(t *testing.T) {
 
 func TestAPI_GetRecipes(t *testing.T) {
 	test := []util.HttpTestCase{
-		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192/recipes", 200, util.Body("../_fixtures/api_get_recipes.json"), nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments/5854017e89d50f424e000192/recipes", Code: 200, Body: util.Body("../_fixtures/api_get_recipes.json"), Test: nil},
 	}
 	apiServer := util.TestServer("deadbeef", test)
 	defer apiServer.Close()

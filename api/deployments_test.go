@@ -16,7 +16,7 @@ func init() {
 
 func TestAPI_CreateDeployment(t *testing.T) {
 	test := []util.HttpTestCase{
-		util.HttpTestCase{"POST", "/deployments", 202, util.Body("../_fixtures/api_create_deployment.json"), func(body string) {
+		util.HttpTestCase{Method: "POST", Path: "/deployments", Code: 202, Body: util.Body("../_fixtures/api_create_deployment.json"), Test: func(body string) {
 			assert.Contains(t, body, `"name":"fizz-production"`)
 			assert.Contains(t, body, `"account_id":"52a50cb96230650018000000"`)
 			assert.Contains(t, body, `"type":"postgresql"`)
@@ -58,7 +58,7 @@ func TestAPI_CreateDeployment(t *testing.T) {
 
 func TestAPI_GetDeployments(t *testing.T) {
 	test := []util.HttpTestCase{
-		util.HttpTestCase{"GET", "/deployments", 200, util.Body("../_fixtures/api_get_deployments.json"), nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments", Code: 200, Body: util.Body("../_fixtures/api_get_deployments.json"), Test: nil},
 	}
 	apiServer := util.TestServer("deadbeef", test)
 	defer apiServer.Close()
@@ -86,7 +86,7 @@ func TestAPI_GetDeployments(t *testing.T) {
 
 func TestAPI_GetDeployment(t *testing.T) {
 	test := []util.HttpTestCase{
-		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192", 200, util.Body("../_fixtures/api_get_deployment.json"), nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments/5854017e89d50f424e000192", Code: 200, Body: util.Body("../_fixtures/api_get_deployment.json"), Test: nil},
 	}
 	apiServer := util.TestServer("deadbeef", test)
 	defer apiServer.Close()
@@ -113,8 +113,8 @@ func TestAPI_GetDeployment(t *testing.T) {
 func TestAPI_GetDeploymentByName(t *testing.T) {
 	getDeploymentByIDCalled := false
 	test := []util.HttpTestCase{
-		util.HttpTestCase{"GET", "/deployments", 200, util.Body("../_fixtures/api_get_deployments.json"), nil},
-		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192", 200, util.Body("../_fixtures/api_get_deployment.json"), func(body string) {
+		util.HttpTestCase{Method: "GET", Path: "/deployments", Code: 200, Body: util.Body("../_fixtures/api_get_deployments.json"), Test: nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments/5854017e89d50f424e000192", Code: 200, Body: util.Body("../_fixtures/api_get_deployment.json"), Test: func(body string) {
 			getDeploymentByIDCalled = true
 		}},
 	}
@@ -144,8 +144,8 @@ func TestAPI_GetDeploymentByName(t *testing.T) {
 func TestAPI_GetDeploymentByName_Unknown(t *testing.T) {
 	getDeploymentByIDCalled := false
 	test := []util.HttpTestCase{
-		util.HttpTestCase{"GET", "/deployments", 200, util.Body("../_fixtures/api_get_deployments.json"), nil},
-		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192", 200, util.Body("../_fixtures/api_get_deployment.json"), func(body string) {
+		util.HttpTestCase{Method: "GET", Path: "/deployments", Code: 200, Body: util.Body("../_fixtures/api_get_deployments.json"), Test: nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments/5854017e89d50f424e000192", Code: 200, Body: util.Body("../_fixtures/api_get_deployment.json"), Test: func(body string) {
 			getDeploymentByIDCalled = true
 		}},
 	}
@@ -161,8 +161,8 @@ func TestAPI_GetDeploymentByName_Unknown(t *testing.T) {
 
 func TestAPI_DeleteDeployment(t *testing.T) {
 	test := []util.HttpTestCase{
-		util.HttpTestCase{"GET", "/deployments/5854017e89d50f424e000192", 200, util.Body("../_fixtures/api_get_deployment.json"), nil},
-		util.HttpTestCase{"DELETE", "/deployments/5854017e89d50f424e000192", 202, util.Body("../_fixtures/api_delete_deployment.json"), nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments/5854017e89d50f424e000192", Code: 200, Body: util.Body("../_fixtures/api_get_deployment.json"), Test: nil},
+		util.HttpTestCase{Method: "DELETE", Path: "/deployments/5854017e89d50f424e000192", Code: 202, Body: util.Body("../_fixtures/api_delete_deployment.json"), Test: nil},
 	}
 	apiServer := util.TestServer("deadbeef", test)
 	defer apiServer.Close()

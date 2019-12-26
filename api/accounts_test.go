@@ -15,7 +15,7 @@ func init() {
 
 func TestAPI_GetAccounts(t *testing.T) {
 	test := []util.HttpTestCase{
-		util.HttpTestCase{"GET", "/accounts", 200, util.Body("../_fixtures/api_get_accounts.json"), nil},
+		util.HttpTestCase{Method: "GET", Path: "/accounts", Code: 200, Body: util.Body("../_fixtures/api_get_accounts.json"), Test: nil},
 	}
 	apiServer := util.TestServer("deadbeef", test)
 	defer apiServer.Close()

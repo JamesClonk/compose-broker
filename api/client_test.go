@@ -15,7 +15,7 @@ func init() {
 
 func TestAPI_Delete(t *testing.T) {
 	test := []util.HttpTestCase{
-		util.HttpTestCase{"DELETE", "/api", 202, util.Body("../_fixtures/api_example_valid.json"), nil},
+		util.HttpTestCase{Method: "DELETE", Path: "/api", Code: 202, Body: util.Body("../_fixtures/api_example_valid.json"), Test: nil},
 	}
 	apiServer := util.TestServer("deadbeef", test)
 	defer apiServer.Close()
@@ -32,7 +32,7 @@ func TestAPI_Delete(t *testing.T) {
 
 func TestAPI_Delete_WrongStatusCode(t *testing.T) {
 	test := []util.HttpTestCase{
-		util.HttpTestCase{"DELETE", "/api", 200, util.Body("../_fixtures/api_example_valid.json"), nil},
+		util.HttpTestCase{Method: "DELETE", Path: "/api", Code: 200, Body: util.Body("../_fixtures/api_example_valid.json"), Test: nil},
 	}
 	apiServer := util.TestServer("deadbeef", test)
 	defer apiServer.Close()
@@ -45,7 +45,7 @@ func TestAPI_Delete_WrongStatusCode(t *testing.T) {
 
 func TestAPI_Get(t *testing.T) {
 	test := []util.HttpTestCase{
-		util.HttpTestCase{"GET", "/api", 200, util.Body("../_fixtures/api_example_valid.json"), nil},
+		util.HttpTestCase{Method: "GET", Path: "/api", Code: 200, Body: util.Body("../_fixtures/api_example_valid.json"), Test: nil},
 	}
 	apiServer := util.TestServer("deadbeef", test)
 	defer apiServer.Close()
@@ -62,7 +62,7 @@ func TestAPI_Get(t *testing.T) {
 
 func TestAPI_Get_WrongStatusCode(t *testing.T) {
 	test := []util.HttpTestCase{
-		util.HttpTestCase{"GET", "/api", 202, util.Body("../_fixtures/api_example_valid.json"), nil},
+		util.HttpTestCase{Method: "GET", Path: "/api", Code: 202, Body: util.Body("../_fixtures/api_example_valid.json"), Test: nil},
 	}
 	apiServer := util.TestServer("deadbeef", test)
 	defer apiServer.Close()
@@ -75,7 +75,7 @@ func TestAPI_Get_WrongStatusCode(t *testing.T) {
 
 func TestAPI_Get_InvalidResponse(t *testing.T) {
 	test := []util.HttpTestCase{
-		util.HttpTestCase{"GET", "/api", 500, util.Body("../_fixtures/api_example_invalid.json"), nil},
+		util.HttpTestCase{Method: "GET", Path: "/api", Code: 500, Body: util.Body("../_fixtures/api_example_invalid.json"), Test: nil},
 	}
 	apiServer := util.TestServer("deadbeef", test)
 	defer apiServer.Close()
@@ -88,7 +88,7 @@ func TestAPI_Get_InvalidResponse(t *testing.T) {
 
 func TestAPI_Get_ErrorResponse(t *testing.T) {
 	test := []util.HttpTestCase{
-		util.HttpTestCase{"GET", "/api", 500, util.Body("../_fixtures/api_example_error.json"), nil},
+		util.HttpTestCase{Method: "GET", Path: "/api", Code: 500, Body: util.Body("../_fixtures/api_example_error.json"), Test: nil},
 	}
 	apiServer := util.TestServer("deadbeef", test)
 	defer apiServer.Close()
@@ -101,7 +101,7 @@ func TestAPI_Get_ErrorResponse(t *testing.T) {
 
 func TestAPI_Get_MultipleErrorsResponse(t *testing.T) {
 	test := []util.HttpTestCase{
-		util.HttpTestCase{"GET", "/api", 500, util.Body("../_fixtures/api_example_errors.json"), nil},
+		util.HttpTestCase{Method: "GET", Path: "/api", Code: 500, Body: util.Body("../_fixtures/api_example_errors.json"), Test: nil},
 	}
 	apiServer := util.TestServer("deadbeef", test)
 	defer apiServer.Close()

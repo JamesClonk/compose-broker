@@ -15,7 +15,7 @@ func init() {
 
 func TestAPI_GetScaling(t *testing.T) {
 	test := []util.HttpTestCase{
-		util.HttpTestCase{"GET", "/deployments/5821fd28a4b549d06e39886d/scalings", 200, util.Body("../_fixtures/api_get_scaling.json"), nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments/5821fd28a4b549d06e39886d/scalings", Code: 200, Body: util.Body("../_fixtures/api_get_scaling.json"), Test: nil},
 	}
 	apiServer := util.TestServer("deadbeef", test)
 	defer apiServer.Close()
@@ -37,7 +37,7 @@ func TestAPI_GetScaling(t *testing.T) {
 
 func TestAPI_UpdateScaling(t *testing.T) {
 	test := []util.HttpTestCase{
-		util.HttpTestCase{"POST", "/deployments/5854017e89d50f424e000192/scalings", 200, util.Body("../_fixtures/api_update_scaling.json"), func(body string) {
+		util.HttpTestCase{Method: "POST", Path: "/deployments/5854017e89d50f424e000192/scalings", Code: 200, Body: util.Body("../_fixtures/api_update_scaling.json"), Test: func(body string) {
 			assert.Contains(t, body, `{"deployment":{"units":7}}`)
 		}},
 	}
