@@ -26,7 +26,7 @@ func NewRouter(c *config.Config) *mux.Router {
 	// TODO: bindings...
 	// r.HandleFunc("/v2/service_instances/{instanceID}/service_bindings/{bindingID}", b.BasicAuth(b.Bind)).Methods("PUT")
 	r.HandleFunc("/v2/service_instances/{instanceID}/service_bindings/{bindingID}", b.BasicAuth(b.FetchBinding)).Methods("GET")
-	// r.HandleFunc("/v2/service_instances/{instanceID}/service_bindings/{bindingID}", b.BasicAuth(b.Unbind)).Methods("DELETE")
+	r.HandleFunc("/v2/service_instances/{instanceID}/service_bindings/{bindingID}", b.BasicAuth(b.Unbind)).Methods("DELETE")
 
 	return r
 }

@@ -59,6 +59,19 @@ func (b *Broker) FetchBinding(rw http.ResponseWriter, req *http.Request) {
 	b.write(rw, req, 200, b.getBinding(instance))
 }
 
+func (b *Broker) Unbind(rw http.ResponseWriter, req *http.Request) {
+	vars := mux.Vars(req)
+	instanceID := vars["instanceID"]
+
+	instance, err := b.Client.GetDeploymentByName(instanceID)
+	if err != nil || instance.Name != instanceID {
+		log.Errorf("could not query service instance %s: %v", instanceID, err)
+		b.Error(rw, req, 410, "MissingServiceInstance", "The service instance does not exist")
+		return
+	}
+	b.write(rw, req, 200, map[string]string{})
+}
+
 func (b *Broker) getBinding(deployment *api.Deployment) ServiceBindingResponse {
 	credentials := ServiceBindingResponseCredentials{
 		Direct:        deployment.ConnectionStrings.Direct,

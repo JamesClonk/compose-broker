@@ -79,3 +79,45 @@ func TestBroker_FetchBinding_NoScaling(t *testing.T) {
 	assert.Equal(t, 200, rec.Code)
 	assert.Equal(t, util.Body("../_fixtures/broker_fetch_service_binding_without_scaling.json"), rec.Body.String())
 }
+
+func TestBroker_UnbindBinding(t *testing.T) {
+	test := []util.HttpTestCase{
+		util.HttpTestCase{Method: "GET", Path: "/deployments", Code: 200, Body: util.Body("../_fixtures/api_get_deployments.json"), Test: nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments/5854017e89d50f424e000192", Code: 200, Body: util.Body("../_fixtures/api_get_deployment.json"), Test: nil},
+	}
+	apiServer := util.TestServer("deadbeef", test)
+	defer apiServer.Close()
+	r := NewRouter(util.TestConfig(apiServer.URL))
+
+	rec := httptest.NewRecorder()
+	req, err := http.NewRequest("DELETE", "/v2/service_instances/8dcdf609-36c9-4b22-bb16-d97e48c50f26/service_bindings/deadbeef", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.SetBasicAuth("broker", "pw")
+	r.ServeHTTP(rec, req)
+
+	assert.Equal(t, 200, rec.Code)
+	assert.Equal(t, `{}`, rec.Body.String())
+}
+
+func TestBroker_UnbindBinding_NotFound(t *testing.T) {
+	test := []util.HttpTestCase{
+		util.HttpTestCase{Method: "GET", Path: "/deployments", Code: 404, Body: util.Body("../_fixtures/api_get_deployments.json"), Test: nil},
+	}
+	apiServer := util.TestServer("deadbeef", test)
+	defer apiServer.Close()
+	r := NewRouter(util.TestConfig(apiServer.URL))
+
+	rec := httptest.NewRecorder()
+	req, err := http.NewRequest("DELETE", "/v2/service_instances/52551d5f-1350-4f7d-9ddd-710a47ef9b72/service_bindings/deadbeef", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.SetBasicAuth("broker", "pw")
+	r.ServeHTTP(rec, req)
+
+	assert.Equal(t, 410, rec.Code)
+	assert.Contains(t, rec.Body.String(), `"error": "MissingServiceInstance"`)
+	assert.Contains(t, rec.Body.String(), `"description": "The service instance does not exist"`)
+}
