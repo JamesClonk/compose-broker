@@ -11,8 +11,8 @@
         "created_at": "2016-12-27T20:35:32.733Z",
         "updated_at": "2016-12-27T20:40:44.087Z",
         "deployment_id": "5854017e89d50f424e000192",
-        "operations_complete": 14,
-        "operations_total": 14,
+        "operations_complete": 8,
+        "operations_total": 8,
         "_embedded": {
           "recipes": []
         }

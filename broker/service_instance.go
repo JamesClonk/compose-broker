@@ -28,6 +28,11 @@ type ServiceInstanceProvisioningResponse struct {
 	DashboardURL string `json:"dashboard_url"`
 }
 
+type ServiceInstanceOperationResponse struct {
+	State       string `json:"state"`
+	Description string `json:"description,omitempty"`
+}
+
 type ServiceInstanceFetchResponse struct {
 	DashboardURL string                                 `json:"dashboard_url"`
 	Parameters   ServiceInstanceFetchResponseParameters `json:"parameters"`
@@ -242,6 +247,57 @@ func (b *Broker) ProvisionInstance(rw http.ResponseWriter, req *http.Request) {
 		DashboardURL: strings.TrimSuffix(deployment.Links.ComposeWebUI.HREF, "{?embed}"),
 	}
 	b.write(rw, req, 202, provisionResponse) // default async response
+}
+
+func (b *Broker) LastOperationOnInstance(rw http.ResponseWriter, req *http.Request) {
+	vars := mux.Vars(req)
+	instanceID := vars["instanceID"]
+
+	instance, err := b.Client.GetDeploymentByName(instanceID)
+	if err != nil || instance.Name != instanceID {
+		log.Errorf("could not query service instance %s: %v", instanceID, err)
+		b.Error(rw, req, 410, "MissingServiceInstance", "The service instance does not exist")
+		return
+	}
+
+	recipes, err := b.Client.GetRecipes(instance.ID)
+	if err != nil {
+		log.Warnf("could not query recipes for service instance %s: %v", instanceID, err)
+	}
+	if len(recipes) > 0 {
+		recipes.SortByUpdatedAt()
+		if recipes[0].Status == "complete" {
+			b.write(rw, req, 200, ServiceInstanceOperationResponse{
+				State:       "succeeded",
+				Description: fmt.Sprintf("%s complete", recipes[0].Name),
+			})
+			return
+		}
+		if recipes[0].Status == "failed" {
+			b.write(rw, req, 200, ServiceInstanceOperationResponse{
+				State:       "failed",
+				Description: fmt.Sprintf("Failure: %s", recipes[0].Template),
+			})
+			return
+		}
+		if recipes[0].Status == "running" ||
+			recipes[0].Status == "waiting" {
+			description := fmt.Sprintf("%s operation in progress", recipes[0].Name)
+			if recipes[0].OperationsTotal > 0 {
+				description = description + fmt.Sprintf(" [%d/%d]", recipes[0].OperationsComplete, recipes[0].OperationsTotal)
+			}
+			b.write(rw, req, 200, ServiceInstanceOperationResponse{
+				State:       "in progress",
+				Description: description,
+			})
+			return
+		}
+	}
+
+	b.write(rw, req, 200, ServiceInstanceOperationResponse{
+		State:       "succeeded",
+		Description: "No operation to be performed on service instance",
+	})
 }
 
 func (b *Broker) FetchInstance(rw http.ResponseWriter, req *http.Request) {

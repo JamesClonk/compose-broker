@@ -468,6 +468,114 @@ func TestBroker_ProvisionServiceInstance_ImmediateFailure(t *testing.T) {
 	assert.Contains(t, rec.Body.String(), `"description": "Could not create service instance"`)
 }
 
+func TestBroker_LastOperationServiceInstance(t *testing.T) {
+	test := []util.HttpTestCase{
+		util.HttpTestCase{Method: "GET", Path: "/deployments", Code: 200, Body: util.Body("../_fixtures/api_get_deployments.json"), Test: nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments/5854017e89d50f424e000192", Code: 200, Body: util.Body("../_fixtures/api_get_deployment.json"), Test: nil},
+	}
+	apiServer := util.TestServer("deadbeef", test)
+	defer apiServer.Close()
+	r := NewRouter(util.TestConfig(apiServer.URL))
+
+	rec := httptest.NewRecorder()
+	req, err := http.NewRequest("GET", "/v2/service_instances/8dcdf609-36c9-4b22-bb16-d97e48c50f26/last_operation", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.SetBasicAuth("broker", "pw")
+	r.ServeHTTP(rec, req)
+
+	assert.Equal(t, 200, rec.Code)
+	assert.Equal(t, util.Body("../_fixtures/broker_last_operation_on_service_instance_no_recipe.json"), rec.Body.String())
+}
+
+func TestBroker_LastOperationServiceInstance_Succeeded(t *testing.T) {
+	test := []util.HttpTestCase{
+		util.HttpTestCase{Method: "GET", Path: "/deployments", Code: 200, Body: util.Body("../_fixtures/api_get_deployments.json"), Test: nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments/5854017e89d50f424e000192", Code: 200, Body: util.Body("../_fixtures/api_get_deployment.json"), Test: nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments/5854017e89d50f424e000192/recipes", Code: 200, Body: util.Body("../_fixtures/api_get_recipes_for_last_operation_succeeded.json"), Test: nil},
+	}
+	apiServer := util.TestServer("deadbeef", test)
+	defer apiServer.Close()
+	r := NewRouter(util.TestConfig(apiServer.URL))
+
+	rec := httptest.NewRecorder()
+	req, err := http.NewRequest("GET", "/v2/service_instances/8dcdf609-36c9-4b22-bb16-d97e48c50f26/last_operation", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.SetBasicAuth("broker", "pw")
+	r.ServeHTTP(rec, req)
+
+	assert.Equal(t, 200, rec.Code)
+	assert.Equal(t, util.Body("../_fixtures/broker_last_operation_on_service_instance_succeeded.json"), rec.Body.String())
+}
+
+func TestBroker_LastOperationServiceInstance_Failed(t *testing.T) {
+	test := []util.HttpTestCase{
+		util.HttpTestCase{Method: "GET", Path: "/deployments", Code: 200, Body: util.Body("../_fixtures/api_get_deployments.json"), Test: nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments/5854017e89d50f424e000192", Code: 200, Body: util.Body("../_fixtures/api_get_deployment.json"), Test: nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments/5854017e89d50f424e000192/recipes", Code: 200, Body: util.Body("../_fixtures/api_get_recipes_for_last_operation_failed.json"), Test: nil},
+	}
+	apiServer := util.TestServer("deadbeef", test)
+	defer apiServer.Close()
+	r := NewRouter(util.TestConfig(apiServer.URL))
+
+	rec := httptest.NewRecorder()
+	req, err := http.NewRequest("GET", "/v2/service_instances/8dcdf609-36c9-4b22-bb16-d97e48c50f26/last_operation", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.SetBasicAuth("broker", "pw")
+	r.ServeHTTP(rec, req)
+
+	assert.Equal(t, 200, rec.Code)
+	assert.Equal(t, util.Body("../_fixtures/broker_last_operation_on_service_instance_failed.json"), rec.Body.String())
+}
+
+func TestBroker_LastOperationServiceInstance_InProgress(t *testing.T) {
+	test := []util.HttpTestCase{
+		util.HttpTestCase{Method: "GET", Path: "/deployments", Code: 200, Body: util.Body("../_fixtures/api_get_deployments.json"), Test: nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments/5854017e89d50f424e000192", Code: 200, Body: util.Body("../_fixtures/api_get_deployment.json"), Test: nil},
+		util.HttpTestCase{Method: "GET", Path: "/deployments/5854017e89d50f424e000192/recipes", Code: 200, Body: util.Body("../_fixtures/api_get_recipes_for_service_provision_in_progress.json"), Test: nil},
+	}
+	apiServer := util.TestServer("deadbeef", test)
+	defer apiServer.Close()
+	r := NewRouter(util.TestConfig(apiServer.URL))
+
+	rec := httptest.NewRecorder()
+	req, err := http.NewRequest("GET", "/v2/service_instances/8dcdf609-36c9-4b22-bb16-d97e48c50f26/last_operation", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.SetBasicAuth("broker", "pw")
+	r.ServeHTTP(rec, req)
+
+	assert.Equal(t, 200, rec.Code)
+	assert.Equal(t, util.Body("../_fixtures/broker_last_operation_on_service_instance_in_progress.json"), rec.Body.String())
+}
+
+func TestBroker_LastOperationServiceInstance_NotFound(t *testing.T) {
+	test := []util.HttpTestCase{
+		util.HttpTestCase{Method: "GET", Path: "/deployments", Code: 404, Body: util.Body("../_fixtures/api_get_deployments.json"), Test: nil},
+	}
+	apiServer := util.TestServer("deadbeef", test)
+	defer apiServer.Close()
+	r := NewRouter(util.TestConfig(apiServer.URL))
+
+	rec := httptest.NewRecorder()
+	req, err := http.NewRequest("GET", "/v2/service_instances/8dcdf609-36c9-4b22-bb16-d97e48c50f26/last_operation", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.SetBasicAuth("broker", "pw")
+	r.ServeHTTP(rec, req)
+
+	assert.Equal(t, 410, rec.Code)
+	assert.Contains(t, rec.Body.String(), `"error": "MissingServiceInstance"`)
+	assert.Contains(t, rec.Body.String(), `"description": "The service instance does not exist"`)
+}
+
 func TestBroker_FetchServiceInstance(t *testing.T) {
 	test := []util.HttpTestCase{
 		util.HttpTestCase{Method: "GET", Path: "/deployments", Code: 200, Body: util.Body("../_fixtures/api_get_deployments.json"), Test: nil},
