@@ -201,6 +201,75 @@ func TestBroker_ProvisionServiceInstance_UnitsMissing(t *testing.T) {
 	assert.Contains(t, rec.Body.String(), `"description": "Units parameter is missing for service instance provisioning"`)
 }
 
+func TestBroker_ProvisionServiceInstance_AccountsNotReadable(t *testing.T) {
+	test := []util.HttpTestCase{
+		util.HttpTestCase{Method: "GET", Path: "/accounts", Code: 404, Body: util.Body("../_fixtures/api_get_accounts_invalid_file.json"), Test: nil},
+	}
+	apiServer := util.TestServer("deadbeef", test)
+	defer apiServer.Close()
+
+	config := util.TestConfig(apiServer.URL)
+	config.API.DefaultAccountID = "" // clear
+	r := NewRouter(config)
+
+	provisioning := ServiceInstanceProvisioning{
+		ServiceID: "9b4ee86b-3876-469f-a531-062e71bc5859",
+		PlanID:    "d6222855-17c6-448c-885a-e9d931cd221b",
+	}
+	data, _ := json.MarshalIndent(provisioning, "", "  ")
+
+	rec := httptest.NewRecorder()
+	req, err := http.NewRequest("PUT", "/v2/service_instances/8dcdf609-36c9-4b22-bb16-d97e48c50f26?accepts_incomplete=true", bytes.NewBuffer(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.SetBasicAuth("broker", "pw")
+	r.ServeHTTP(rec, req)
+
+	assert.Equal(t, 409, rec.Code)
+	assert.Contains(t, rec.Body.String(), `"error": "UnknownError"`)
+	assert.Contains(t, rec.Body.String(), `"description": "Could not read Compose.io accounts"`)
+}
+
+func TestBroker_ProvisionServiceInstance_AccountIDFromAPI(t *testing.T) {
+	test := []util.HttpTestCase{
+		util.HttpTestCase{Method: "GET", Path: "/accounts", Code: 200, Body: util.Body("../_fixtures/api_get_accounts_for_service_provision.json"), Test: nil},
+		util.HttpTestCase{Method: "POST", Path: "/deployments", Code: 202, Body: util.Body("../_fixtures/api_create_deployment_for_service_provisioning.json"), Test: func(body string) {
+			assert.Contains(t, body, `"name":"8dcdf609-36c9-4b22-bb16-d97e48c50f26"`)
+			assert.Contains(t, body, `"account_id":"22de8c5fbdc3d1f777750492"`)
+			assert.Contains(t, body, `"type":"postgresql"`)
+			assert.Contains(t, body, `"datacenter":"gce:europe-west1"`)
+			assert.Contains(t, body, `"units":1`)
+			assert.NotContains(t, body, `version`)
+			assert.NotContains(t, body, `cache_mode`)
+			assert.Contains(t, body, `"notes":"9b4ee86b-3876-469f-a531-062e71bc5859-d6222855-17c6-448c-885a-e9d931cd221b"`)
+		}},
+	}
+	apiServer := util.TestServer("deadbeef", test)
+	defer apiServer.Close()
+
+	config := util.TestConfig(apiServer.URL)
+	config.API.DefaultAccountID = "" // clear
+	r := NewRouter(config)
+
+	provisioning := ServiceInstanceProvisioning{
+		ServiceID: "9b4ee86b-3876-469f-a531-062e71bc5859",
+		PlanID:    "d6222855-17c6-448c-885a-e9d931cd221b",
+	}
+	data, _ := json.MarshalIndent(provisioning, "", "  ")
+
+	rec := httptest.NewRecorder()
+	req, err := http.NewRequest("PUT", "/v2/service_instances/8dcdf609-36c9-4b22-bb16-d97e48c50f26?accepts_incomplete=true", bytes.NewBuffer(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.SetBasicAuth("broker", "pw")
+	r.ServeHTTP(rec, req)
+
+	assert.Equal(t, 202, rec.Code)
+	assert.Equal(t, util.Body("../_fixtures/broker_provision_service_instance.json"), rec.Body.String())
+}
+
 func TestBroker_ProvisionServiceInstance_AccountIDMissing(t *testing.T) {
 	test := []util.HttpTestCase{
 		util.HttpTestCase{Method: "GET", Path: "/accounts", Code: 200, Body: util.Body("../_fixtures/api_get_accounts_empty.json"), Test: nil},

@@ -141,11 +141,11 @@ func (b *Broker) ProvisionInstance(rw http.ResponseWriter, req *http.Request) {
 		accounts, err := b.Client.GetAccounts()
 		if err != nil {
 			log.Errorf("could not fetch accounts: %v", err)
-			b.Error(rw, req, 409, "UnknownError", "Could not read Compose.io accounts") // TODO: write test case
+			b.Error(rw, req, 409, "UnknownError", "Could not read Compose.io accounts")
 			return
 		}
 		if len(accounts) > 0 {
-			accountID = accounts[0].ID // TODO: write test case
+			accountID = accounts[0].ID
 		}
 	}
 	if len(accountID) == 0 {
