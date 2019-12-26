@@ -3,7 +3,6 @@ module github.com/JamesClonk/compose-broker
 go 1.13
 
 require (
-	github.com/JamesClonk/elephantsql-broker v1.0.1
 	github.com/elazarl/goproxy v0.0.0-20191011121108-aa519ddbe484 // indirect
 	github.com/gorilla/mux v1.7.3
 	github.com/parnurzeal/gorequest v0.2.16
