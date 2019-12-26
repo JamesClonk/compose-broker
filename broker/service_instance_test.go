@@ -19,15 +19,15 @@ func init() {
 
 func TestBroker_ProvisionServiceInstance(t *testing.T) {
 	test := []util.HttpTestCase{
-		util.HttpTestCase{Method: "POST", Path: "/deployments", Code: 202, Body: util.Body("../_fixtures/api_create_deployment.json"), Test: func(body string) {
-			assert.Contains(t, body, `"name":"fizz-production"`)
-			assert.Contains(t, body, `"account_id":"52a50cb96230650018000000"`)
+		util.HttpTestCase{Method: "POST", Path: "/deployments", Code: 202, Body: util.Body("../_fixtures/api_create_deployment_for_service_provisioning.json"), Test: func(body string) {
+			assert.Contains(t, body, `"name":"8dcdf609-36c9-4b22-bb16-d97e48c50f26"`)
+			assert.Contains(t, body, `"account_id":"586eab527c65836dde5533e8"`)
 			assert.Contains(t, body, `"type":"postgresql"`)
 			assert.Contains(t, body, `"datacenter":"gce:europe-west1"`)
 			assert.Contains(t, body, `"units":1`)
 			assert.NotContains(t, body, `version`)
 			assert.NotContains(t, body, `cache_mode`)
-			assert.Contains(t, body, `"notes":"blubb"`)
+			assert.Contains(t, body, `"notes":"9b4ee86b-3876-469f-a531-062e71bc5859-d6222855-17c6-448c-885a-e9d931cd221b"`)
 		}},
 	}
 	apiServer := util.TestServer("deadbeef", test)

@@ -1,0 +1,50 @@
+{
+  "id": "59a6b3a5f32fb6001001ae6c",
+  "account_id": "586eab527c65836dde5533e8",
+  "name": "8dcdf609-36c9-4b22-bb16-d97e48c50f26",
+  "type": "postgresql",
+  "created_at": "2017-08-30T12:46:29Z",
+  "notes": "9b4ee86b-3876-469f-a531-062e71bc5859-d6222855-17c6-448c-885a-e9d931cd221b",
+  "customer_billing_code": "",
+  "cluster_id": "",
+  "ca_certificate_base64": "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURaekNDQWsrZ0F3SUJBZ0lFV2FhenFqQU5CZ2txaGtpRzl3MEJBUTBGQURBMU1UTXdNUVlEVlFRRERDcGoKYjIxd2IzTjFjbVV0TlRNNFl6ZzVZelV6WkdFMU9UVXdOamxrTmpJM016Rm1OamN4TmpNMk1EVXdIaGNOTVRjdwpPRE13TVRJME5qTTBXaGNOTXpjd09ETXdNVEl3TURBd1dqQTFNVE13TVFZRFZRUUREQ3BqYjIxd2IzTjFjbVV0Ck5UTTRZemc1WXpVelpHRTFPVFV3Tmpsa05qSTNNekZtTmpjeE5qTTJNRFV3Z2dFaU1BMEdDU3FHU0liM0RRRUIKQVFVQUE0SUJEd0F3Z2dFS0FvSUJBUUN2YUxVZVVKVkI1VXZpeS9FUFlZKzVZUHI5TjVUT3VoVTZKdXYyaGlVNQpKc3BVeG10Z1BVdXloWU9LY29vMzFZZXRjQ3RRaWVCNE5HUnp0eE5vUmdmVlpkbHFaSmdqRHBiSFNXYW9YM1NKCkhDV2lFbExleUg2cnk0cG5McEd0QnpaWTBNMlBYOXpBbnhFbkI4em1RT1hhSjB4MUR0SmxhS2lMOVBrRW5WengKcjQ5OHRRSFpIVms1OStCcGxXNFQrK2FrblA3bzNOUFVTMTRYaEZVRFFFdzdvVVJmdFpwcFB1YklFZVNJd1pXTQpzSC9jTVRJQzRkWGRsZTFvOEhNeEpqemtKOXJDNCtaK1dQUi9mWnVxL0EwSFVwUUl5S1o5WFFmcElhVjRzVk9pCnZjaDJNUHVRWDRhTDhHY3FvdlVmbnRFU0tkdW9XQmFVcmRGQ1dXZUhROFRQQWdNQkFBR2pmekI5TUIwR0ExVWQKRGdRV0JCVEdsdjdHaE9SbGtnQzJVTlRUcFBQeTZ2NGR0VEFPQmdOVkhROEJBZjhFQkFNQ0FnUXdIUVlEVlIwbApCQll3RkFZSUt3WUJCUVVIQXdFR0NDc0dBUVVGQndNQ01Bd0dBMVVkRXdRRk1BTUJBZjh3SHdZRFZSMGpCQmd3CkZvQVV4cGIreG9Ua1paSUF0bERVMDZUejh1citIYlV3RFFZSktvWklodmNOQVFFTkJRQURnZ0VCQUptMlRXdmIKTVZPdFZONTRjdnhFTnJTVW41RHQ0OHo2V25RQWxveGlsSUtiaG0wUU56NDlhWHVmVXh6ZTloWEJ0VkhPQllYTwpKWGlla1hSOUxEajE1eDZ6NjJDZ0RFWlkwSU5yY0RKUjYxVTAyY3l1bjc3QXQ5c0ZycVFvL1hmeWt2T3Z0d29pCi9TcDgrTU5hQVZ4THRaWFQ1N1hhWUo3ZDdyQWw1a2pEaWxRaDhQb2xJd2JoZjNwM042YXVOV0lTdlY0SGF4NDQKS1dHd2FoMTREQzhRSENzNWoydlJkUkpobERYS1IyRTQ5VDI2RWdyZStLbzdTMGp1ek0rcjZ0MEFLZFFoMytFVgpLK0Q0SHlsZmNZbXNWeTRINE9BaEJLbjU3M0VXZnNOY0VPYXoySFN2SXRaOXJzY0ZqdFYyWWpaVXlGa3MyNmUwCnlKaEdqa0lySWhNTnF4RT0KLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=",
+  "connection_strings": {
+    "direct": [
+      "postgres://admin:XXXXX@aws-eu-west-1-portal.8.dblayer.com:17000/compose",
+      "postgres://admin:XXXXX@aws-eu-west-1-portal.9.dblayer.com:17000/compose"
+    ],
+    "cli": [
+      "psql \"sslmode=require host=aws-eu-west-1-portal.8.dblayer.com port=17000 dbname=compose user=admin\"",
+      "psql \"sslmode=require host=aws-eu-west-1-portal.9.dblayer.com port=17000 dbname=compose user=admin\""
+    ],
+    "maps": [],
+    "misc": {},
+    "ssh": [],
+    "health": [],
+    "admin": []
+  },
+  "version": "9.6.3",
+  "provision_recipe_id": "59a6b3a5f32fb6001001ae6b",
+  "_links": {
+    "compose_web_ui": {
+      "href": "https://app.compose.io/compose-3/deployments/8dcdf609-36c9-4b22-bb16-d97e48c50f26{?embed}",
+      "templated": true
+    },
+    "scalings": {
+      "href": "https://api.compose.io/2016-07/deployments/59a6b3a5f32fb6001001ae6c/scalings{?embed}",
+      "templated": true
+    },
+    "backups": {
+      "href": "https://api.compose.io/2016-07/deployments/59a6b3a5f32fb6001001ae6c/backups{?embed}",
+      "templated": true
+    },
+    "alerts": {
+      "href": "https://api.compose.io/2016-07/deployments/59a6b3a5f32fb6001001ae6c/alerts{?embed}",
+      "templated": true
+    },
+    "cluster": {
+      "href": "https://api.compose.io/2016-07/clusters/57ade1d70b2fa9ce1c7e6162{?embed}",
+      "templated": true
+    }
+  }
+}

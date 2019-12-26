@@ -23,6 +23,7 @@ func TestConfig(apiURL string) *config.Config {
 			URL:               apiURL,
 			Token:             "deadbeef",
 			DefaultDatacenter: "gce:europe-west1",
+			DefaultAccountID:  "586eab527c65836dde5533e8",
 			Retries:           1,
 			RetryInterval:     10 * time.Millisecond,
 		},

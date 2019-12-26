@@ -129,13 +129,13 @@ func (b *Broker) ProvisionInstance(rw http.ResponseWriter, req *http.Request) {
 	}
 
 	// TODO: test parameter, default and collected account_id values
+	// account_id can be set to a global default value
+	if len(b.APIConfig.DefaultAccountID) > 0 {
+		accountID = b.APIConfig.DefaultAccountID
+	}
 	// account_id can be provided as provisioning parameter
 	if len(provisioning.Parameters.AccountID) > 0 {
 		accountID = provisioning.Parameters.AccountID
-	}
-	// account_id can also be set to a global default value
-	if len(b.APIConfig.DefaultAccountID) == 0 {
-		accountID = b.APIConfig.DefaultAccountID
 	}
 	if len(accountID) == 0 {
 		// get accountID from API
@@ -249,7 +249,6 @@ func (b *Broker) ProvisionInstance(rw http.ResponseWriter, req *http.Request) {
 	provisionResponse := ServiceInstanceProvisioningResponse{
 		DashboardURL: strings.TrimSuffix(deployment.Links.ComposeWebUI.HREF, "{?embed}"),
 	}
-	// TODO: write test case
 	b.write(rw, req, 202, provisionResponse) // default async response
 }
 
