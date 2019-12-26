@@ -79,7 +79,7 @@ func (c *Client) Do(method, endpoint, payload string, code int) (string, error) 
 		request = request.Send(payload)
 	}
 	response, body, errs := request.End()
-	if response.StatusCode != code {
+	if response != nil && response.StatusCode != code {
 		errs = append(errs, fmt.Errorf("unexpected status code: %d", response.StatusCode))
 		errs = append(errs, composeErrors(body)...)
 	}

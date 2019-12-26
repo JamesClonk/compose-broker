@@ -124,11 +124,10 @@ func (b *Broker) ProvisionInstance(rw http.ResponseWriter, req *http.Request) {
 	// verify scaling target value (units)
 	if units < 1 {
 		log.Errorf("units value %d must be greater than 0 for provisioning service instance %s", units, instanceID)
-		b.Error(rw, req, 400, "MissingParameters", "Units parameter is missing for service instance provisioning") // TODO: write test case
+		b.Error(rw, req, 400, "MissingParameters", "Units parameter is missing for service instance provisioning")
 		return
 	}
 
-	// TODO: test parameter, default and collected account_id values
 	// account_id can be set to a global default value
 	if len(b.APIConfig.DefaultAccountID) > 0 {
 		accountID = b.APIConfig.DefaultAccountID
@@ -146,16 +145,15 @@ func (b *Broker) ProvisionInstance(rw http.ResponseWriter, req *http.Request) {
 			return
 		}
 		if len(accounts) > 0 {
-			accountID = accounts[0].ID
+			accountID = accounts[0].ID // TODO: write test case
 		}
 	}
 	if len(accountID) == 0 {
 		log.Errorf("account_id for provisioning service instance %s could not be determined", instanceID)
-		b.Error(rw, req, 400, "MissingParameters", "AccountID is missing for service instance provisioning") // TODO: write test case
+		b.Error(rw, req, 400, "MissingParameters", "AccountID is missing for service instance provisioning")
 		return
 	}
 
-	// TODO: test plan, parameter and default datacenter values
 	// datacenter can also be provided as provisioning parameter, takes precedence over plan value
 	if len(provisioning.Parameters.Datacenter) > 0 {
 		datacenter = provisioning.Parameters.Datacenter
@@ -165,13 +163,11 @@ func (b *Broker) ProvisionInstance(rw http.ResponseWriter, req *http.Request) {
 		datacenter = b.APIConfig.DefaultDatacenter
 	}
 
-	// TODO: test plan and parameter values for version
 	// version can also be provided as provisioning parameter, takes precedence over plan value
 	if len(provisioning.Parameters.Version) > 0 {
 		version = provisioning.Parameters.Version
 	}
 
-	// TODO: test plan and parameter values for cache_mode
 	// cache_mode can also be provided as provisioning parameter, takes precedence over plan value
 	if provisioning.Parameters.CacheMode {
 		cacheMode = provisioning.Parameters.CacheMode

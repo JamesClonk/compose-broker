@@ -52,6 +52,80 @@ func TestBroker_ProvisionServiceInstance(t *testing.T) {
 	assert.Equal(t, util.Body("../_fixtures/broker_provision_service_instance.json"), rec.Body.String())
 }
 
+func TestBroker_ProvisionServiceInstance_WithProvisionParameters(t *testing.T) {
+	test := []util.HttpTestCase{
+		util.HttpTestCase{Method: "POST", Path: "/deployments", Code: 202, Body: util.Body("../_fixtures/api_create_deployment_for_service_provisioning.json"), Test: func(body string) {
+			assert.Contains(t, body, `"name":"8dcdf609-36c9-4b22-bb16-d97e48c50f26"`)
+			assert.Contains(t, body, `"account_id":"oracle"`)
+			assert.Contains(t, body, `"type":"postgresql"`)
+			assert.Contains(t, body, `"datacenter":"solaris:sun"`)
+			assert.Contains(t, body, `"units":7`)
+			assert.Contains(t, body, `"version":"11.0"`)
+			assert.Contains(t, body, `"cache_mode":true`)
+			assert.Contains(t, body, `"notes":"9b4ee86b-3876-469f-a531-062e71bc5859-d6222855-17c6-448c-885a-e9d931cd221b"`)
+		}},
+	}
+	apiServer := util.TestServer("deadbeef", test)
+	defer apiServer.Close()
+	r := NewRouter(util.TestConfig(apiServer.URL))
+
+	provisioning := ServiceInstanceProvisioning{
+		ServiceID: "9b4ee86b-3876-469f-a531-062e71bc5859",
+		PlanID:    "d6222855-17c6-448c-885a-e9d931cd221b",
+	}
+	provisioning.Parameters.AccountID = "oracle"
+	provisioning.Parameters.Datacenter = "solaris:sun"
+	provisioning.Parameters.Units = 7
+	provisioning.Parameters.Version = "11.0"
+	provisioning.Parameters.CacheMode = true
+	data, _ := json.MarshalIndent(provisioning, "", "  ")
+
+	rec := httptest.NewRecorder()
+	req, err := http.NewRequest("PUT", "/v2/service_instances/8dcdf609-36c9-4b22-bb16-d97e48c50f26?accepts_incomplete=true", bytes.NewBuffer(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.SetBasicAuth("broker", "pw")
+	r.ServeHTTP(rec, req)
+
+	assert.Equal(t, 202, rec.Code)
+	assert.Equal(t, util.Body("../_fixtures/broker_provision_service_instance.json"), rec.Body.String())
+}
+
+func TestBroker_ProvisionServiceInstance_WithPlanParameters(t *testing.T) {
+	test := []util.HttpTestCase{
+		util.HttpTestCase{Method: "POST", Path: "/deployments", Code: 202, Body: util.Body("../_fixtures/api_create_deployment_for_service_provisioning.json"), Test: func(body string) {
+			assert.Contains(t, body, `"name":"8dcdf609-36c9-4b22-bb16-d97e48c50f26"`)
+			assert.Contains(t, body, `"type":"redis"`)
+			assert.Contains(t, body, `"datacenter":"aws:eu-central-1"`)
+			assert.Contains(t, body, `"units":2`)
+			assert.Contains(t, body, `"version":"4.0.14"`)
+			assert.Contains(t, body, `"cache_mode":true`)
+			assert.Contains(t, body, `"notes":"e27ea95a-3883-44f2-8ca4-01101f39d50c-ae2bda53-fe15-4335-9422-774aae3e7e32"`)
+		}},
+	}
+	apiServer := util.TestServer("deadbeef", test)
+	defer apiServer.Close()
+	r := NewRouter(util.TestConfig(apiServer.URL))
+
+	provisioning := ServiceInstanceProvisioning{
+		ServiceID: "e27ea95a-3883-44f2-8ca4-01101f39d50c",
+		PlanID:    "ae2bda53-fe15-4335-9422-774aae3e7e32",
+	}
+	data, _ := json.MarshalIndent(provisioning, "", "  ")
+
+	rec := httptest.NewRecorder()
+	req, err := http.NewRequest("PUT", "/v2/service_instances/8dcdf609-36c9-4b22-bb16-d97e48c50f26?accepts_incomplete=true", bytes.NewBuffer(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.SetBasicAuth("broker", "pw")
+	r.ServeHTTP(rec, req)
+
+	assert.Equal(t, 202, rec.Code)
+	assert.Equal(t, util.Body("../_fixtures/broker_provision_service_instance.json"), rec.Body.String())
+}
+
 func TestBroker_ProvisionServiceInstance_AsyncRequired(t *testing.T) {
 	r := NewRouter(util.TestConfig(""))
 
@@ -125,6 +199,36 @@ func TestBroker_ProvisionServiceInstance_UnitsMissing(t *testing.T) {
 	assert.Equal(t, 400, rec.Code)
 	assert.Contains(t, rec.Body.String(), `"error": "MissingParameters"`)
 	assert.Contains(t, rec.Body.String(), `"description": "Units parameter is missing for service instance provisioning"`)
+}
+
+func TestBroker_ProvisionServiceInstance_AccountIDMissing(t *testing.T) {
+	test := []util.HttpTestCase{
+		util.HttpTestCase{Method: "GET", Path: "/accounts", Code: 200, Body: util.Body("../_fixtures/api_get_accounts_empty.json"), Test: nil},
+	}
+	apiServer := util.TestServer("deadbeef", test)
+	defer apiServer.Close()
+
+	config := util.TestConfig(apiServer.URL)
+	config.API.DefaultAccountID = "" // clear
+	r := NewRouter(config)
+
+	provisioning := ServiceInstanceProvisioning{
+		ServiceID: "9b4ee86b-3876-469f-a531-062e71bc5859",
+		PlanID:    "d6222855-17c6-448c-885a-e9d931cd221b",
+	}
+	data, _ := json.MarshalIndent(provisioning, "", "  ")
+
+	rec := httptest.NewRecorder()
+	req, err := http.NewRequest("PUT", "/v2/service_instances/8dcdf609-36c9-4b22-bb16-d97e48c50f26?accepts_incomplete=true", bytes.NewBuffer(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.SetBasicAuth("broker", "pw")
+	r.ServeHTTP(rec, req)
+
+	assert.Equal(t, 400, rec.Code)
+	assert.Contains(t, rec.Body.String(), `"error": "MissingParameters"`)
+	assert.Contains(t, rec.Body.String(), `"description": "AccountID is missing for service instance provisioning"`)
 }
 
 func TestBroker_FetchServiceInstance(t *testing.T) {

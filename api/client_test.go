@@ -112,3 +112,11 @@ func TestAPI_Get_MultipleErrorsResponse(t *testing.T) {
 	assert.Contains(t, err.Error(), `api_error: mistake!, big time!`)
 	assert.Contains(t, err.Error(), `server_error: fatality!`)
 }
+
+func TestAPI_Get_NilResponse(t *testing.T) {
+	c := NewClient(util.TestConfig(""))
+
+	_, err := c.Get("api")
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), `Get /api: unsupported protocol scheme ""`)
+}
