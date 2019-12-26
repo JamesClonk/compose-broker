@@ -174,8 +174,7 @@ func (b *Broker) ProvisionInstance(rw http.ResponseWriter, req *http.Request) {
 	}
 
 	// check if it already exists
-	instance, err := b.Client.GetDeploymentByName(instanceID)
-	if err == nil && instance.Name == instanceID {
+	if instance, err := b.Client.GetDeploymentByName(instanceID); err == nil && instance.Name == instanceID {
 		recipes, err := b.Client.GetRecipes(instance.ID)
 		if err != nil {
 			log.Warnf("could not fetch any recipes for service instance %s: %v", instanceID, err)
@@ -191,20 +190,19 @@ func (b *Broker) ProvisionInstance(rw http.ResponseWriter, req *http.Request) {
 				(recipes[0].Status == "running" ||
 					recipes[0].Status == "waiting") {
 				log.Infof("service instance %s is already ongoing provisioning, nothing to do", instanceID)
-				b.write(rw, req, 202, provisionResponse) // TODO: write test case
+				b.write(rw, req, 202, provisionResponse)
 				return
 			}
 			if recipes[0].Status == "complete" {
-				scaling, err := b.Client.GetScaling(instance.ID)
-				if err == nil && scaling.AllocatedUnits == units {
+				if scaling, err := b.Client.GetScaling(instance.ID); err == nil && scaling.AllocatedUnits == units {
 					log.Infof("service instance %s already exists and has same scaling, nothing to do", instanceID)
-					b.write(rw, req, 200, provisionResponse) // TODO: write test case
+					b.write(rw, req, 200, provisionResponse)
 					return
 				}
 			}
 		}
 		log.Errorf("could not create service instance %s: %v", instanceID, err)
-		b.Error(rw, req, 409, "UnknownError", "Could not create service instance") // TODO: write test case
+		b.Error(rw, req, 409, "UnknownError", "Could not create service instance")
 		return
 	}
 
