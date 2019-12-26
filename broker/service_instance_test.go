@@ -231,6 +231,88 @@ func TestBroker_ProvisionServiceInstance_AccountIDMissing(t *testing.T) {
 	assert.Contains(t, rec.Body.String(), `"description": "AccountID is missing for service instance provisioning"`)
 }
 
+func TestBroker_ProvisionServiceInstance_Error(t *testing.T) {
+	test := []util.HttpTestCase{
+		util.HttpTestCase{Method: "POST", Path: "/deployments", Code: 418, Body: util.Body("../_fixtures/api_create_deployment_for_service_provisioning.json"), Test: nil},
+	}
+	apiServer := util.TestServer("deadbeef", test)
+	defer apiServer.Close()
+	r := NewRouter(util.TestConfig(apiServer.URL))
+
+	provisioning := ServiceInstanceProvisioning{
+		ServiceID: "9b4ee86b-3876-469f-a531-062e71bc5859",
+		PlanID:    "d6222855-17c6-448c-885a-e9d931cd221b",
+	}
+	data, _ := json.MarshalIndent(provisioning, "", "  ")
+
+	rec := httptest.NewRecorder()
+	req, err := http.NewRequest("PUT", "/v2/service_instances/8dcdf609-36c9-4b22-bb16-d97e48c50f26?accepts_incomplete=true", bytes.NewBuffer(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.SetBasicAuth("broker", "pw")
+	r.ServeHTTP(rec, req)
+
+	assert.Equal(t, 500, rec.Code)
+	assert.Contains(t, rec.Body.String(), `"error": "UnknownError"`)
+	assert.Contains(t, rec.Body.String(), `"description": "Could not create service instance"`)
+}
+
+func TestBroker_ProvisionServiceInstance_ImmediateCreation(t *testing.T) {
+	test := []util.HttpTestCase{
+		util.HttpTestCase{Method: "POST", Path: "/deployments", Code: 202, Body: util.Body("../_fixtures/api_create_deployment_for_service_provisioning.json"), Test: nil},
+		util.HttpTestCase{Method: "GET", Path: "/recipes/59a6b3a5f32fb6001001ae6b", Code: 200, Body: util.Body("../_fixtures/api_get_recipe_for_immediate_service_provision.json"), Test: nil},
+	}
+	apiServer := util.TestServer("deadbeef", test)
+	defer apiServer.Close()
+	r := NewRouter(util.TestConfig(apiServer.URL))
+
+	provisioning := ServiceInstanceProvisioning{
+		ServiceID: "9b4ee86b-3876-469f-a531-062e71bc5859",
+		PlanID:    "d6222855-17c6-448c-885a-e9d931cd221b",
+	}
+	data, _ := json.MarshalIndent(provisioning, "", "  ")
+
+	rec := httptest.NewRecorder()
+	req, err := http.NewRequest("PUT", "/v2/service_instances/8dcdf609-36c9-4b22-bb16-d97e48c50f26?accepts_incomplete=true", bytes.NewBuffer(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.SetBasicAuth("broker", "pw")
+	r.ServeHTTP(rec, req)
+
+	assert.Equal(t, 201, rec.Code) // provisioning could be fast and be immediately done
+	assert.Equal(t, "{}", rec.Body.String())
+}
+
+func TestBroker_ProvisionServiceInstance_ImmediateFailure(t *testing.T) {
+	test := []util.HttpTestCase{
+		util.HttpTestCase{Method: "POST", Path: "/deployments", Code: 202, Body: util.Body("../_fixtures/api_create_deployment_for_service_provisioning.json"), Test: nil},
+		util.HttpTestCase{Method: "GET", Path: "/recipes/59a6b3a5f32fb6001001ae6b", Code: 200, Body: util.Body("../_fixtures/api_get_recipe_for_immediate_service_provision_failure.json"), Test: nil},
+	}
+	apiServer := util.TestServer("deadbeef", test)
+	defer apiServer.Close()
+	r := NewRouter(util.TestConfig(apiServer.URL))
+
+	provisioning := ServiceInstanceProvisioning{
+		ServiceID: "9b4ee86b-3876-469f-a531-062e71bc5859",
+		PlanID:    "d6222855-17c6-448c-885a-e9d931cd221b",
+	}
+	data, _ := json.MarshalIndent(provisioning, "", "  ")
+
+	rec := httptest.NewRecorder()
+	req, err := http.NewRequest("PUT", "/v2/service_instances/8dcdf609-36c9-4b22-bb16-d97e48c50f26?accepts_incomplete=true", bytes.NewBuffer(data))
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.SetBasicAuth("broker", "pw")
+	r.ServeHTTP(rec, req)
+
+	assert.Equal(t, 400, rec.Code)
+	assert.Contains(t, rec.Body.String(), `"error": "ProvisionFailure"`)
+	assert.Contains(t, rec.Body.String(), `"description": "Could not create service instance"`)
+}
+
 func TestBroker_FetchServiceInstance(t *testing.T) {
 	test := []util.HttpTestCase{
 		util.HttpTestCase{Method: "GET", Path: "/deployments", Code: 200, Body: util.Body("../_fixtures/api_get_deployments.json"), Test: nil},

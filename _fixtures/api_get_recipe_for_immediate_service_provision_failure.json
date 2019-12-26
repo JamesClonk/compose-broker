@@ -1,0 +1,16 @@
+{
+  "id": "59a6b3a5f32fb6001001ae6b",
+  "name": "Provision",
+  "template": "Recipes::Deployment::Run",
+  "status": "failed",
+  "status_detail": "Running scaling on cpu.deccd8317431c28552f493a6d4aecf5d.",
+  "account_id": "5854017d89d50f424e000002",
+  "created_at": "2016-12-26T20:35:32.733Z",
+  "updated_at": "2016-12-28T20:40:44.087Z",
+  "deployment_id": "5854017e89d50f424e000192",
+  "operations_complete": 3,
+  "operations_total": 4,
+  "_embedded": {
+    "recipes": []
+  }
+}

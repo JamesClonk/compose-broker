@@ -222,18 +222,16 @@ func (b *Broker) ProvisionInstance(rw http.ResponseWriter, req *http.Request) {
 	deployment, err := b.Client.CreateDeployment(newDeployment)
 	if err != nil {
 		log.Errorf("could not create service instance %s: %v", instanceID, err)
-		b.Error(rw, req, 500, "UnknownError", "Could not provision service instance") // TODO: write test case
+		b.Error(rw, req, 500, "UnknownError", "Could not create service instance")
 		return
 	}
 
 	if len(deployment.ProvisionRecipeID) > 0 {
 		if state, err := b.Client.GetRecipe(deployment.ProvisionRecipeID); err == nil {
 			if state.Status == "complete" {
-				// TODO: write test case
 				b.write(rw, req, 201, map[string]string{}) // provisioning already done
 				return
 			} else if state.Status == "failed" {
-				// TODO: write test case
 				log.Errorf("could not create service instance %s, recipe %s failed", instanceID, deployment.ProvisionRecipeID)
 				b.Error(rw, req, 400, "ProvisionFailure", "Could not create service instance") // provisioning immediately failed
 				return
