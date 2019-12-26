@@ -112,7 +112,7 @@ func (b *Broker) getBinding(deployment *api.Deployment) ServiceBindingResponse {
 
 	scaling, err := b.Client.GetScaling(deployment.ID)
 	if err != nil {
-		log.Errorf("could not fetch scaling parameters for service instance %s: %v", deployment.ID, err)
+		log.Warnf("could not query scaling parameters for service instance %s: %v", deployment.ID, err)
 		scaling = &api.Scaling{}
 	}
 
