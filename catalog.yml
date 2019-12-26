@@ -49,9 +49,14 @@ services:
       - 512 MB Storage
       - 512 MB RAM
       highAvailability: true
+      # Number of resource units to allocate to the deployment (optional, defaults to 1)
       units: 2
+      # Whether to optimize the deployment to be used as a cache (optional, Redis only)
       cache_mode: true
+      # Version of the software to deploy (optional)
       version: "4.0.14"
+      # Datacenter to use for deployment (optional, defaults to $COMPOSE_API_DEFAULT_DATACENTER)
+      datacenter: aws:eu-central-1
 
 - id: 9b4ee86b-3876-469f-a531-062e71bc5859
   name: postgresql

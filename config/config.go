@@ -27,6 +27,7 @@ type API struct {
 	URL               string
 	Token             string
 	DefaultDatacenter string
+	DefaultAccountID  string
 	Retries           int
 	RetryInterval     time.Duration
 }
@@ -45,6 +46,7 @@ func loadConfig() {
 			URL:               strings.TrimSuffix(env.Get("COMPOSE_API_URL", "https://api.compose.io/2016-07"), "/"),
 			Token:             env.MustGet("COMPOSE_API_TOKEN"),
 			DefaultDatacenter: env.Get("COMPOSE_API_DEFAULT_DATACENTER", "aws:eu-central-1"),
+			DefaultAccountID:  env.Get("COMPOSE_API_DEFAULT_ACCOUNT_ID", ""),
 			Retries:           3,
 			RetryInterval:     3 * time.Second,
 		},

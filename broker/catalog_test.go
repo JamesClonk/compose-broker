@@ -40,6 +40,7 @@ func TestBroker_Catalog(t *testing.T) {
 	assert.Contains(t, rec.Body.String(), `"imageUrl": "https://compose.com/assets/icd-icons/etcd-9bf4cedacb096e58868085dc0b91b8c3cc3c1f0b3f8be05d1bf7ea5b5e9b6697.svg"`)
 	assert.Contains(t, rec.Body.String(), `"2 GB Storage"`)
 	assert.Contains(t, rec.Body.String(), `"512 MB RAM"`)
+	assert.Contains(t, rec.Body.String(), `"datacenter": "aws:eu-central-1"`)
 	assert.Contains(t, rec.Body.String(), `"longDescription": "Deploy RabbitMQ on AWS, GCP, or IBM Cloud in minutes. Fully managed, highly-available and production ready."`)
 	assert.Equal(t, util.Body("../_fixtures/broker_catalog.json"), rec.Body.String())
 }

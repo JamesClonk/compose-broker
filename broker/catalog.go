@@ -51,6 +51,7 @@ type ServicePlan struct {
 		Units            int      `json:"units" yaml:"units"`
 		CacheMode        bool     `json:"cache_mode,omitempty" yaml:"cache_mode,omitempty"`
 		Version          string   `json:"version,omitempty" yaml:"version,omitempty"`
+		Datacenter       string   `json:"datacenter,omitempty" yaml:"datacenter,omitempty"`
 	} `json:"metadata" yaml:"metadata"`
 }
 

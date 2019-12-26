@@ -69,7 +69,8 @@
             "highAvailability": true,
             "units": 2,
             "cache_mode": true,
-            "version": "4.0.14"
+            "version": "4.0.14",
+            "datacenter": "aws:eu-central-1"
           }
         }
       ]
