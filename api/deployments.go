@@ -18,8 +18,8 @@ type Deployment struct {
 	CustomerBillingCode string    `json:"customer_billing_code"`
 	ClusterID           string    `json:"cluster_id"`
 	Version             string    `json:"version"`
-	CACertificateBase64 string    `json:"ca_certificate_base64"`
-	ProvisionRecipeID   string    `json:"provision_recipe_id"`
+	CACertificateBase64 string    `json:"ca_certificate_base64,omitempty"`
+	ProvisionRecipeID   string    `json:"provision_recipe_id,omitempty"`
 	CreatedAt           time.Time `json:"created_at"`
 	ConnectionStrings   struct {
 		Direct []string `json:"direct"`

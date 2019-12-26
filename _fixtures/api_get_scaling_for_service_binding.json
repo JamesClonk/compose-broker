@@ -1,0 +1,10 @@
+{
+  "allocated_units": 10,
+  "used_units": 6,
+  "starting_units": 1,
+  "minimum_units": 1,
+  "memory_per_unit_in_mb": 2048,
+  "storage_per_unit_in_mb": 4096,
+  "unit_size_in_mb": 512,
+  "unit_type": "memory"
+}

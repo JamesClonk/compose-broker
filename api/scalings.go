@@ -8,14 +8,14 @@ import (
 )
 
 type Scaling struct {
-	AllocatedUnits     int    `json:"allocated_units"`
-	UsedUnits          int    `json:"used_units"`
-	StartingUnits      int    `json:"starting_units"`
-	MinimumUnits       int    `json:"minimum_units"`
-	MemoryPerUnitInMB  int    `json:"memory_per_unit_in_mb"`
-	StoragePerUnitInMB int    `json:"storage_per_unit_in_mb"`
-	UnitSizeInMB       int    `json:"unit_size_in_mb"`
-	UnitType           string `json:"unit_type"`
+	AllocatedUnits     int    `json:"allocated_units,omitempty"`
+	UsedUnits          int    `json:"used_units,omitempty"`
+	StartingUnits      int    `json:"starting_units,omitempty"`
+	MinimumUnits       int    `json:"minimum_units,omitempty"`
+	MemoryPerUnitInMB  int    `json:"memory_per_unit_in_mb,omitempty"`
+	StoragePerUnitInMB int    `json:"storage_per_unit_in_mb,omitempty"`
+	UnitSizeInMB       int    `json:"unit_size_in_mb,omitempty"`
+	UnitType           string `json:"unit_type,omitempty"`
 }
 
 func (c *Client) GetScaling(deploymentID string) (*Scaling, error) {

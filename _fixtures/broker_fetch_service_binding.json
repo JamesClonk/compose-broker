@@ -1,0 +1,83 @@
+{
+  "credentials": {
+    "direct": [
+      "postgres://compose-1:XXXX@customer-cluster.1.compose.direct:10020/compose_db?readonly=true",
+      "postgres://compose-2:YYYY@customer-cluster.2.compose.direct:10030/compose-rw-db"
+    ],
+    "cli": [
+      "psql \"sslmode=require host=cpu.blazzleblazzle.compose.direct port=10000 dbname=compose user=compose\""
+    ],
+    "maps": [],
+    "ssh": [],
+    "health": [],
+    "admin": [],
+    "uri": "postgres://compose-1:XXXX@customer-cluster.1.compose.direct:10020/compose_db?readonly=true",
+    "url": "postgres://compose-1:XXXX@customer-cluster.1.compose.direct:10020/compose_db?readonly=true",
+    "database_uri": "postgres://compose-1:XXXX@customer-cluster.1.compose.direct:10020/compose_db?readonly=true",
+    "username": "compose-1",
+    "password": "XXXX",
+    "database": "compose_db",
+    "scheme": "postgres",
+    "host": "customer-cluster.1.compose.direct:10020",
+    "hostname": "customer-cluster.1.compose.direct",
+    "port": 10020,
+    "ca_certificate": "foobar"
+  },
+  "endpoints": [
+    {
+      "host": "customer-cluster.1.compose.direct",
+      "ports": [
+        "10020"
+      ]
+    },
+    {
+      "host": "customer-cluster.2.compose.direct",
+      "ports": [
+        "10030"
+      ]
+    }
+  ],
+  "parameters": {
+    "deployment": {
+      "id": "5854017e89d50f424e000192",
+      "account_id": "5854017d89d50f424e000002",
+      "name": "8dcdf609-36c9-4b22-bb16-d97e48c50f26",
+      "type": "postgresql",
+      "notes": "the production fizz db",
+      "customer_billing_code": "bill-to-fizz",
+      "cluster_id": "59a6a6238a681830479c80f8",
+      "version": "9.6.3",
+      "ca_certificate_base64": "foobar",
+      "created_at": "2016-12-16T15:00:14.922Z",
+      "connection_strings": {
+        "direct": [
+          "postgres://compose-1:XXXX@customer-cluster.1.compose.direct:10020/compose_db?readonly=true",
+          "postgres://compose-2:YYYY@customer-cluster.2.compose.direct:10030/compose-rw-db"
+        ],
+        "cli": [
+          "psql \"sslmode=require host=cpu.blazzleblazzle.compose.direct port=10000 dbname=compose user=compose\""
+        ],
+        "maps": [],
+        "ssh": [],
+        "health": [],
+        "admin": []
+      },
+      "_links": {
+        "compose_web_ui": {
+          "href": "https://app.compose.io/northwind/deployments/fizz-production{?embed}",
+          "templated": true
+        }
+      }
+    },
+    "scaling": {
+      "allocated_units": 10,
+      "used_units": 6,
+      "starting_units": 1,
+      "minimum_units": 1,
+      "memory_per_unit_in_mb": 2048,
+      "storage_per_unit_in_mb": 4096,
+      "unit_size_in_mb": 512,
+      "unit_type": "memory"
+    }
+  }
+}

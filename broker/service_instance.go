@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strings"
-	"time"
 
 	"github.com/JamesClonk/compose-broker/api"
 	"github.com/JamesClonk/compose-broker/log"
@@ -38,15 +37,8 @@ type ServiceInstanceFetchResponse struct {
 	Parameters   ServiceInstanceFetchResponseParameters `json:"parameters"`
 }
 type ServiceInstanceFetchResponseParameters struct {
-	ID             string    `json:"id"`
-	Name           string    `json:"name"`
-	AccountID      string    `json:"account_id"`
-	Type           string    `json:"type"`
-	Notes          string    `json:"notes"`
-	Version        string    `json:"version"`
-	CreatedAt      time.Time `json:"created_at"`
-	AllocatedUnits int       `json:"allocated_units"`
-	UsedUnits      int       `json:"used_units"`
+	Deployment api.Deployment `json:"deployment"`
+	Scaling    api.Scaling    `json:"scaling"`
 }
 
 type ServiceInstanceUpdate struct {
@@ -343,15 +335,8 @@ func (b *Broker) FetchInstance(rw http.ResponseWriter, req *http.Request) {
 	fetchResponse := ServiceInstanceFetchResponse{
 		DashboardURL: strings.TrimSuffix(instance.Links.ComposeWebUI.HREF, "{?embed}"),
 		Parameters: ServiceInstanceFetchResponseParameters{
-			ID:             instance.ID,
-			Name:           instance.Name,
-			AccountID:      instance.AccountID,
-			Type:           instance.Type,
-			Notes:          instance.Notes,
-			Version:        instance.Version,
-			CreatedAt:      instance.CreatedAt,
-			AllocatedUnits: scaling.AllocatedUnits,
-			UsedUnits:      scaling.UsedUnits,
+			Deployment: *instance,
+			Scaling:    *scaling,
 		},
 	}
 	b.write(rw, req, 200, fetchResponse)

@@ -1,14 +1,44 @@
 {
   "dashboard_url": "https://app.compose.io/northwind/deployments/fizz-production",
   "parameters": {
-    "id": "5854017e89d50f424e000192",
-    "name": "8dcdf609-36c9-4b22-bb16-d97e48c50f26",
-    "account_id": "5854017d89d50f424e000002",
-    "type": "postgresql",
-    "notes": "the production fizz db",
-    "version": "9.6.3",
-    "created_at": "2016-12-16T15:00:14.922Z",
-    "allocated_units": 4,
-    "used_units": 3
+    "deployment": {
+      "id": "5854017e89d50f424e000192",
+      "account_id": "5854017d89d50f424e000002",
+      "name": "8dcdf609-36c9-4b22-bb16-d97e48c50f26",
+      "type": "postgresql",
+      "notes": "the production fizz db",
+      "customer_billing_code": "bill-to-fizz",
+      "cluster_id": "59a6a6238a681830479c80f8",
+      "version": "9.6.3",
+      "created_at": "2016-12-16T15:00:14.922Z",
+      "connection_strings": {
+        "direct": [
+          "postgres://compose:XXXX@customer-cluster.1.compose.direct:10020/compose"
+        ],
+        "cli": [
+          "psql \"sslmode=require host=cpu.blazzleblazzle.compose.direct port=10000 dbname=compose user=compose\""
+        ],
+        "maps": [],
+        "ssh": [],
+        "health": [],
+        "admin": []
+      },
+      "_links": {
+        "compose_web_ui": {
+          "href": "https://app.compose.io/northwind/deployments/fizz-production{?embed}",
+          "templated": true
+        }
+      }
+    },
+    "scaling": {
+      "allocated_units": 4,
+      "used_units": 3,
+      "starting_units": 2,
+      "minimum_units": 1,
+      "memory_per_unit_in_mb": 2048,
+      "storage_per_unit_in_mb": 4096,
+      "unit_size_in_mb": 1024,
+      "unit_type": "memory"
+    }
   }
 }
