@@ -44,7 +44,7 @@ It supports databases and services such as:
 
 ## Configuration
 
-All configuration of the service broker is done through environment variables (provided by `manifest.yml` during `cf push`) and the included `catalog.yml`.
+All configuration of the service broker is done through environment variables (provided by `manifest.yml` during a `cf push`) and the included `catalog.yml`.
 
 ### manifest.yml
 
@@ -70,9 +70,21 @@ Similarly if no datacenter is configured it will use `aws:eu-central-1` as defau
 
 When issuing service provisioning requests to the service broker it is possible to provide the account id and/or the datacenter as additional parameters.
 ###### Example:
-```
+```bash
 $ cf create-service etcd default my-etcd -c '{
   "account_id": "454f3deb8cad236ffb3452e9", 
   "datacenter": "gce:europe-west1"
 }'
+```
+
+#### Units
+
+When issuing service provisioning requests to the service broker it is also possible to request a specific [unit](https://apidocs.compose.com/docs/scaling) size (which basically determines the scaling for your Compose.io deployments, memory and disk space) instead of the configured value in the service brokers `catalog.yml`.
+
+It is also possible to update existing service instances with `cf update-service`.
+###### Example:
+```bash
+$ cf create-service scylla default my-scylla-db -c '{ "units": 10 }'
+# or
+$ cf update-service my-postgres-db -c '{ "units": 4 }'
 ```
