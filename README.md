@@ -58,15 +58,21 @@ BROKER_AUTH_PASSWORD: broker-password # required, HTTP basic auth password to se
 BROKER_CATALOG_FILENAME: catalog.yml # optional, filename containing all catalog information, defaults to catalog.yml
 COMPOSE_API_URL: https://api.compose.io/2016-07/ # optional, Base URL of Compose.io API, defaults to https://api.compose.io/2016-07
 COMPOSE_API_TOKEN: e7fb89a0-26f8-4ee5-890e-3c68079b15ea # required, Compose.io API Token
-COMPOSE_API_DEFAULT_DATACENTER: aws:eu-central-1 # optional, defaults to aws:eu-central-1
-COMPOSE_API_DEFAULT_ACCOUNT_ID: 586eab527c65836dde5533e8 # optional, service broker will try to read it from Compose.io API
+COMPOSE_API_DEFAULT_DATACENTER: gce:europe-west1 # optional, defaults to aws:eu-central-1
+COMPOSE_API_DEFAULT_ACCOUNT_ID: 586eab527c65836dde5533e8 # optional, service broker will try to read it from Compose.io API if not set
 ```
 
-### Default Datacenter
+#### Account ID & Datacenter
 
-By default the service broker will provision new database deployments in the configured datacenter `COMPOSE_API_DEFAULT_DATACENTER` (see `manifest.yml`) or if none configured at all it will use `aws:eu-central-1` as default value.
-When issuing service provisioning requests to the service broker it is also possible to provide the datacenter as an additional parameter.
+By default the service broker will provision new database deployments with the configured account id `COMPOSE_API_DEFAULT_ACCOUNT_ID` and datacenter `COMPOSE_API_DEFAULT_DATACENTER` (see `manifest.yml`).
+If no account id is configured it will try to read the value over the Compose.io API and take the first account it finds.
+Similarly if no datacenter is configured it will use `aws:eu-central-1` as default value.
+
+When issuing service provisioning requests to the service broker it is possible to provide the account id and/or the datacenter as additional parameters.
 ###### Example:
 ```
-$ cf create-service etcd default my-etcd -c '{"datacenter": "gce:europe-west1"}'
+$ cf create-service etcd default my-etcd -c '{
+  "account_id": "454f3deb8cad236ffb3452e9", 
+  "datacenter": "gce:europe-west1"
+}'
 ```
