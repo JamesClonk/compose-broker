@@ -62,6 +62,28 @@ COMPOSE_API_DEFAULT_DATACENTER: gce:europe-west1 # optional, defaults to aws:eu-
 COMPOSE_API_DEFAULT_ACCOUNT_ID: 586eab527c65836dde5533e8 # optional, service broker will try to read it from Compose.io API if not set
 ```
 
+### catalog.yml
+
+The service brokers provided `catalog.yml` configures all available services offerings and plans. (See [OSBAPI spec](https://github.com/openservicebrokerapi/servicebroker/blob/v2.15/spec.md#service-offering-object))
+
+Adjust this file to define your own different service plans with different deployment sizes / units. A plan's metadata allows for optionally configuring custom [unit](https://apidocs.compose.com/docs/scaling) sizes, enabling/disabling Redis' [cache mode](https://help.compose.com/docs/redis-cache-and-storage-modes), specifying explicit software versions or the [datacenter](https://apidocs.compose.com/docs/datacenters) to host the deployment. 
+
+Review the included Redis example plans for these properties:
+https://github.com/JamesClonk/compose-broker/blob/f7331ef8cc1a18c7fc4b060931e0cb35e7580f5e/catalog.yml#L19-L59
+
+###### Plan metadata example:
+```yaml
+metadata:
+  # Number of resource units to allocate to the deployment (optional, defaults to 1)
+  units: 2
+  # Whether to optimize the deployment to be used as a cache (optional, Redis only)
+  cache_mode: true
+  # Version of the software to deploy (optional)
+  version: "4.0.14"
+  # Datacenter to use for deployment (optional, defaults to $COMPOSE_API_DEFAULT_DATACENTER)
+  datacenter: aws:eu-central-1
+```
+
 #### Account ID & Datacenter
 
 By default the service broker will provision new database deployments with the configured account id `COMPOSE_API_DEFAULT_ACCOUNT_ID` and datacenter `COMPOSE_API_DEFAULT_DATACENTER` (see `manifest.yml`).
