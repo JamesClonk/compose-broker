@@ -22,12 +22,12 @@ type Deployment struct {
 	ProvisionRecipeID   string    `json:"provision_recipe_id,omitempty"`
 	CreatedAt           time.Time `json:"created_at"`
 	ConnectionStrings   struct {
-		Direct []string `json:"direct"`
-		CLI    []string `json:"cli"`
-		Maps   []string `json:"maps"`
-		SSH    []string `json:"ssh"`
-		Health []string `json:"health"`
-		Admin  []string `json:"admin"`
+		Direct []string    `json:"direct"`
+		CLI    interface{} `json:"cli,omitempty"`
+		Maps   interface{} `json:"maps,omitempty"`
+		SSH    interface{} `json:"ssh,omitempty"`
+		Health interface{} `json:"health,omitempty"`
+		Admin  interface{} `json:"admin,omitempty"`
 	} `json:"connection_strings"`
 	Links struct {
 		ComposeWebUI struct {

@@ -52,7 +52,6 @@ func TestAPI_CreateDeployment(t *testing.T) {
 	assert.Equal(t, "59a6b3a5f32fb6001001ae6b", deployment.ProvisionRecipeID)
 	assert.Equal(t, "postgres://admin:XXXXX@aws-eu-west-1-portal.8.dblayer.com:17000/compose", deployment.ConnectionStrings.Direct[0])
 	assert.Equal(t, "postgres://admin:XXXXX@aws-eu-west-1-portal.9.dblayer.com:17000/compose", deployment.ConnectionStrings.Direct[1])
-	assert.Equal(t, "psql \"sslmode=require host=aws-eu-west-1-portal.8.dblayer.com port=17000 dbname=compose user=admin\"", deployment.ConnectionStrings.CLI[0])
 	assert.Equal(t, "https://app.compose.io/compose-3/deployments/fizz-production{?embed}", deployment.Links.ComposeWebUI.HREF)
 }
 
@@ -106,7 +105,6 @@ func TestAPI_GetDeployment(t *testing.T) {
 	assert.Equal(t, "9.6.3", deployment.Version)
 	assert.Equal(t, "", deployment.CACertificateBase64)
 	assert.Equal(t, "postgres://compose:XXXX@customer-cluster.1.compose.direct:10020/compose", deployment.ConnectionStrings.Direct[0])
-	assert.Equal(t, "psql \"sslmode=require host=cpu.blazzleblazzle.compose.direct port=10000 dbname=compose user=compose\"", deployment.ConnectionStrings.CLI[0])
 	assert.Equal(t, "https://app.compose.io/northwind/deployments/fizz-production{?embed}", deployment.Links.ComposeWebUI.HREF)
 }
 
@@ -137,7 +135,6 @@ func TestAPI_GetDeploymentByName(t *testing.T) {
 	assert.Equal(t, "9.6.3", deployment.Version)
 	assert.Equal(t, "", deployment.CACertificateBase64)
 	assert.Equal(t, "postgres://compose:XXXX@customer-cluster.1.compose.direct:10020/compose", deployment.ConnectionStrings.Direct[0])
-	assert.Equal(t, "psql \"sslmode=require host=cpu.blazzleblazzle.compose.direct port=10000 dbname=compose user=compose\"", deployment.ConnectionStrings.CLI[0])
 	assert.Equal(t, "https://app.compose.io/northwind/deployments/fizz-production{?embed}", deployment.Links.ComposeWebUI.HREF)
 }
 

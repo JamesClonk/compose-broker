@@ -19,23 +19,23 @@ type ServiceBindingResponse struct {
 	Parameters  ServiceBindingResponseParameters  `json:"parameters"`
 }
 type ServiceBindingResponseCredentials struct {
-	Direct        []string `json:"direct"`
-	CLI           []string `json:"cli"`
-	Maps          []string `json:"maps"`
-	SSH           []string `json:"ssh"`
-	Health        []string `json:"health"`
-	Admin         []string `json:"admin"`
-	URI           string   `json:"uri,omitempty"`
-	URL           string   `json:"url,omitempty"`
-	DatabaseURI   string   `json:"database_uri,omitempty"`
-	Username      string   `json:"username,omitempty"`
-	Password      string   `json:"password,omitempty"`
-	Database      string   `json:"database,omitempty"`
-	Scheme        string   `json:"scheme,omitempty"`
-	Host          string   `json:"host,omitempty"`
-	Hostname      string   `json:"hostname,omitempty"`
-	Port          int      `json:"port,omitempty"`
-	CACertificate string   `json:"ca_certificate,omitempty"`
+	Direct        []string    `json:"direct"`
+	CLI           interface{} `json:"cli,omitempty"`
+	Maps          interface{} `json:"maps,omitempty"`
+	SSH           interface{} `json:"ssh,omitempty"`
+	Health        interface{} `json:"health,omitempty"`
+	Admin         interface{} `json:"admin,omitempty"`
+	URI           string      `json:"uri,omitempty"`
+	URL           string      `json:"url,omitempty"`
+	DatabaseURI   string      `json:"database_uri,omitempty"`
+	Username      string      `json:"username,omitempty"`
+	Password      string      `json:"password,omitempty"`
+	Database      string      `json:"database,omitempty"`
+	Scheme        string      `json:"scheme,omitempty"`
+	Host          string      `json:"host,omitempty"`
+	Hostname      string      `json:"hostname,omitempty"`
+	Port          int         `json:"port,omitempty"`
+	CACertificate string      `json:"ca_certificate,omitempty"`
 }
 type ServiceBindingResponseEndpoint struct {
 	Host  string   `json:"host"`
