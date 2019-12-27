@@ -1,0 +1,316 @@
+# The configurations that used for the recording, feel free to edit them
+config:
+
+  # Specify a command to be executed
+  # like `/bin/bash -l`, `ls`, or any other commands
+  # the default is bash for Linux
+  # or powershell.exe for Windows
+  command: bash -l
+
+  # Specify the current working directory path
+  # the default is the current working directory path
+  cwd: /home/jamesclonk/gopath/src/github.com/JamesClonk/compose-broker
+
+  # Export additional ENV variables
+  env:
+    recording: true
+
+  # Explicitly set the number of columns
+  # or use `auto` to take the current
+  # number of columns of your shell
+  cols: 120
+
+  # Explicitly set the number of rows
+  # or use `auto` to take the current
+  # number of rows of your shell
+  rows: 40
+
+  # Amount of times to repeat GIF
+  # If value is -1, play once
+  # If value is 0, loop indefinitely
+  # If value is a positive number, loop n times
+  repeat: 0
+
+  # Quality
+  # 1 - 100
+  quality: 100
+
+  # Delay between frames in ms
+  # If the value is `auto` use the actual recording delays
+  frameDelay: auto
+
+  # Maximum delay between frames in ms
+  # Ignored if the `frameDelay` isn't set to `auto`
+  # Set to `auto` to prevent limiting the max idle time
+  maxIdleTime: 5000
+
+  # The surrounding frame box
+  # The `type` can be null, window, floating, or solid`
+  # To hide the title use the value null
+  # Don't forget to add a backgroundColor style with a null as type
+  # frameBox:
+  #   type: floating
+  #   title: Terminalizer
+  #   style:
+  #     border: 0px black solid
+  #     # boxShadow: none
+  #     # margin: 0px
+  frameBox:
+    type: solid
+    title: null
+    style:
+      boxShadow: none
+      margin: 0px
+
+  # Add a watermark image to the rendered gif
+  # You need to specify an absolute path for
+  # the image on your machine or a URL, and you can also
+  # add your own CSS styles
+  watermark:
+    imagePath: null
+    style:
+      position: absolute
+      right: 15px
+      bottom: 15px
+      width: 100px
+      opacity: 0.9
+
+  # Cursor style can be one of
+  # `block`, `underline`, or `bar`
+  cursorStyle: block
+
+  # Font family
+  # You can use any font that is installed on your machine
+  # in CSS-like syntax
+  # fontFamily: "Monaco, Lucida Console, Ubuntu Mono, Monospace"
+  fontFamily: "Liberation Mono"
+
+  # The size of the font
+  # fontSize: 12
+  fontSize: 11
+
+  # The height of lines
+  lineHeight: 1
+
+  # The spacing between letters
+  letterSpacing: 0
+
+  # Theme
+  theme:
+    background: "transparent"
+    foreground: "#f8f8f2"
+    cursor: "#f8f8f2"
+    black: "#272822"
+    red: "#f92672"
+    green: "#a6e22e"
+    yellow: "#f4bf75"
+    blue: "#66d9ef"
+    magenta: "#ae81ff"
+    cyan: "#a1efe4"
+    white: "#f8f8f2"
+    brightBlack: "#75715e"
+    brightRed: "#fd971f"
+    brightGreen: "#383830"
+    brightYellow: "#49483e"
+    brightBlue: "#a59f85"
+    brightMagenta: "#f5f4f1"
+    brightCyan: "#cc6633"
+    brightWhite: "#d0d0d0"
+
+# Records, feel free to edit them
+records:
+  - delay: 1
+    content: "\e[32m$\e[31m\e[0m\x0F "
+  - delay: 666
+    content: c
+  - delay: 199
+    content: f
+  - delay: 166
+    content: ' '
+  - delay: 111
+    content: c
+  - delay: 133
+    content: r
+  - delay: 133
+    content: e
+  - delay: 199
+    content: a
+  - delay: 111
+    content: t
+  - delay: 111
+    content: e
+  - delay: 199
+    content: '-'
+  - delay: 166
+    content: s
+  - delay: 111
+    content: e
+  - delay: 166
+    content: r
+  - delay: 111
+    content: v
+  - delay: 199
+    content: i
+  - delay: 111
+    content: c
+  - delay: 133
+    content: e
+  - delay: 333
+    content: ' '
+  - delay: 666
+    content: >-
+      scylla default my-scylla-db
+  - delay: 1555
+    content: "\r\n"
+  - delay: 666
+    content: "Creating service instance \e[36;1mmy-scylla-db\e[0m in org \e[36;1mjamesclonk\e[0m / space \e[36;1mprod\e[0m as \e[36;1mjamesclonk\e[0m...\r\n"
+  - delay: 1111
+    content: "\e[32;1mOK\e[0m\r\n\r\nCreate in progress. Use 'cf services' or 'cf service \e[36;1mmy-scylla-db\e[0m' to check operation status.\r\n"
+  - delay: 10
+    content: "\e[32m$\e[31m\e[0m\x0F "
+  - delay: 999
+    content: "\r\n\e[32m$\e[31m\e[0m\x0F "
+  - delay: 333
+    content: c
+  - delay: 222
+    content: f
+  - delay: 166
+    content: ' '
+  - delay: 133
+    content: s
+  - delay: 199
+    content: e
+  - delay: 166
+    content: r
+  - delay: 111
+    content: v
+  - delay: 133
+    content: i
+  - delay: 111
+    content: c
+  - delay: 166
+    content: e
+  - delay: 333
+    content: ' '
+  - delay: 666
+    content: >-
+      my-scylla-db
+  - delay: 1555
+    content: "\r\n"
+  - delay: 666
+    content: "Showing info of service \e[36;1mmy-scylla-db\e[0m in org \e[36;1mjamesclonk\e[0m / space \e[36;1mprod\e[0m as \e[36;1mjamesclonk\e[0m...\r\n\r\n"
+  - delay: 111
+    content: "name:            my-scylla-db\r\nservice:         scylla\r\ntags:            \r\nplan:            default\r\ndescription:     ScyllaDB\r\ndocumentation:   https://compose.com/databases/scylladb\r\ndashboard:       https://app.compose.io/swisscom/deployments/00bdca84-52ef-4d5f-a232-da92c432944b\r\n\r\nShowing status of last operation from service my-scylla-db...\r\n\r\nstatus:    create in progress\r\nmessage:   Provision operation in progress [2/19]\r\nstarted:   2019-12-27T16:49:47Z\r\nupdated:   2019-12-27T16:49:49Z\r\n\r\nThere are no bound apps for this service.\r\n"
+  - delay: 10
+    content: "\e[32m$\e[31m\e[0m\x0F "
+  - delay: 1111
+    content: "\r\n\e[32m$\e[31m\e[0m\x0F "
+  - delay: 1111
+    content: cf service my-scylla-db
+  - delay: 999
+    content: "\r\n"
+  - delay: 666
+    content: "Showing info of service \e[36;1mmy-scylla-db\e[0m in org \e[36;1mjamesclonk\e[0m / space \e[36;1mprod\e[0m as \e[36;1mjamesclonk\e[0m...\r\n\r\n"
+  - delay: 111
+    content: "name:            my-scylla-db\r\nservice:         scylla\r\ntags:            \r\nplan:            default\r\ndescription:     ScyllaDB\r\ndocumentation:   https://compose.com/databases/scylladb\r\ndashboard:       https://app.compose.io/swisscom/deployments/00bdca84-52ef-4d5f-a232-da92c432944b\r\n\r\nShowing status of last operation from service my-scylla-db...\r\n\r\nstatus:    create succeeded\r\nmessage:   Provision complete\r\nstarted:   2019-12-27T16:49:47Z\r\nupdated:   2019-12-27T16:54:04Z\r\n\r\nThere are no bound apps for this service.\r\n"
+  - delay: 10
+    content: "\e[32m$\e[31m\e[0m\x0F "
+  - delay: 999
+    content: "\r\n\e[32m$\e[31m\e[0m\x0F "
+  - delay: 333
+    content: c
+  - delay: 222
+    content: f
+  - delay: 166
+    content: ' '
+  - delay: 166
+    content: b
+  - delay: 133
+    content: i
+  - delay: 111
+    content: 'n'
+  - delay: 133
+    content: d
+  - delay: 133
+    content: '-'
+  - delay: 111
+    content: s
+  - delay: 111
+    content: e
+  - delay: 166
+    content: r
+  - delay: 111
+    content: v
+  - delay: 166
+    content: i
+  - delay: 111
+    content: c
+  - delay: 111
+    content: e
+  - delay: 333
+    content: ' '
+  - delay: 666
+    content: >-
+      my-app my-scylla-db
+  - delay: 1555
+    content: "\r\n"
+  - delay: 666
+    content: "Binding service \e[36;1mmy-scylla-db\e[0m to app \e[36;1mmy-app\e[0m in org \e[36;1mjamesclonk\e[0m / space \e[36;1mprod\e[0m as \e[36;1mjamesclonk\e[0m...\r\n"
+  - delay: 1111
+    content: "\e[32;1mOK\e[0m\r\nTIP: Use 'cf restage my-app' to ensure your env variable changes take effect\r\n"
+  - delay: 10
+    content: "\e[32m$\e[31m\e[0m\x0F "
+  - delay: 1111
+    content: "\r\n\e[32m$\e[31m\e[0m\x0F "
+  - delay: 333
+    content: c
+  - delay: 222
+    content: f
+  - delay: 166
+    content: ' '
+  - delay: 111
+    content: e
+  - delay: 133
+    content: 'n'
+  - delay: 111
+    content: v
+  - delay: 333
+    content: ' '
+  - delay: 666
+    content: >-
+      my-app
+  - delay: 999
+    content: "\r\n"
+  - delay: 666
+    content: "Getting env variables for app \e[36;1mmy-app\e[0m in org \e[36;1mjamesclonk\e[0m / space \e[36;1mprod\e[0m as \e[36;1mjamesclonk\e[0m...\r\n"
+  - delay: 666
+    content: "\e[32;1mOK\e[0m\r\n\r\n\e[36;1mSystem-Provided:\e[0m\r\n{\r\n \"VCAP_SERVICES\": {\r\n  \"scylla\": [\r\n   {\r\n    \"credentials\": {\r\n     \"cli\": \"cqlsh --ssl portal0291-2.febdca87-52ef-4g5f-f681-ed92c432944b.1213843401.composedb.com 18184 -u scylla -p EJOGEHGPDWSACVXE --cqlversion=3.3.1\",\r\n     \"host\": \"portal0291-2.febdca87-52ef-4g5f-f681-ed92c432944b.1213843401.composedb.com:18184\",\r\n     \"password\": \"EJOGEHGPDWSACVXE\",\r\n     \"uri\": \"https://scylla:EJOGEHGPDWSACVXE@portal0291-2.febdca87-52ef-4g5f-f681-ed92c432944b.1213843401.composedb.com:18184\",\r\n     \"username\": \"scylla\"\r\n    },\r\n    \"label\": \"scylla\",\r\n    \"name\": \"my-scylla-db\",\r\n    \"plan\": \"default\",\r\n    \"tags\": [\r\n     \"scylla\",\r\n     \"scylladb\"\r\n    ]\r\n   }\r\n  ]\r\n }\r\n}\r\n\r\n\e[36;1mRunning Environment Variable Groups:\e[0m\r\nAPI_ENDPOINT: api.lyra-836.appcloud.swisscom.com\r\n\r\n"
+  - delay: 10
+    content: "\e[32m$\e[31m\e[0m\x0F "
+  - delay: 2333
+    content: "\r\n\e[32m$\e[31m\e[0m\x0F "
+  - delay: 333
+    content: c
+  - delay: 266
+    content: q
+  - delay: 199
+    content: l
+  - delay: 166
+    content: s
+  - delay: 199
+    content: h
+  - delay: 333
+    content: ' '
+  - delay: 666
+    content: >-
+      portal0291-2.febdca87-52ef-4g5f-f681-ed92c432944b.1213843401.composedb.com 18184 -u scylla -p EJOGEHGPDWSACVXE --cqlversion=3.3.1 -t -e 'SHOW VERSION'
+  - delay: 999
+    content: "\r\n"
+  - delay: 666
+    content: "[cqlsh 5.0.1 | Cassandra 3.8 | CQL spec 3.3.1 | Native protocol v4]\r\n"
+  - delay: 11
+    content: "\e[32m$\e[31m\e[0m\x0F "
+  - delay: 1111
+    content: "\r\n\e[32m$\e[31m\e[0m\x0F "
+  - delay: 11111
+    content: ' '

@@ -1,0 +1,341 @@
+# The configurations that used for the recording, feel free to edit them
+config:
+
+  # Specify a command to be executed
+  # like `/bin/bash -l`, `ls`, or any other commands
+  # the default is bash for Linux
+  # or powershell.exe for Windows
+  command: bash -l
+
+  # Specify the current working directory path
+  # the default is the current working directory path
+  cwd: /home/jamesclonk/gopath/src/github.com/JamesClonk/compose-broker
+
+  # Export additional ENV variables
+  env:
+    recording: true
+
+  # Explicitly set the number of columns
+  # or use `auto` to take the current
+  # number of columns of your shell
+  cols: 120
+
+  # Explicitly set the number of rows
+  # or use `auto` to take the current
+  # number of rows of your shell
+  rows: 40
+
+  # Amount of times to repeat GIF
+  # If value is -1, play once
+  # If value is 0, loop indefinitely
+  # If value is a positive number, loop n times
+  repeat: 0
+
+  # Quality
+  # 1 - 100
+  quality: 100
+
+  # Delay between frames in ms
+  # If the value is `auto` use the actual recording delays
+  frameDelay: auto
+
+  # Maximum delay between frames in ms
+  # Ignored if the `frameDelay` isn't set to `auto`
+  # Set to `auto` to prevent limiting the max idle time
+  maxIdleTime: 5000
+
+  # The surrounding frame box
+  # The `type` can be null, window, floating, or solid`
+  # To hide the title use the value null
+  # Don't forget to add a backgroundColor style with a null as type
+  # frameBox:
+  #   type: floating
+  #   title: Terminalizer
+  #   style:
+  #     border: 0px black solid
+  #     # boxShadow: none
+  #     # margin: 0px
+  frameBox:
+    type: solid
+    title: null
+    style:
+      boxShadow: none
+      margin: 0px
+
+  # Add a watermark image to the rendered gif
+  # You need to specify an absolute path for
+  # the image on your machine or a URL, and you can also
+  # add your own CSS styles
+  watermark:
+    imagePath: null
+    style:
+      position: absolute
+      right: 15px
+      bottom: 15px
+      width: 100px
+      opacity: 0.9
+
+  # Cursor style can be one of
+  # `block`, `underline`, or `bar`
+  cursorStyle: block
+
+  # Font family
+  # You can use any font that is installed on your machine
+  # in CSS-like syntax
+  # fontFamily: "Monaco, Lucida Console, Ubuntu Mono, Monospace"
+  fontFamily: "Liberation Mono"
+
+  # The size of the font
+  # fontSize: 12
+  fontSize: 11
+
+  # The height of lines
+  lineHeight: 1
+
+  # The spacing between letters
+  letterSpacing: 0
+
+  # Theme
+  theme:
+    background: "transparent"
+    foreground: "#f8f8f2"
+    cursor: "#f8f8f2"
+    black: "#272822"
+    red: "#f92672"
+    green: "#a6e22e"
+    yellow: "#f4bf75"
+    blue: "#66d9ef"
+    magenta: "#ae81ff"
+    cyan: "#a1efe4"
+    white: "#f8f8f2"
+    brightBlack: "#75715e"
+    brightRed: "#fd971f"
+    brightGreen: "#383830"
+    brightYellow: "#49483e"
+    brightBlue: "#a59f85"
+    brightMagenta: "#f5f4f1"
+    brightCyan: "#cc6633"
+    brightWhite: "#d0d0d0"
+
+# Records, feel free to edit them
+records:
+  - delay: 1
+    content: "\e[32m$\e[31m\e[0m\x0F "
+  - delay: 666
+    content: c
+  - delay: 222
+    content: f
+  - delay: 166
+    content: ' '
+  - delay: 133
+    content: p
+  - delay: 133
+    content: u
+  - delay: 133
+    content: s
+  - delay: 133
+    content: h
+  - delay: 333
+    content: ' '
+  - delay: 666
+    content: >-
+      --var auth_username=broker --var auth_password=secret --var
+      api_token=9d436bb6095b621a01cf4d5e265b4aaf86a35f643a8d5965d6728d2e3b968295
+  - delay: 1555
+    content: "\r\n"
+  - delay: 666
+    content: "Pushing from manifest to org \e[36;1mjamesclonk\e[0m / space \e[36;1mprod\e[0m as \e[36;1mjamesclonk\e[0m...\r\nUsing manifest file /home/jamesclonk/gopath/src/github.com/JamesClonk/compose-broker/manifest.yml\r\nGetting app info...\r\n"
+  - delay: 333
+    content: "Creating app with these attributes...\r\n\e[32m+ name:         compose-broker\e[0m\r\n  path:         /home/jamesclonk/gopath/src/github.com/JamesClonk/compose-broker\r\n  buildpacks:\r\n\e[32m+   go_buildpack\e[0m\r\n\e[32m+ command:      compose-broker\e[0m\r\n\e[32m+ disk quota:   64M\e[0m\r\n\e[32m+ instances:    2\e[0m\r\n\e[32m+ memory:       64M\e[0m\r\n  env:\r\n\e[32m+   BROKER_AUTH_PASSWORD\e[0m\r\n\e[32m+   BROKER_AUTH_USERNAME\e[0m\r\n\e[32m+   COMPOSE_API_DEFAULT_DATACENTER\e[0m\r\n\e[32m+   COMPOSE_API_TOKEN\e[0m\r\n\e[32m+   COMPOSE_API_URL\e[0m\r\n\e[32m+   TZ\e[0m\r\n  routes:\r\n\e[32m+   compose-broker.applicationcloud.io\e[0m\r\n\e[32m+   compose-broker.scapp.io\e[0m\r\n\r\nCreating app \e[36;1mcompose-broker\e[0m...\r\n"
+  - delay: 666
+    content: "Mapping routes...\r\n"
+  - delay: 333
+    content: "Comparing local files to remote cache...\r\n"
+  - delay: 333
+    content: "Packaging files to upload...\r\nUploading files...\r\n\r 0 B / 1.02 MiB [----------------------------------------------------------------------------------------------]   0.00%"
+  - delay: 100
+    content: "\r 1.02 MiB / 1.02 MiB [=========================================================================================] 100.00%"
+  - delay: 100
+    content: "\r 1.02 MiB / 1.02 MiB [=========================================================================================] 100.00%"
+  - delay: 100
+    content: "\r 1.02 MiB / 1.02 MiB [=========================================================================================] 100.00%"
+  - delay: 100
+    content: "\r 1.02 MiB / 1.02 MiB [=========================================================================================] 100.00%"
+  - delay: 100
+    content: "\r 1.02 MiB / 1.02 MiB [=========================================================================================] 100.00%"
+  - delay: 100
+    content: "\r 1.02 MiB / 1.02 MiB [======================================================================================] 100.00% 1s\r\n\r\nWaiting for API to complete processing files...\r\n"
+  - delay: 333
+    content: "\r\nStaging app and tracing logs...\r\n"
+  - delay: 333
+    content: "   Downloading go_buildpack...\r\n"
+  - delay: 100
+    content: "   Downloaded go_buildpack\r\n   Cell d7d97543-6684-4b08-9db6-b8082448729f creating container for instance 2eaef268-c5b9-4017-9fdc-836f922a2d1b\r\n"
+  - delay: 100
+    content: "   Cell d7d97543-6684-4b08-9db6-b8082448729f successfully created container for instance 2eaef268-c5b9-4017-9fdc-836f922a2d1b\r\n"
+  - delay: 100
+    content: "   Downloading app package...\r\n"
+  - delay: 100
+    content: "   Downloaded app package (1.6M)\r\n"
+  - delay: 100
+    content: "   -----> Go Buildpack version 1.9.3\r\n          \e[31;1m**WARNING**\e[0m [DEPRECATION WARNING]:\r\n          \e[31;1m**WARNING**\e[0m Please use AppDynamics extension buildpack for Golang Application instrumentation\r\n          \e[31;1m**WARNING**\e[0m for more details: https://docs.pivotal.io/partners/appdynamics/multibuildpack.html\r\n   -----> Installing godep 80\r\n          Download [https://buildpacks.cloudfoundry.org/dependencies/godep/godep-v80-linux-x64-cflinuxfs3-b60ac947.tgz]\r\n"
+  - delay: 100
+    content: "   -----> Installing glide 0.13.3\r\n          Download [https://buildpacks.cloudfoundry.org/dependencies/glide/glide-v0.13.3-linux-x64-cflinuxfs3-ef07acb5.tgz]\r\n   -----> Installing dep 0.5.4\r\n"
+  - delay: 100
+    content: "          Download [https://buildpacks.cloudfoundry.org/dependencies/dep/dep-v0.5.4-linux-x64-cflinuxfs3-79b3ab9e.tgz]\r\n   -----> Installing go 1.13.4\r\n"
+  - delay: 100
+    content: "          Download [https://buildpacks.cloudfoundry.org/dependencies/go/go1.13.4.linux-amd64-cflinuxfs3-d7e7ae00.tar.gz]\r\n"
+  - delay: 333
+    content: "          \e[31;1m**WARNING**\e[0m Installing package '.' (default)\r\n   -----> Running: go install -tags cloudfoundry -buildmode pie .\r\n"
+  - delay: 333
+    content: "   Exit status 0\r\n"
+  - delay: 100
+    content: "   Uploading droplet, build artifacts cache...\r\n   Uploading droplet...\r\n   Uploading build artifacts cache...\r\n"
+  - delay: 100
+    content: "   Uploaded build artifacts cache (146.2M)\r\n"
+  - delay: 100
+    content: "   Uploaded droplet (6M)\r\n"
+  - delay: 100
+    content: "   Uploading complete\r\n"
+  - delay: 100
+    content: "   Cell d7d97543-6684-4b08-9db6-b8082448729f stopping instance 2eaef268-c5b9-4017-9fdc-836f922a2d1b\r\n"
+  - delay: 100
+    content: "   Cell d7d97543-6684-4b08-9db6-b8082448729f destroying container for instance 2eaef268-c5b9-4017-9fdc-836f922a2d1b\r\n"
+  - delay: 100
+    content: "   Cell d7d97543-6684-4b08-9db6-b8082448729f successfully destroyed container for instance 2eaef268-c5b9-4017-9fdc-836f922a2d1b\r\n"
+  - delay: 666
+    content: "\r\nWaiting for app to start...\r\n"
+  - delay: 1000
+    content: "\r\n"
+  - delay: 666
+    content: "name:              compose-broker\r\nrequested state:   started\r\nroutes:            compose-broker.scapp.io, compose-broker.applicationcloud.io\r\nlast uploaded:     Fri 27 Dec 17:34:41 CET 2019\r\nstack:             cflinuxfs3\r\nbuildpacks:        go\r\n\r\ntype:            web\r\ninstances:       2/2\r\nmemory usage:    64M\r\nstart command:   compose-broker\r\n     \e[1mstate\e[0m     \e[1msince\e[0m                  \e[1mcpu\e[0m    \e[1mmemory\e[0m        \e[1mdisk\e[0m           \e[1mdetails\e[0m\r\n#0   running   2019-12-27T16:34:52Z   0.0%   4.6M of 64M   19.7M of 64M   \r\n#1   running   2019-12-27T16:34:52Z   0.0%   0 of 64M      0 of 64M       \r\n\r\n"
+  - delay: 10
+    content: "\e[32m$\e[31m\e[0m\x0F "
+  - delay: 999
+    content: "\r\n\e[32m$\e[31m\e[0m\x0F "
+
+  - delay: 111
+    content: c
+  - delay: 199
+    content: u
+  - delay: 166
+    content: r
+  - delay: 133
+    content: l
+  - delay: 333
+    content: ' '
+  - delay: 666
+    content:  >-
+      https://broker:secret@compose-broker.applicationcloud.io/health
+  - delay: 1555
+    content: "\r\n"
+  - delay: 666
+    content: "{\r\n  \"status\": \"ok\"\r\n}\r\n"
+  - delay: 10
+    content: "\e[32m$\e[31m\e[0m\x0F "
+  - delay: 999
+    content: "\r\n\e[32m$\e[31m\e[0m\x0F "
+  - delay: 111
+    content: c
+  - delay: 199
+    content: f
+  - delay: 166
+    content: ' '
+  - delay: 133
+    content: c
+  - delay: 111
+    content: r
+  - delay: 111
+    content: e
+  - delay: 133
+    content: a
+  - delay: 111
+    content: t
+  - delay: 133
+    content: e
+  - delay: 166
+    content: '-'
+  - delay: 133
+    content: s
+  - delay: 111
+    content: e
+  - delay: 166
+    content: r
+  - delay: 111
+    content: v
+  - delay: 133
+    content: i
+  - delay: 111
+    content: c
+  - delay: 133
+    content: e
+  - delay: 166
+    content: '-'
+  - delay: 199
+    content: b
+  - delay: 166
+    content: r
+  - delay: 111
+    content: o
+  - delay: 133
+    content: k
+  - delay: 111
+    content: e
+  - delay: 166
+    content: r
+  - delay: 166
+    content: ' '
+  - delay: 666
+    content: >-
+      compose broker secret https://compose-broker.applicationcloud.io
+      --space-scoped
+  - delay: 1555
+    content: "\r\n"
+  - delay: 666
+    content: "Creating service broker \e[36;1mcompose\e[0m in org \e[36;1mjamesclonk\e[0m / space \e[36;1mprod\e[0m as \e[36;1mjamesclonk\e[0m...\r\n"
+  - delay: 1000
+    content: "\e[32;1mOK\e[0m\r\n\r\n"
+  - delay: 10
+    content: "\e[32m$\e[31m\e[0m\x0F "
+  - delay: 999
+    content: "\r\n\e[32m$\e[31m\e[0m\x0F "
+  - delay: 111
+    content: c
+  - delay: 166
+    content: f
+  - delay: 166
+    content: ' '
+  - delay: 199
+    content: m
+  - delay: 111
+    content: a
+  - delay: 166
+    content: r
+  - delay: 133
+    content: k
+  - delay: 111
+    content: e
+  - delay: 166
+    content: t
+  - delay: 111
+    content: p
+  - delay: 166
+    content: l
+  - delay: 111
+    content: a
+  - delay: 199
+    content: c
+  - delay: 199
+    content: e
+  - delay: 200
+    content: "\r\n"
+  - delay: 666
+    content: "Getting services from marketplace in org \e[36;1mjamesclonk\e[0m / space \e[36;1mprod\e[0m as \e[36;1mjamesclonk\e[0m...\r\n"
+  - delay: 666
+    content: "\e[32;1mOK\e[0m\r\n\r\n\e[1mservice\e[0m          \e[1mplans\e[0m                     \e[1mdescription\e[0m            \e[1mbroker\e[0m\r\nredis            default, cache            Redis                  compose\r\npostgresql       default                   PostgreSQL             compose\r\nmysql            default                   MySQL                  compose\r\nelastic_search   default                   Elasticsearch          compose\r\nscylla           default                   ScyllaDB               compose\r\nrabbitmq         default                   RabbitMQ               compose\r\netcd             default                   etcd                   compose\r\nrethink          default                   RethinkDB              compose\r\n\r\nTIP: Use 'cf marketplace -s SERVICE' to view descriptions of individual plans of a given service.\r\n"
+  - delay: 11
+    content: "\e[32m$\e[31m\e[0m\x0F "
+  - delay: 1111
+    content: "\r\n\e[32m$\e[31m\e[0m\x0F "
+  - delay: 11111
+    content: ' '

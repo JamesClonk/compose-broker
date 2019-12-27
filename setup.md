@@ -7,7 +7,7 @@
 - https://gifcompressor.com/
 
 
-cf push --var auth_username=broker --var auth_password=secret --var api_token=235302cc-34f1-4425-8584-8e1516cfdaa2
+cf push --var auth_username=broker --var auth_password=secret --var api_token=6c9e75fc-08dd-49bd-ab70-5b7c6364ab0b
 
 curl https://broker:secret@compose-broker.applicationcloud.io/health
 

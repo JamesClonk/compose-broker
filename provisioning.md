@@ -7,7 +7,7 @@
 - https://gifcompressor.com/
 
 
-cf create-service scylladb default my-scylla-db
+cf create-service scylla default my-scylla-db
 
 cf service my-scylla-db
 
@@ -15,5 +15,5 @@ cf bind-service my-app my-scylla-db
 
 cf env my-app
 
-cqlsh -u username -p password -t -e 'SHOW VERSION'
+cqlsh -u scylla -p EJOGEHGPDWSACVXE -t -e 'SHOW VERSION' portal0291-2.febdca84-52ef-4g5f-f232-da92c432944b.1213820901.composedb.com 18184
 
