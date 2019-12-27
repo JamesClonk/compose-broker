@@ -42,6 +42,26 @@ It supports databases and services such as:
 
 ![provision service](https://raw.githubusercontent.com/JamesClonk/compose-broker/recordings/provisioning-min.gif "provision service")
 
+## Configuration
+
+All configuration of the service broker is done through environment variables (provided by `manifest.yml` during `cf push`) and the included `catalog.yml`.
+
+### manifest.yml
+
+Possible configuration values are:
+```yaml
+BROKER_LOG_LEVEL: info # optional, can be set to debug, info, warning, error or fatal, defaults to info
+BROKER_LOG_TIMESTAMP: false # optional, add timestamp to logging messages (not needed when deployed on Cloud Foundry), defaults to false
+BROKER_SKIP_SSL_VALIDATION: false, # optional, disables SSL certificate verification for API calls, defaults to false
+BROKER_AUTH_USERNAME: broker-username # required, HTTP basic auth username to secure service broker with
+BROKER_AUTH_PASSWORD: broker-password # required, HTTP basic auth password to secure service broker with
+BROKER_CATALOG_FILENAME: catalog.yml # optional, filename containing all catalog information, defaults to catalog.yml
+COMPOSE_API_URL: https://api.compose.io/2016-07/ # optional, Base URL of Compose.io API, defaults to https://api.compose.io/2016-07
+COMPOSE_API_TOKEN: e7fb89a0-26f8-4ee5-890e-3c68079b15ea # required, Compose.io API Token
+COMPOSE_API_DEFAULT_DATACENTER: aws:eu-central-1 # optional, defaults to aws:eu-central-1
+COMPOSE_API_DEFAULT_ACCOUNT_ID: 586eab527c65836dde5533e8 # optional, service broker will try to read it from Compose.io API
+```
+
 ### Default Datacenter
 
 By default the service broker will provision new database deployments in the configured datacenter `COMPOSE_API_DEFAULT_DATACENTER` (see `manifest.yml`) or if none configured at all it will use `aws:eu-central-1` as default value.
